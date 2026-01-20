@@ -1,0 +1,117 @@
+.gallery-section {
+    position: relative;
+    padding: 10rem 2rem;
+    background-color: var(--color-bg);
+    min-height: 200vh;
+    overflow: hidden;
+}
+
+.gallery-header {
+    position: sticky;
+    top: 5rem;
+    z-index: 10;
+    margin-bottom: 10rem;
+    mix-blend-mode: difference;
+}
+
+.gallery-header h2 {
+    font-size: 12vw;
+    line-height: 0.8;
+    color: white;
+    /* Difference mode makes it contrast */
+}
+
+.gallery-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15rem;
+    /* Massive spacing */
+    position: relative;
+}
+
+.project-card {
+    position: relative;
+    width: 60vw;
+    height: 80vh;
+    cursor: pointer;
+}
+
+.project-card:hover .placeholder-image {
+    transform: scale(0.95);
+}
+
+.project-card:hover h3 {
+    -webkit-text-stroke: 0px;
+    color: var(--color-text);
+}
+
+/* Staggered Layout (Anti-grid) */
+.project-card-0 {
+    align-self: flex-start;
+}
+
+.project-card-1 {
+    align-self: flex-end;
+    margin-top: -20vh;
+}
+
+.project-card-2 {
+    align-self: center;
+}
+
+.project-card-3 {
+    align-self: flex-start;
+    margin-left: 10vw;
+}
+
+.project-media {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s var(--ease-surreal);
+}
+
+.project-info {
+    position: absolute;
+    bottom: -2rem;
+    left: -5rem;
+    z-index: 20;
+}
+
+.project-info h3 {
+    font-size: 8rem;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--color-text);
+    transition: all 0.4s ease;
+}
+
+.project-info span {
+    font-family: var(--font-main);
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .project-card {
+        width: 90vw;
+        height: 50vh;
+    }
+
+    .project-info h3 {
+        font-size: 4rem;
+        left: 0;
+    }
+
+    .gallery-container {
+        gap: 5rem;
+    }
+}
