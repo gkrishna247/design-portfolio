@@ -1,36 +1,44 @@
-import { Suspense, lazy } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Suspense, lazy } from 'react'
 import './Hero.css'
 
 const Scene = lazy(() => import('./Scene'))
 
 export default function Hero() {
+    const [text, setText] = useState('')
+    const fullText = "Aspiring AI Engineer | Turning Data into Intelligence..."
+
+    useEffect(() => {
+        let index = 0
+        const timer = setInterval(() => {
+            setText(fullText.slice(0, index))
+            index++
+            if (index > fullText.length) clearInterval(timer)
+        }, 50)
+        return () => clearInterval(timer)
+    }, [])
+
     return (
-        <section className="hero-section">
-            <div className="hero-background">
+        <section className="hero-section" id="hero">
+            <div className="hero-content">
+                <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 1 }}
+                >
+                    <h1 className="hero-title">ALEX.DEV</h1>
+                    <div className="hero-terminal mono">
+                        <span className="prompt">{'>'}</span> {text}
+                        <span className="cursor-blink">_</span>
+                    </div>
+                </motion.div>
+            </div>
+
+            <div className="hero-visual">
                 <Suspense fallback={null}>
                     <Scene />
                 </Suspense>
-            </div>
-
-            <div className="hero-content">
-                <motion.h1
-                    className="hero-title"
-                    initial={{ opacity: 0, y: 100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.5, ease: [0.19, 1, 0.22, 1] }}
-                >
-                    ALEX<br />
-                    <span className="outline-text">DEV</span>
-                </motion.h1>
-                <motion.p
-                    className="hero-tagline"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1.5, delay: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                >
-                    Aspiring AI Engineer | Turning Data into Intelligence
-                </motion.p>
             </div>
         </section>
     )

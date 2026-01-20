@@ -1,19 +1,16 @@
-import { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Lenis from 'lenis'
 import Navigation from './components/Navigation/Navigation'
-
 import Hero from './components/Hero/Hero'
-import ProjectGallery from './components/ProjectGallery/ProjectGallery'
-import About from './components/About/About'
+import BentoGrid from './components/BentoGrid/BentoGrid'
 import { CursorProvider } from './context/CursorContext'
 import Cursor from './components/Cursor/Cursor'
 
 function Home() {
   return (
     <div style={{ padding: 0 }}>
+      {/* Scroll Sections */}
       <Hero />
-      <ProjectGallery />
+      <BentoGrid />
+      <div style={{ height: '20vh' }}></div> {/* Spacer Footer */}
     </div>
   )
 }
@@ -37,13 +34,8 @@ function App() {
   return (
     <CursorProvider>
       <Cursor />
-      <Router>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </Router>
+      <Navigation />
+      <Home />
     </CursorProvider>
   )
 }
