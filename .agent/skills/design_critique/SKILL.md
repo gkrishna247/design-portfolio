@@ -1,33 +1,35 @@
 ---
-name: Design Critique
-description: Critiques a design concept or implementation against high-end "Wow Factor" standards.
+name: design_critique
+description: Evaluate UI/UX against the "Neural Flux" design system and "Wow Factor" requirements.
 ---
 
 # Design Critique Skill
 
-## Purpose
-To ensure no "generic" or "cookie-cutter" elements enter the portfolio. Every component must be novel.
+Use this skill to validate every UI component before implementation.
 
-## Evaluation Criteria
+## 🌌 The "Neural Flux" Aesthetic
+- **Colors**: Deep Void Black (`#030014`), Neon Violet (`#a855f7`), Electric Cyan (`#22d3ee`).
+- **Typography**: `Space Grotesk` (Headers), `JetBrains Mono` (Data/Code).
+- **Layouts**: Asymmetrical, overlapping, "Deconstructed" grids.
+- **Glassmorphism**: High blur, low opacity borders (`rgba(255,255,255,0.1)`).
 
-### 1. Novelty & Unconventionality
-- [ ] Does this use a standard grid? (If yes, FAIL)
-- [ ] Is the navigation a top bar? (If yes, FAIL - standard navigation is forbidden)
-- [ ] Is the layout predictable? (If yes, FAIL)
-- **Goal**: "Deconstructed", "Asymmetrical", "Organic".
+## 🕵️ Evaluation Criteria
 
-### 2. Micro-interactions
-- [ ] Does the cursor react?
-- [ ] Do elements distort/move on hover?
-- [ ] Is there fluid motion between states?
+### 1. The "Wow Factor" Check
+- [ ] Does this element do something when I hover over it?
+- [ ] Does it entrance the user or just sit there?
+- [ ] Is the animation curve "springy" (good) or linear (bad)?
 
-### 3. "The Wow Factor"
-- [ ] Is there a "Surreal" element (3D, distortion, physics)?
-- [ ] Does it feel like a website or an *experience*?
+### 2. Smoothness Check
+- [ ] No layout shifts.
+- [ ] Animations must run at 60fps.
+- [ ] Use `transform: translate3d` instead of `top/left`.
 
-## Instructions for Agent
-1. **Analyze**: Look at the proposed design or code.
-2. **Checklist**: Run through the criteria above.
-3. **Verdict**: 
-   - **PASS**: Proceed.
-   - **FAIL**: List specific reasons and 3 alternative "wilder" ideas.
+### 3. Cohesion Check
+- [ ] Are we introducing a new color? **STOP**. Use the existing palette.
+- [ ] Are we using a new font? **STOP**. Use `Space Grotesk` or `JetBrains Mono`.
+
+## 🔄 Critique Workflow
+1.  **Observe**: Look at the proposed design/code.
+2.  **Compare**: Check against the 3 criteria above.
+3.  **Refine**: If it fails "Wow Factor", suggest a stronger interaction (e.g., "Add a magnetic pull effect").
