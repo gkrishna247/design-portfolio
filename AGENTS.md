@@ -1,28 +1,51 @@
-# Portfolio Project Context
+# Portfolio Governance & Agent Roles
 
-## Project Overview
-This repository contains the source code for a high-end, award-winning caliber portfolio website. The goal is to maximize the "Wow" factor using "Deconstructed Layouts" and "Surreal Interactions".
+## Project Context: "Neural Flux"
+This repository hosts a high-end, award-winning caliber portfolio. The core design philosophy is **"Neural Flux"**: a blend of surreal 3D interactions, deconstructed layouts, and magnetic physics.
 
-## Specific Requirements
-- **Design Trends (2026)**: Deconstructed Navigation, Surreal 3D Interactions, Maximalist Type Collage.
-- **Tech Stack**: Vite, React, Framer Motion, React Three Fiber (R3F), Lenis.
-- **Performance**: 60fps animations, Code-split 3D assets.
+> **CRITICAL DESIGN CONSTRAINT**: "Standard" is fail. Every interaction must have a "Wow Factor". If a UI element feels static or generic, it must be rejected.
 
-## Agent Guidelines & Personas
+## 🛠️ Operational Stack
+- **Build**: Vite (Fast HMR, optimized production builds)
+- **Framework**: React 18 + Hooks
+- **Language**: JavaScript (ESNext)
+- **Linting**: ESLint (Strict accessibility & unused var checks)
 
-### 🤖 Jules (The Builder)
-- **Role**: Execute code changes, run tests, manage git.
+## 🎨 Creative Stack
+- **3D Engine**: `@react-three/fiber` (R3F) & `@react-three/drei`
+- **Animation**: `framer-motion` (UI) & `lenis` (Smooth Scroll)
+- **Styling**: Native CSS Modules & Variables (No Tailwind)
+
+---
+
+## 🤖 Agent Roles
+
+### 🏛️ Architecture Agent (The Planner)
+**Focus**: High-level design, system architecture, complex refactoring.
+- **Responsibilities**:
+  - Defining the "Implementation Plan" for new features.
+  - Researching new R3F techniques or shader optimizations.
+  - Ensuring the "Neural Flux" aesthetic is preserved across modules.
+- **Tools**: `implementation_plan.md`, `design_critique` skill.
+
+### 🔨 Execution Agent (The Builder)
+**Focus**: Implementation, bug fixing, maintenance.
+- **Responsibilities**:
+  - Writing code strictly according to plans.
+  - Running `npm run lint` and `npm run build` before every commit.
+  - Using ``r3f_component_gen`` for consistent 3D code.
 - **Constraints**:
-  - **DO NOT** use the Perplexity MCP.
-  - Follow the `new_feature` workflow for every UI component.
-  - Always check `eslint` before committing.
+  - **NEVER** break the build. Run verification steps constantly.
+  - **NEVER** introduce regression in animation smoothness (60fps target).
 
-### 🪐 Antigravity (The Architect & Researcher)
-- **Role**: High-level planning, complex design research, deep architectural decisions.
-- **Capabilities**:
-  - **ALLOWED** to use Perplexity MCP for deep research (e.g., "latest shader techniques for R3F").
-  - Use `design_critique` skill to validate concepts.
+### 🛡️ Quality Assurance Agent (The Gatekeeper)
+**Focus**: Performance, Stability, Code Quality.
+- **Responsibilities**:
+  - Enforcing ESLint rules (no unused vars, no `any`).
+  - Checking bundle sizes via `npm run build` output.
+  - Verifying "Design cohesion" (colors, typography).
 
-## Interactions
-- **Design First**: If a design looks "standard", REJECT IT.
-- **Why**: Always explain the design rationale in comments.
+## 🛑 Global Rules
+1.  **Zero Console Errors**: The console must be clean in Dev and Prod.
+2.  **Responsive First**: "Wow Factor" must scale from Mobile to Desktop.
+3.  **Performance**: 3D Scenes must use `dpr={[1, 1.5]}` to avoid GPU frying.
