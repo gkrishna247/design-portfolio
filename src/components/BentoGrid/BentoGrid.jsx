@@ -73,7 +73,7 @@ export default function BentoGrid() {
                 </div>
 
                 {/* Projects (Each 1x1 or 2x1) */}
-                <div className="bento-card project-header-card">
+                <div className="bento-card project-header-card" id="projects">
                     <h2 className="section-title">SELECTED WORKS_</h2>
                 </div>
 

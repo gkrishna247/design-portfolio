@@ -1,0 +1,173 @@
+.orbital-nav {
+    position: fixed;
+    top: 50%;
+    right: var(--space-8);
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Central orb button */
+.orbital-core {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-md));
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.orbital-core:hover {
+    border-color: var(--neon-violet);
+    box-shadow:
+        0 0 20px rgba(168, 85, 247, 0.4),
+        inset 0 0 20px rgba(168, 85, 247, 0.1);
+}
+
+.orbital-core-inner {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.orbital-core-icon {
+    display: block;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Animated rings */
+.orbital-core-ring {
+    position: absolute;
+    inset: -8px;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 50%;
+    animation: orbital-pulse 3s ease-in-out infinite;
+}
+
+.orbital-core-ring--2 {
+    inset: -16px;
+    animation-delay: -1.5s;
+}
+
+@keyframes orbital-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.2;
+    }
+}
+
+/* Orbital items container */
+.orbital-items {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Individual orbital item */
+.orbital-item {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-sm));
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    pointer-events: all;
+    transform: translate(-50%, -50%);
+    transition: border-color var(--duration-fast),
+        background var(--duration-fast);
+}
+
+.orbital-item:hover,
+.orbital-item.active {
+    border-color: var(--neon-violet);
+    background: rgba(168, 85, 247, 0.2);
+}
+
+.orbital-item.active {
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+.orbital-item-icon {
+    font-size: 0.9rem;
+    color: var(--neon-violet);
+}
+
+.orbital-item-label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+}
+
+/* Tooltip */
+.orbital-tooltip {
+    position: absolute;
+    right: 80px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-md));
+    border: 1px solid var(--glass-border);
+    padding: var(--space-2) var(--space-4);
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.orbital-tooltip span {
+    font-size: var(--text-xs);
+    color: var(--neon-violet);
+    letter-spacing: 0.15em;
+}
+
+/* Connection lines SVG */
+.orbital-lines {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .orbital-nav {
+        top: auto;
+        bottom: var(--space-8);
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    .orbital-core {
+        width: 50px;
+        height: 50px;
+    }
+
+    .orbital-item {
+        width: 40px;
+        height: 40px;
+    }
+
+    .orbital-tooltip {
+        display: none;
+    }
+}

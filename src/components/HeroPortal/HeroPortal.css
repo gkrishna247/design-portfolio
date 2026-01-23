@@ -1,0 +1,402 @@
+.hero-portal {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 20% 60%, rgba(34, 211, 238, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 80% 30%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+}
+
+/* Animated grid background */
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+}
+
+.hero-grid-line {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, var(--neon-violet), transparent);
+}
+
+.hero-grid-line--h {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    animation: grid-scan-h 8s ease-in-out infinite;
+}
+
+.hero-grid-line--v {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--neon-cyan), transparent);
+    animation: grid-scan-v 10s ease-in-out infinite;
+}
+
+@keyframes grid-scan-h {
+
+    0%,
+    100% {
+        transform: translateY(-50vh);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateY(50vh);
+        opacity: 1;
+    }
+}
+
+@keyframes grid-scan-v {
+
+    0%,
+    100% {
+        transform: translateX(-50vw);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateX(50vw);
+        opacity: 1;
+    }
+}
+
+/* Portal container */
+.portal-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Floating portal fragments */
+.portal-fragment {
+    position: absolute;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-sm));
+    transition: all 0.3s ease;
+}
+
+.portal-fragment--1 {
+    width: 400px;
+    height: 400px;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    top: -100px;
+    left: -200px;
+    animation: morph 15s ease-in-out infinite;
+    box-shadow:
+        0 0 60px rgba(168, 85, 247, 0.15),
+        inset 0 0 40px rgba(168, 85, 247, 0.05);
+}
+
+.portal-fragment--2 {
+    width: 300px;
+    height: 300px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    bottom: -50px;
+    right: -150px;
+    animation: morph 12s ease-in-out infinite reverse;
+    box-shadow:
+        0 0 50px rgba(34, 211, 238, 0.12),
+        inset 0 0 30px rgba(34, 211, 238, 0.05);
+}
+
+.portal-fragment--3 {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 70%);
+    animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Hero content */
+.hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: var(--space-8);
+    max-width: 900px;
+}
+
+/* Status indicator */
+.hero-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    margin-bottom: var(--space-8);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--neon-emerald);
+    border-radius: 50%;
+    animation: pulse-status 2s ease-in-out infinite;
+}
+
+@keyframes pulse-status {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+.hero-status span:last-child {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+}
+
+/* Hero name */
+.hero-name {
+    position: relative;
+    font-size: var(--text-giant);
+    font-weight: 700;
+    line-height: 0.9;
+    margin-bottom: var(--space-6);
+    letter-spacing: -0.05em;
+    /* Prevent text clipping */
+    overflow: visible;
+    white-space: nowrap;
+}
+
+.hero-name-text {
+    display: inline-block;
+    /* Ensure last character is fully visible */
+    padding-right: 0.1em;
+}
+
+/* Title with lines */
+.hero-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+.hero-title-line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-violet));
+}
+
+.hero-title-line:last-child {
+    background: linear-gradient(90deg, var(--neon-violet), transparent);
+}
+
+.hero-title {
+    font-size: var(--text-xl);
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.3em;
+}
+
+/* Description */
+.hero-description {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: var(--space-12);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-highlight {
+    color: var(--neon-violet);
+    font-weight: 500;
+}
+
+/* Action buttons */
+.hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-8);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.hero-btn--primary {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-btn--primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hero-btn--primary:hover::before {
+    opacity: 1;
+}
+
+.hero-btn--primary:hover {
+    box-shadow:
+        0 10px 40px rgba(168, 85, 247, 0.45),
+        0 0 20px rgba(168, 85, 247, 0.3);
+    transform: translateY(-2px);
+}
+
+.hero-btn--secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border-light);
+    backdrop-filter: blur(8px);
+}
+
+.hero-btn--secondary:hover {
+    border-color: var(--neon-violet);
+    background: rgba(168, 85, 247, 0.12);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+    transform: translateY(-2px);
+}
+
+.hero-btn-icon {
+    transition: transform var(--duration-normal) var(--ease-bounce);
+}
+
+.hero-btn:hover .hero-btn-icon {
+    transform: translateX(6px);
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: var(--space-12);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.scroll-indicator-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, var(--neon-violet), transparent);
+}
+
+.scroll-indicator span {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+}
+
+/* Corner decorations */
+.hero-corner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+}
+
+.hero-corner--tl {
+    top: var(--space-8);
+    left: var(--space-8);
+}
+
+.hero-corner--tr {
+    top: var(--space-8);
+    right: var(--space-8);
+    text-align: right;
+}
+
+.hero-corner--bl {
+    bottom: var(--space-8);
+    left: var(--space-8);
+}
+
+.hero-corner--br {
+    bottom: var(--space-8);
+    right: var(--space-8);
+    text-align: right;
+}
+
+.dim {
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-name {
+        font-size: var(--text-5xl);
+    }
+
+    .hero-title-container {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .hero-title-line {
+        width: 40px;
+    }
+
+    .portal-fragment--1,
+    .portal-fragment--2 {
+        display: none;
+    }
+
+    .hero-corner {
+        display: none;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
