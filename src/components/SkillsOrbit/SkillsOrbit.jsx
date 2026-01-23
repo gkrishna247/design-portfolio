@@ -170,7 +170,7 @@ export default function SkillsOrbit() {
                             <h4 className="mono">{category.name}</h4>
                         </div>
                         <div className="category-skills">
-                            {category.skills.map((skill, skillIndex) => (
+                            {category.skills.map((skill) => (
                                 <motion.span
                                     key={skill}
                                     className="skill-pill"

@@ -1,8 +1,7 @@
 import { useRef, useMemo, useEffect } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { Points, PointMaterial } from '@react-three/drei'
 import * as THREE from 'three'
-import { useTransform, motion, useMotionValue } from 'framer-motion'
 import './NeuralBackground.css'
 
 // Particle system that reacts to scroll
@@ -12,10 +11,11 @@ function NeuralParticles({ scrollProgress }) {
 
     // Generate particles in a volumetric space
     // Optimized: reduced from 3000 to 1500 particles for better performance
-    const [positions, colors] = useMemo(() => {
+    // Generate particles in a volumetric space
+    // Optimized: reduced from 3000 to 1500 particles for better performance
+    const [positions] = useMemo(() => {
         const particleCount = 1500
         const positions = new Float32Array(particleCount * 3)
-        const colors = new Float32Array(particleCount * 3)
 
         for (let i = 0; i < particleCount; i++) {
             // Distribute in 3D space with varying density
@@ -26,15 +26,9 @@ function NeuralParticles({ scrollProgress }) {
             positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta)
             positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
             positions[i * 3 + 2] = radius * Math.cos(phi)
-
-            // Color gradient from violet to cyan
-            const colorMix = Math.random()
-            colors[i * 3] = 0.4 + colorMix * 0.2     // R
-            colors[i * 3 + 1] = 0.2 + colorMix * 0.4 // G
-            colors[i * 3 + 2] = 0.9 + colorMix * 0.1 // B
         }
 
-        return [positions, colors]
+        return [positions]
     }, [])
 
     useEffect(() => {
@@ -80,7 +74,7 @@ function NeuralParticles({ scrollProgress }) {
 }
 
 // Floating orbs with glow
-function GlowingOrbs({ scrollProgress }) {
+function GlowingOrbs() {
     const groupRef = useRef()
 
     const orbs = useMemo(() => {
@@ -192,7 +186,7 @@ export default function NeuralBackground({ scrollProgress }) {
             >
                 <ambientLight intensity={0.5} />
                 <NeuralParticles scrollProgress={scrollProgress} />
-                <GlowingOrbs scrollProgress={scrollProgress} />
+                <GlowingOrbs />
                 <ConnectionLines />
             </Canvas>
 

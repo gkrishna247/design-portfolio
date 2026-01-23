@@ -127,8 +127,6 @@ function App() {
         </main>
       </AnimatePresence>
 
-      {/* Ambient sound toggle (future feature) */}
-      {/* <AmbientControl /> */}
     </div>
   )
 }

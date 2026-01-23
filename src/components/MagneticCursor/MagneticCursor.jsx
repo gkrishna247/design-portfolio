@@ -1,10 +1,9 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, useSpring, useMotionValue } from 'framer-motion'
 import './MagneticCursor.css'
 
 export default function MagneticCursor() {
     const [isHovering, setIsHovering] = useState(false)
-    const [hoverText, setHoverText] = useState('')
     const [isClicking, setIsClicking] = useState(false)
 
     const cursorX = useMotionValue(0)
@@ -39,7 +38,6 @@ export default function MagneticCursor() {
             const target = e.target.closest('[data-cursor]')
             if (target) {
                 setIsHovering(true)
-                setHoverText(target.dataset.cursorText || '')
             }
         }
 
@@ -47,7 +45,6 @@ export default function MagneticCursor() {
             const target = e.target.closest('[data-cursor]')
             if (target) {
                 setIsHovering(false)
-                setHoverText('')
             }
         }
 
