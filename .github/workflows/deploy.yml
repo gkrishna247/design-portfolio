@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Set this to your default branch name
+
+permissions:
+  contents: write # Allows the action to push to the gh-pages branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies 🔧
+        # 'npm ci' is faster and safer than 'npm install' for CI environments
+        run: npm ci
+
+      - name: Build Project 🏗️
+        # This runs "vite build" as defined in your package.json
+        run: npm run build
+
+      - name: Deploy to gh-pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # Vite builds to 'dist' by default
+          branch: gh-pages
