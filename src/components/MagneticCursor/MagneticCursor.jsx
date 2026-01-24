@@ -9,15 +9,27 @@ export default function MagneticCursor() {
     const cursorX = useMotionValue(0)
     const cursorY = useMotionValue(0)
 
-    // Spring config for smooth movement
-    const springConfig = { damping: 25, stiffness: 400, mass: 0.5 }
+    // Spring config for smooth movement - Looser for fluid feel
+    const springConfig = { damping: 20, stiffness: 300, mass: 0.5 }
     const cursorXSpring = useSpring(cursorX, springConfig)
     const cursorYSpring = useSpring(cursorY, springConfig)
 
-    // Slower spring for the trail arrow
-    const trailConfig = { damping: 30, stiffness: 150, mass: 1 }
+    // Slower spring for the trail arrow - More lag for comet effect
+    const trailConfig = { damping: 40, stiffness: 100, mass: 1.2 }
     const trailX = useSpring(cursorX, trailConfig)
     const trailY = useSpring(cursorY, trailConfig)
+
+    // Scale spring for click squish effect
+    const scale = useMotionValue(1)
+    const scaleSpring = useSpring(scale, { damping: 20, stiffness: 400 })
+
+    useEffect(() => {
+        if (isClicking) {
+            scale.set(0.8)
+        } else {
+            scale.set(1)
+        }
+    }, [isClicking, scale])
 
     useEffect(() => {
         let rafId = null
@@ -80,6 +92,7 @@ export default function MagneticCursor() {
                 style={{
                     x: cursorXSpring,
                     y: cursorYSpring,
+                    scale: scaleSpring
                 }}
             >
                 {/* Arrow SVG */}
