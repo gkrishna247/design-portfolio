@@ -37,6 +37,7 @@ This repository hosts a high-end, award-winning caliber portfolio. The core desi
 - **Constraints**:
   - **NEVER** break the build. Run verification steps constantly.
   - **NEVER** introduce regression in animation smoothness (60fps target).
+  - **ALWAYS** consult `motion_guide` for animation constants and physics.
 
 ### 🛡️ Quality Assurance Agent (The Gatekeeper)
 **Focus**: Performance, Stability, Code Quality.
@@ -44,6 +45,7 @@ This repository hosts a high-end, award-winning caliber portfolio. The core desi
   - Enforcing ESLint rules (no unused vars, no `any`).
   - Checking bundle sizes via `npm run build` output.
   - Verifying "Design cohesion" (colors, typography).
+  - **Visual QA**: Detect "Jank" or frame drops in complex scenes (mandate `motion_guide` compliance).
 
 ## 🛑 Global Rules
 1.  **Zero Console Errors**: The console must be clean in Dev and Prod.

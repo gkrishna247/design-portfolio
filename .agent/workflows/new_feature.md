@@ -17,7 +17,7 @@ description: Workflow for implementing new UI features with design review.
 
 ## 3. Technical Implementation
 - Create/Update components in `src/components/`.
-- Use **Framer Motion** for entrance/exit.
+- Use **Framer Motion** for entrance/exit (Consult `motion_guide` for transition physics).
 - Use **Lenis** if scrolling is involved.
 - Use **R3F** if 3D is needed.
 

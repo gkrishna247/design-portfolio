@@ -12,7 +12,7 @@ Use this for "Wow Factor" tuning. NO LOGIC CHANGES ALLOWED.
 
 2.  **Tuning Loop**
     *   [ ] Adjust CSS Variables (colors, spacing).
-    *   [ ] Adjust Framer Motion `spring` configs (stiffness, damping).
+    *   [ ] Adjust Framer Motion `spring` configs (Reference `motion_guide` constants).
     *   [ ] Adjust R3F `useFrame` math (rotation speeds).
 
 3.  **Critique (Self-Check)**

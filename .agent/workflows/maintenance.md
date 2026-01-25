@@ -19,6 +19,7 @@ Use this for bugs, glitches, or minor tweaks.
     *   [ ] Run `code_linter` skill.
     *   [ ] Run `build_verify` skill.
     *   [ ] **IMPORTANT**: Verify the fix didn't break 3D performance (check console for `Three.js` warnings).
+    *   [ ] **Constraint**: Does fix adhere to `motion_guide` performance rules? (No layout thrashing).
 
 4.  **Deployment**
     *   [ ] Commit with `fix: ` prefix.

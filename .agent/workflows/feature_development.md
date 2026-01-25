@@ -20,6 +20,7 @@ Use this workflow for ANY new visual component or section.
     *   [ ] Check animation smoothness (60fps).
     *   [ ] Verify "Magnetic" feel.
     *   [ ] Run `code_linter` skill (fix warnings).
+    *   [ ] Check `motion_guide` compliance (Are standard springs used?).
 
 4.  **Verification**
     *   [ ] Run `build_verify` skill (must pass build).
