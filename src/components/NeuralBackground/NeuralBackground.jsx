@@ -119,22 +119,28 @@ function GlowingOrbs() {
 function ConnectionLines() {
     const linesRef = useRef()
 
-    const linePoints = useMemo(() => {
-        const points = []
-        for (let i = 0; i < 20; i++) {
-            const startPos = new THREE.Vector3(
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 10
-            )
-            const endPos = new THREE.Vector3(
-                startPos.x + (Math.random() - 0.5) * 5,
-                startPos.y + (Math.random() - 0.5) * 5,
-                startPos.z + (Math.random() - 0.5) * 3
-            )
-            points.push(startPos, endPos)
+    const positions = useMemo(() => {
+        const lineCount = 20
+        const positions = new Float32Array(lineCount * 2 * 3) // 2 vertices per line, 3 coords per vertex
+
+        for (let i = 0; i < lineCount; i++) {
+            // Start point
+            const x = (Math.random() - 0.5) * 15
+            const y = (Math.random() - 0.5) * 15
+            const z = (Math.random() - 0.5) * 10
+
+            const idx = i * 6
+            positions[idx] = x
+            positions[idx + 1] = y
+            positions[idx + 2] = z
+
+            // End point (offset)
+            positions[idx + 3] = x + (Math.random() - 0.5) * 5
+            positions[idx + 4] = y + (Math.random() - 0.5) * 5
+            positions[idx + 5] = z + (Math.random() - 0.5) * 3
         }
-        return points
+
+        return positions
     }, [])
 
     useFrame((state) => {
@@ -144,31 +150,21 @@ function ConnectionLines() {
     })
 
     return (
-        <group ref={linesRef}>
-            {linePoints.map((_, i) => {
-                if (i % 2 !== 0) return null
-                return (
-                    <line key={i}>
-                        <bufferGeometry>
-                            <bufferAttribute
-                                attach="attributes-position"
-                                count={2}
-                                array={new Float32Array([
-                                    linePoints[i].x, linePoints[i].y, linePoints[i].z,
-                                    linePoints[i + 1].x, linePoints[i + 1].y, linePoints[i + 1].z
-                                ])}
-                                itemSize={3}
-                            />
-                        </bufferGeometry>
-                        <lineBasicMaterial
-                            color="#6366f1"
-                            transparent
-                            opacity={0.15}
-                        />
-                    </line>
-                )
-            })}
-        </group>
+        <lineSegments ref={linesRef}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={positions.length / 3}
+                    array={positions}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <lineBasicMaterial
+                color="#6366f1"
+                transparent
+                opacity={0.15}
+            />
+        </lineSegments>
     )
 }
 
