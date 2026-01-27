@@ -1,6 +1,8 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion'
 import './ProjectsConstellation.css'
+
+const DOT_COUNT = 20
 
 const projects = [
     {
@@ -137,6 +139,16 @@ export default function ProjectsConstellation() {
 
     const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
 
+    const dots = useMemo(() => {
+        return Array.from({ length: DOT_COUNT }).map((_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            duration: 3 + Math.random() * 2,
+            delay: Math.random() * 2,
+        }))
+    }, [])
+
     return (
         <div className="projects-constellation" ref={containerRef}>
             {/* Section header */}
@@ -180,22 +192,22 @@ export default function ProjectsConstellation() {
 
             {/* Background constellation dots */}
             <div className="constellation-dots">
-                {Array.from({ length: 20 }).map((_, i) => (
+                {dots.map((dot) => (
                     <motion.div
-                        key={i}
+                        key={dot.id}
                         className="constellation-dot"
                         style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
+                            left: `${dot.left}%`,
+                            top: `${dot.top}%`,
                         }}
                         animate={{
                             opacity: [0.2, 0.8, 0.2],
                             scale: [1, 1.5, 1],
                         }}
                         transition={{
-                            duration: 3 + Math.random() * 2,
+                            duration: dot.duration,
                             repeat: Infinity,
-                            delay: Math.random() * 2,
+                            delay: dot.delay,
                         }}
                     />
                 ))}
