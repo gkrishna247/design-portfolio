@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion'
 import './HeroPortal.css'
 
 // Text scramble effect hook
@@ -45,7 +45,10 @@ function useScrambleText(text, isActive) {
 
 export default function HeroPortal({ isLoaded }) {
     const containerRef = useRef(null)
-    const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
+
+    // Performance optimization: Use motion values instead of state to prevent re-renders
+    const mouseX = useMotionValue(0.5)
+    const mouseY = useMotionValue(0.5)
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -62,34 +65,38 @@ export default function HeroPortal({ isLoaded }) {
     const titleYSpring = useSpring(titleY, springConfig)
     const subtitleYSpring = useSpring(subtitleY, springConfig)
 
+    // Fragment parallax transforms based on mouse motion values
+    // Using simple linear mapping: input [0, 1] -> output [min, max]
+    const frag1X = useTransform(mouseX, [0, 1], [-15, 15])
+    const frag1Y = useTransform(mouseY, [0, 1], [-15, 15])
+
+    const frag2X = useTransform(mouseX, [0, 1], [20, -20])
+    const frag2Y = useTransform(mouseY, [0, 1], [20, -20])
+
+    const frag3X = useTransform(mouseX, [0, 1], [-10, 10])
+    const frag3Y = useTransform(mouseY, [0, 1], [10, -10])
+
     const scrambledName = useScrambleText('ALEX.DEV', isLoaded)
     const scrambledTitle = useScrambleText('AI ENGINEER', isLoaded)
 
-    // Optimized: RAF-throttled mousemove handler
+    // Optimized: Event listener using motion values directly
     useEffect(() => {
-        let rafId = null
         const handleMouseMove = (e) => {
-            if (rafId) return // Skip if already scheduled
-            rafId = requestAnimationFrame(() => {
-                if (!containerRef.current) {
-                    rafId = null
-                    return
-                }
-                const rect = containerRef.current.getBoundingClientRect()
-                setMousePosition({
-                    x: (e.clientX - rect.left) / rect.width,
-                    y: (e.clientY - rect.top) / rect.height
-                })
-                rafId = null
-            })
+            if (!containerRef.current) return
+
+            const rect = containerRef.current.getBoundingClientRect()
+            const x = (e.clientX - rect.left) / rect.width
+            const y = (e.clientY - rect.top) / rect.height
+
+            mouseX.set(x)
+            mouseY.set(y)
         }
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true })
         return () => {
             window.removeEventListener('mousemove', handleMouseMove)
-            if (rafId) cancelAnimationFrame(rafId)
         }
-    }, [])
+    }, [mouseX, mouseY])
 
     return (
         <div className="hero-portal" ref={containerRef}>
@@ -107,28 +114,23 @@ export default function HeroPortal({ isLoaded }) {
                 {/* Floating fragments */}
                 <motion.div
                     className="portal-fragment portal-fragment--1"
+                    style={{ x: frag1X, y: frag1Y }}
                     animate={{
-                        x: (mousePosition.x - 0.5) * 30,
-                        y: (mousePosition.y - 0.5) * 30,
                         rotate: [0, 5, -5, 0],
                     }}
                     transition={{ rotate: { duration: 10, repeat: Infinity } }}
                 />
                 <motion.div
                     className="portal-fragment portal-fragment--2"
+                    style={{ x: frag2X, y: frag2Y }}
                     animate={{
-                        x: (mousePosition.x - 0.5) * -40,
-                        y: (mousePosition.y - 0.5) * -40,
                         rotate: [0, -5, 5, 0],
                     }}
                     transition={{ rotate: { duration: 12, repeat: Infinity } }}
                 />
                 <motion.div
                     className="portal-fragment portal-fragment--3"
-                    animate={{
-                        x: (mousePosition.x - 0.5) * 20,
-                        y: (mousePosition.y - 0.5) * -20,
-                    }}
+                    style={{ x: frag3X, y: frag3Y }}
                 />
 
                 {/* Main content */}
