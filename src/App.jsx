@@ -43,18 +43,21 @@ function App() {
       smoothWheel: true,
     })
 
+    let rafId
+
     function raf(time) {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     }
 
-    requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf)
 
     // Set loaded state after a brief delay for entrance animation
     setTimeout(() => setIsLoaded(true), 100)
 
     return () => {
       lenis.destroy()
+      cancelAnimationFrame(rafId)
     }
   }, [])
 
