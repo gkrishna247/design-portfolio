@@ -18,15 +18,14 @@
 .arrow-icon {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
-    transition: transform 0.2s var(--ease-elastic), filter 0.2s;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+    /* No transitions - Framer Motion handles animation */
 }
 
 .arrow-main {
     fill: white;
     stroke: rgba(168, 85, 247, 0.8);
     stroke-width: 1;
-    transition: fill 0.2s, stroke 0.2s;
 }
 
 .arrow-fill {
@@ -38,42 +37,41 @@
     position: absolute;
     top: 6px;
     left: 6px;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: radial-gradient(circle,
             rgba(168, 85, 247, 0.6) 0%,
+            rgba(139, 92, 246, 0.3) 50%,
             transparent 70%);
     border-radius: 50%;
     opacity: 0.8;
-    transition: transform 0.3s, opacity 0.3s;
     pointer-events: none;
+    /* Removed blur filter for performance */
 }
 
-/* Hover state */
+/* Hover state - simplified for performance */
 .cursor-arrow.hovering .arrow-icon {
-    transform: scale(1.2) rotate(-10deg);
+    transform: scale(1.15) rotate(-8deg);
 }
 
 .cursor-arrow.hovering .arrow-main {
     fill: var(--neon-violet);
     stroke: white;
-    stroke-width: 1.5;
 }
 
 .cursor-arrow.hovering .arrow-glow {
-    transform: scale(3);
-    opacity: 0.5;
+    transform: scale(2);
+    opacity: 0.6;
 }
 
 /* Click state */
 .cursor-arrow.clicking .arrow-icon {
-    transform: scale(0.85);
+    transform: scale(0.9);
 }
 
 .cursor-arrow.clicking .arrow-main {
     fill: var(--neon-cyan);
     stroke: white;
-    filter: brightness(1.2);
 }
 
 /* === Trail Arrow (Ghost) === */
@@ -102,12 +100,13 @@
 }
 
 .cursor-arrow-trail.hovering {
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .cursor-arrow-trail.hovering .arrow-trail-path {
     stroke: var(--neon-cyan);
-    stroke-width: 2;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.5));
 }
 
 /* === Hover Ring === */
@@ -134,15 +133,16 @@
 .cursor-ring.hovering {
     width: 90px;
     height: 90px;
-    border-color: rgba(168, 85, 247, 0.5);
-    background: rgba(168, 85, 247, 0.05);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    border-color: rgba(168, 85, 247, 0.6);
+    background: rgba(168, 85, 247, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-width: 2px;
     opacity: 1;
     box-shadow:
-        0 0 20px rgba(168, 85, 247, 0.3),
-        inset 0 0 20px rgba(168, 85, 247, 0.1);
+        0 0 30px rgba(168, 85, 247, 0.45),
+        0 0 60px rgba(139, 92, 246, 0.25),
+        inset 0 0 30px rgba(168, 85, 247, 0.15);
 }
 
 /* === Hover Label === */

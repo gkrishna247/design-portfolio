@@ -8,11 +8,13 @@ export default defineConfig({
 
   plugins: [react()],
   build: {
+    target: 'es2020', // Modern browsers for smaller bundle
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
       }
     },
     rollupOptions: {
@@ -24,7 +26,7 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 600
+    chunkSizeWarningLimit: 1000 // Three.js is large by nature
   },
   esbuild: {
     legalComments: 'none'

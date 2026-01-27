@@ -400,36 +400,50 @@ a:focus-visible {
   }
 }
 
-/* === GLOW EFFECTS - Enhanced === */
+/* === GLOW EFFECTS - Enhanced v2.0 === */
 .glow-violet {
   box-shadow:
-    0 0 20px rgba(168, 85, 247, 0.35),
-    0 0 40px rgba(168, 85, 247, 0.2),
-    0 0 60px rgba(168, 85, 247, 0.1),
-    inset 0 0 60px rgba(168, 85, 247, 0.08);
+    0 0 25px rgba(168, 85, 247, 0.5),
+    0 0 50px rgba(168, 85, 247, 0.35),
+    0 0 80px rgba(168, 85, 247, 0.2),
+    0 0 120px rgba(168, 85, 247, 0.1),
+    inset 0 0 60px rgba(168, 85, 247, 0.12);
 }
 
 .glow-cyan {
   box-shadow:
-    0 0 20px rgba(34, 211, 238, 0.35),
-    0 0 40px rgba(34, 211, 238, 0.2),
-    0 0 60px rgba(34, 211, 238, 0.1),
-    inset 0 0 60px rgba(34, 211, 238, 0.08);
+    0 0 25px rgba(34, 211, 238, 0.5),
+    0 0 50px rgba(34, 211, 238, 0.35),
+    0 0 80px rgba(34, 211, 238, 0.2),
+    0 0 120px rgba(34, 211, 238, 0.1),
+    inset 0 0 60px rgba(34, 211, 238, 0.12);
 }
 
 .glow-pink {
   box-shadow:
-    0 0 20px rgba(236, 72, 153, 0.35),
-    0 0 40px rgba(236, 72, 153, 0.2),
-    0 0 60px rgba(236, 72, 153, 0.1),
-    inset 0 0 60px rgba(236, 72, 153, 0.08);
+    0 0 25px rgba(236, 72, 153, 0.5),
+    0 0 50px rgba(236, 72, 153, 0.35),
+    0 0 80px rgba(236, 72, 153, 0.2),
+    0 0 120px rgba(236, 72, 153, 0.1),
+    inset 0 0 60px rgba(236, 72, 153, 0.12);
 }
 
 .glow-multi {
   box-shadow:
-    0 0 15px rgba(168, 85, 247, 0.3),
-    0 0 30px rgba(59, 130, 246, 0.2),
-    0 0 45px rgba(34, 211, 238, 0.15);
+    0 0 25px rgba(168, 85, 247, 0.45),
+    0 0 50px rgba(59, 130, 246, 0.35),
+    0 0 80px rgba(34, 211, 238, 0.25),
+    0 0 120px rgba(168, 85, 247, 0.15);
+}
+
+/* Intense glow for high-impact elements */
+.glow-intense {
+  box-shadow:
+    0 0 30px rgba(168, 85, 247, 0.7),
+    0 0 60px rgba(168, 85, 247, 0.5),
+    0 0 100px rgba(139, 92, 246, 0.4),
+    0 0 150px rgba(168, 85, 247, 0.25),
+    inset 0 0 80px rgba(168, 85, 247, 0.15);
 }
 
 /* === HOVER GLOW BORDER === */

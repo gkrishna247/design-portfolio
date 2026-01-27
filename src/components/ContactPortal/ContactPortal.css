@@ -15,9 +15,9 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 800px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 60%);
+    width: 900px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(139, 92, 246, 0.08) 40%, transparent 60%);
     pointer-events: none;
     filter: blur(80px);
 }
@@ -96,8 +96,10 @@
 
 .contact-cta:hover {
     box-shadow:
-        0 20px 60px rgba(168, 85, 247, 0.4),
-        0 0 100px rgba(168, 85, 247, 0.2);
+        0 25px 70px rgba(168, 85, 247, 0.55),
+        0 0 50px rgba(168, 85, 247, 0.4),
+        0 0 100px rgba(139, 92, 246, 0.25);
+    transform: translateY(-3px);
 }
 
 .cta-text {
@@ -142,7 +144,8 @@
 .contact-link:hover,
 .contact-link.active {
     border-color: var(--link-color);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 25px color-mix(in srgb, var(--link-color) 20%, transparent);
 }
 
 .link-icon-container {

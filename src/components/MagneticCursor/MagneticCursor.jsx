@@ -1,21 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import { motion, useSpring, useMotionValue } from 'framer-motion'
 import './MagneticCursor.css'
 
 export default function MagneticCursor() {
-    const [isHovering, setIsHovering] = useState(false)
-    const [isClicking, setIsClicking] = useState(false)
+    // Use refs for hover/click state to avoid re-renders
+    const arrowRef = useRef(null)
+    const trailRef = useRef(null)
+    const rafIdRef = useRef(null)
 
     const cursorX = useMotionValue(0)
     const cursorY = useMotionValue(0)
 
-    // Spring config for smooth movement - Looser for fluid feel
-    const springConfig = { damping: 20, stiffness: 300, mass: 0.5 }
+    // Optimized spring config per motion_guide - MAGNETIC preset
+    const springConfig = useMemo(() => ({
+        damping: 15,
+        stiffness: 150,
+        mass: 0.1,
+        restDelta: 0.001
+    }), [])
+
     const cursorXSpring = useSpring(cursorX, springConfig)
     const cursorYSpring = useSpring(cursorY, springConfig)
 
-    // Slower spring for the trail arrow - More lag for comet effect
-    const trailConfig = { damping: 40, stiffness: 100, mass: 1.2 }
+    // Lighter trail config - faster response
+    const trailConfig = useMemo(() => ({
+        damping: 25,
+        stiffness: 80,
+        mass: 0.3,
+        restDelta: 0.001
+    }), [])
+
     const trailX = useSpring(cursorX, trailConfig)
     const trailY = useSpring(cursorY, trailConfig)
 
@@ -23,48 +37,49 @@ export default function MagneticCursor() {
     const scale = useMotionValue(1)
     const scaleSpring = useSpring(scale, { damping: 20, stiffness: 400 })
 
+    // Memoized cursor move handler using refs to avoid re-renders
+    const moveCursor = useCallback((e) => {
+        if (rafIdRef.current) return
+        rafIdRef.current = requestAnimationFrame(() => {
+            cursorX.set(e.clientX)
+            cursorY.set(e.clientY)
+            rafIdRef.current = null
+        })
+    }, [cursorX, cursorY])
+
+    // Handle hover/click via class manipulation (no re-renders)
+    const handleMouseDown = useCallback(() => {
+        scale.set(0.8)
+        arrowRef.current?.classList.add('clicking')
+    }, [scale])
+
+    const handleMouseUp = useCallback(() => {
+        scale.set(1)
+        arrowRef.current?.classList.remove('clicking')
+    }, [scale])
+
+    const handleMouseOver = useCallback((e) => {
+        const target = e.target.closest('[data-cursor]')
+        if (target) {
+            arrowRef.current?.classList.add('hovering')
+            trailRef.current?.classList.add('hovering')
+        }
+    }, [])
+
+    const handleMouseOut = useCallback((e) => {
+        const target = e.target.closest('[data-cursor]')
+        if (target) {
+            arrowRef.current?.classList.remove('hovering')
+            trailRef.current?.classList.remove('hovering')
+        }
+    }, [])
+
     useEffect(() => {
-        if (isClicking) {
-            scale.set(0.8)
-        } else {
-            scale.set(1)
-        }
-    }, [isClicking, scale])
-
-    useEffect(() => {
-        let rafId = null
-
-        const moveCursor = (e) => {
-            if (rafId) return
-            rafId = requestAnimationFrame(() => {
-                cursorX.set(e.clientX)
-                cursorY.set(e.clientY)
-                rafId = null
-            })
-        }
-
-        const handleMouseDown = () => setIsClicking(true)
-        const handleMouseUp = () => setIsClicking(false)
-
-        const handleMouseOver = (e) => {
-            const target = e.target.closest('[data-cursor]')
-            if (target) {
-                setIsHovering(true)
-            }
-        }
-
-        const handleMouseOut = (e) => {
-            const target = e.target.closest('[data-cursor]')
-            if (target) {
-                setIsHovering(false)
-            }
-        }
-
         window.addEventListener('mousemove', moveCursor, { passive: true })
-        window.addEventListener('mousedown', handleMouseDown)
-        window.addEventListener('mouseup', handleMouseUp)
-        document.addEventListener('mouseover', handleMouseOver)
-        document.addEventListener('mouseout', handleMouseOut)
+        window.addEventListener('mousedown', handleMouseDown, { passive: true })
+        window.addEventListener('mouseup', handleMouseUp, { passive: true })
+        document.addEventListener('mouseover', handleMouseOver, { passive: true })
+        document.addEventListener('mouseout', handleMouseOut, { passive: true })
 
         return () => {
             window.removeEventListener('mousemove', moveCursor)
@@ -72,9 +87,9 @@ export default function MagneticCursor() {
             window.removeEventListener('mouseup', handleMouseUp)
             document.removeEventListener('mouseover', handleMouseOver)
             document.removeEventListener('mouseout', handleMouseOut)
-            if (rafId) cancelAnimationFrame(rafId)
+            if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current)
         }
-    }, [cursorX, cursorY])
+    }, [moveCursor, handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut])
 
     // Hide on touch devices
     const [isTouchDevice, setIsTouchDevice] = useState(false)
@@ -88,7 +103,8 @@ export default function MagneticCursor() {
         <>
             {/* Main Arrow Cursor */}
             <motion.div
-                className={`cursor-arrow ${isHovering ? 'hovering' : ''} ${isClicking ? 'clicking' : ''}`}
+                ref={arrowRef}
+                className="cursor-arrow"
                 style={{
                     x: cursorXSpring,
                     y: cursorYSpring,
@@ -103,10 +119,6 @@ export default function MagneticCursor() {
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <path
-                        d="M5.5 3.21V20.8C5.5 21.86 6.72 22.46 7.55 21.79L12.32 17.95L18.16 21.17C18.88 21.56 19.77 21.07 19.9 20.25L22.39 4.54C22.55 3.51 21.46 2.73 20.52 3.18L6.56 9.81"
-                        className="arrow-fill"
-                    />
-                    <path
                         d="M4 2L20 12L12 14L8 22L4 2Z"
                         className="arrow-main"
                     />
@@ -118,7 +130,8 @@ export default function MagneticCursor() {
 
             {/* Trail Arrow (follows with delay) */}
             <motion.div
-                className={`cursor-arrow-trail ${isHovering ? 'hovering' : ''}`}
+                ref={trailRef}
+                className="cursor-arrow-trail"
                 style={{
                     x: trailX,
                     y: trailY,
@@ -136,7 +149,6 @@ export default function MagneticCursor() {
                     />
                 </svg>
             </motion.div>
-
         </>
     )
 }
