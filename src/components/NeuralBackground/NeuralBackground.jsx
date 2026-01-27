@@ -128,29 +128,7 @@ function GlowingOrbs() {
 function ConnectionLines() {
     const linesRef = useRef()
 
-    const positions = useMemo(() => {
-        const lineCount = 20
-        const positions = new Float32Array(lineCount * 2 * 3) // 2 vertices per line, 3 coords per vertex
-
-        for (let i = 0; i < lineCount; i++) {
-            // Start point
-            const x = (Math.random() - 0.5) * 15
-            const y = (Math.random() - 0.5) * 15
-            const z = (Math.random() - 0.5) * 10
-
-            const idx = i * 6
-            positions[idx] = x
-            positions[idx + 1] = y
-            positions[idx + 2] = z
-
-            // End point (offset)
-            positions[idx + 3] = x + (Math.random() - 0.5) * 5
-            positions[idx + 4] = y + (Math.random() - 0.5) * 5
-            positions[idx + 5] = z + (Math.random() - 0.5) * 3
-        }
-
-        return positions
-    // Optimized: Use single buffer geometry for all lines instead of multiple line objects
+    // Optimized: Use single buffer geometry for all lines
     const geometry = useMemo(() => {
         const points = []
         for (let i = 0; i < 20; i++) {
@@ -180,15 +158,6 @@ function ConnectionLines() {
     })
 
     return (
-        <lineSegments ref={linesRef}>
-            <bufferGeometry>
-                <bufferAttribute
-                    attach="attributes-position"
-                    count={positions.length / 3}
-                    array={positions}
-                    itemSize={3}
-                />
-            </bufferGeometry>
         <lineSegments ref={linesRef} geometry={geometry}>
             <lineBasicMaterial
                 color="#6366f1"
@@ -198,6 +167,7 @@ function ConnectionLines() {
         </lineSegments>
     )
 }
+
 
 function NeuralBackground({ scrollProgress }) {
     return (
