@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from 'react'
+import React, { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Points, PointMaterial } from '@react-three/drei'
 import * as THREE from 'three'
@@ -9,8 +9,6 @@ function NeuralParticles({ scrollProgress }) {
     const ref = useRef()
     const mouseRef = useRef({ x: 0, y: 0 })
 
-    // Generate particles in a volumetric space
-    // Optimized: reduced from 3000 to 1500 particles for better performance
     // Generate particles in a volumetric space
     // Optimized: reduced from 3000 to 1500 particles for better performance
     const [positions] = useMemo(() => {
@@ -77,32 +75,43 @@ function NeuralParticles({ scrollProgress }) {
 function GlowingOrbs() {
     const groupRef = useRef()
 
+    // Shared geometry for better performance
+    const geometry = useMemo(() => new THREE.IcosahedronGeometry(1, 1), [])
+
     const orbs = useMemo(() => {
         return Array.from({ length: 5 }, (_, i) => ({
-            position: [
+            initialPosition: [
                 (Math.random() - 0.5) * 10,
                 (Math.random() - 0.5) * 10,
                 (Math.random() - 0.5) * 5
             ],
             scale: 0.3 + Math.random() * 0.5,
-            color: [`#a855f7`, `#3b82f6`, `#22d3ee`, `#ec4899`, `#10b981`][i]
+            color: [`#a855f7`, `#3b82f6`, `#22d3ee`, `#ec4899`, `#10b981`][i],
+            phase: Math.random() * Math.PI * 2
         }))
     }, [])
 
     useFrame((state, delta) => {
         if (!groupRef.current) return
-        groupRef.current.children.forEach((orb, i) => {
-            orb.position.y += Math.sin(state.clock.elapsedTime + i) * 0.003
-            orb.rotation.x += delta * 0.2
-            orb.rotation.y += delta * 0.3
+        groupRef.current.children.forEach((orbMesh, i) => {
+            const orbData = orbs[i]
+            // Optimized: Use absolute time for stable oscillation instead of accumulation
+            orbMesh.position.y = orbData.initialPosition[1] + Math.sin(state.clock.elapsedTime + orbData.phase) * 0.5
+
+            orbMesh.rotation.x += delta * 0.2
+            orbMesh.rotation.y += delta * 0.3
         })
     })
 
     return (
         <group ref={groupRef}>
             {orbs.map((orb, i) => (
-                <mesh key={i} position={orb.position}>
-                    <icosahedronGeometry args={[orb.scale, 1]} />
+                <mesh
+                    key={i}
+                    position={orb.initialPosition}
+                    scale={[orb.scale, orb.scale, orb.scale]}
+                    geometry={geometry}
+                >
                     <meshBasicMaterial
                         color={orb.color}
                         transparent
@@ -141,6 +150,27 @@ function ConnectionLines() {
         }
 
         return positions
+    // Optimized: Use single buffer geometry for all lines instead of multiple line objects
+    const geometry = useMemo(() => {
+        const points = []
+        for (let i = 0; i < 20; i++) {
+            const startPos = new THREE.Vector3(
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 10
+            )
+            const endPos = new THREE.Vector3(
+                startPos.x + (Math.random() - 0.5) * 5,
+                startPos.y + (Math.random() - 0.5) * 5,
+                startPos.z + (Math.random() - 0.5) * 3
+            )
+            points.push(startPos.x, startPos.y, startPos.z)
+            points.push(endPos.x, endPos.y, endPos.z)
+        }
+
+        const geo = new THREE.BufferGeometry()
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(points, 3))
+        return geo
     }, [])
 
     useFrame((state) => {
@@ -159,6 +189,7 @@ function ConnectionLines() {
                     itemSize={3}
                 />
             </bufferGeometry>
+        <lineSegments ref={linesRef} geometry={geometry}>
             <lineBasicMaterial
                 color="#6366f1"
                 transparent
@@ -168,7 +199,7 @@ function ConnectionLines() {
     )
 }
 
-export default function NeuralBackground({ scrollProgress }) {
+function NeuralBackground({ scrollProgress }) {
     return (
         <div className="neural-background">
             <Canvas
@@ -195,3 +226,6 @@ export default function NeuralBackground({ scrollProgress }) {
         </div>
     )
 }
+
+// Optimized: prevent re-renders on parent updates
+export default React.memo(NeuralBackground)

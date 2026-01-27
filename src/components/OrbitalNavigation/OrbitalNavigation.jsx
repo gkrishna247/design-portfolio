@@ -9,7 +9,13 @@ const navItems = [
     { id: 'skills', label: '04', fullLabel: 'ARSENAL', icon: '⬡' },
     { id: 'experience', label: '05', fullLabel: 'TIMELINE', icon: '◎' },
     { id: 'contact', label: '06', fullLabel: 'CONNECT', icon: '◉' },
-]
+].map((item, index) => {
+    const angle = (index * 60) - 90 // Start from top
+    const radius = 100 // Distance from center
+    const x = Math.cos((angle * Math.PI) / 180) * radius
+    const y = Math.sin((angle * Math.PI) / 180) * radius
+    return { ...item, x, y }
+})
 
 export default function OrbitalNavigation({ activeSection, scrollProgress }) {
     const [isExpanded, setIsExpanded] = useState(false)
@@ -68,10 +74,6 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
                 {isExpanded && (
                     <div className="orbital-items">
                         {navItems.map((item, index) => {
-                            const angle = (index * 60) - 90 // Start from top
-                            const radius = 100 // Distance from center
-                            const x = Math.cos((angle * Math.PI) / 180) * radius
-                            const y = Math.sin((angle * Math.PI) / 180) * radius
                             const isActive = activeSection === item.id
 
                             return (
@@ -82,8 +84,8 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
                                     animate={{
                                         opacity: 1,
                                         scale: 1,
-                                        x,
-                                        y,
+                                        x: item.x,
+                                        y: item.y,
                                         transition: { delay: index * 0.05, type: 'spring' }
                                     }}
                                     exit={{
@@ -128,16 +130,13 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
             {isExpanded && (
                 <svg className="orbital-lines" width="240" height="240" viewBox="-120 -120 240 240">
                     {navItems.map((item, index) => {
-                        const angle = (index * 60) - 90
-                        const x = Math.cos((angle * Math.PI) / 180) * 100
-                        const y = Math.sin((angle * Math.PI) / 180) * 100
                         return (
                             <motion.line
                                 key={item.id}
                                 x1="0"
                                 y1="0"
-                                x2={x}
-                                y2={y}
+                                x2={item.x}
+                                y2={item.y}
                                 stroke="rgba(168, 85, 247, 0.3)"
                                 strokeWidth="1"
                                 initial={{ pathLength: 0 }}
