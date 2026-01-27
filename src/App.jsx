@@ -1,17 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
 
-// Components
-import NeuralBackground from './components/NeuralBackground/NeuralBackground'
+// Eagerly loaded components (above the fold / critical path)
 import MagneticCursor from './components/MagneticCursor/MagneticCursor'
 import OrbitalNavigation from './components/OrbitalNavigation/OrbitalNavigation'
 import HeroPortal from './components/HeroPortal/HeroPortal'
-import FloatingIdentity from './components/FloatingIdentity/FloatingIdentity'
-import ProjectsConstellation from './components/ProjectsConstellation/ProjectsConstellation'
-import SkillsOrbit from './components/SkillsOrbit/SkillsOrbit'
-import ExperienceTimeline from './components/ExperienceTimeline/ExperienceTimeline'
-import ContactPortal from './components/ContactPortal/ContactPortal'
+
+// Lazy loaded components (deferred loading for better initial performance)
+const NeuralBackground = lazy(() => import('./components/NeuralBackground/NeuralBackground'))
+const FloatingIdentity = lazy(() => import('./components/FloatingIdentity/FloatingIdentity'))
+const ProjectsConstellation = lazy(() => import('./components/ProjectsConstellation/ProjectsConstellation'))
+const SkillsOrbit = lazy(() => import('./components/SkillsOrbit/SkillsOrbit'))
+const ExperienceTimeline = lazy(() => import('./components/ExperienceTimeline/ExperienceTimeline'))
+const ContactPortal = lazy(() => import('./components/ContactPortal/ContactPortal'))
 
 // Styles
 import './styles/index.css'
@@ -89,41 +91,46 @@ function App() {
         style={{ scaleX: smoothProgress }}
       />
 
-      {/* Neural background - reactive to scroll */}
-      <NeuralBackground scrollProgress={smoothProgress} />
+      {/* Neural background - reactive to scroll (lazy loaded - Three.js heavy) */}
+      <Suspense fallback={null}>
+        <NeuralBackground scrollProgress={smoothProgress} />
+      </Suspense>
 
       {/* Main content sections */}
       <AnimatePresence mode="sync">
         <main className="neural-flux-main">
-          {/* Hero Portal - The grand entrance */}
+          {/* Hero Portal - The grand entrance (eagerly loaded) */}
           <section id="hero" className="section-hero">
             <HeroPortal isLoaded={isLoaded} />
           </section>
 
-          {/* Floating Identity - About section */}
-          <section id="about" className="section-about">
-            <FloatingIdentity />
-          </section>
+          {/* Below-the-fold sections - lazy loaded for faster initial paint */}
+          <Suspense fallback={null}>
+            {/* Floating Identity - About section */}
+            <section id="about" className="section-about">
+              <FloatingIdentity />
+            </section>
 
-          {/* Projects Constellation */}
-          <section id="projects" className="section-projects">
-            <ProjectsConstellation />
-          </section>
+            {/* Projects Constellation */}
+            <section id="projects" className="section-projects">
+              <ProjectsConstellation />
+            </section>
 
-          {/* Skills Orbit */}
-          <section id="skills" className="section-skills">
-            <SkillsOrbit />
-          </section>
+            {/* Skills Orbit */}
+            <section id="skills" className="section-skills">
+              <SkillsOrbit />
+            </section>
 
-          {/* Experience Timeline */}
-          <section id="experience" className="section-experience">
-            <ExperienceTimeline />
-          </section>
+            {/* Experience Timeline */}
+            <section id="experience" className="section-experience">
+              <ExperienceTimeline />
+            </section>
 
-          {/* Contact Portal */}
-          <section id="contact" className="section-contact">
-            <ContactPortal />
-          </section>
+            {/* Contact Portal */}
+            <section id="contact" className="section-contact">
+              <ContactPortal />
+            </section>
+          </Suspense>
         </main>
       </AnimatePresence>
 

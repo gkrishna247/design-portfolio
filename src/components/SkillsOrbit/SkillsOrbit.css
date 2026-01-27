@@ -117,12 +117,12 @@
     0%,
     100% {
         transform: scale(1);
-        opacity: 0.5;
+        opacity: 0.6;
     }
 
     50% {
-        transform: scale(1.1);
-        opacity: 0.2;
+        transform: scale(1.15);
+        opacity: 0.25;
     }
 }
 
@@ -216,7 +216,10 @@
 
 .skills-list-category:hover {
     border-color: var(--category-color);
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow:
+        0 0 25px color-mix(in srgb, var(--category-color) 25%, transparent),
+        0 0 50px color-mix(in srgb, var(--category-color) 10%, transparent);
 }
 
 .category-header {
@@ -257,7 +260,8 @@
 
 .skill-pill:hover {
     border-color: var(--category-color);
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(168, 85, 247, 0.15);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--category-color) 25%, transparent);
 }
 
 /* Responsive */
