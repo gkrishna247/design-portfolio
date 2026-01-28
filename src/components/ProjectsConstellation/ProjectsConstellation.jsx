@@ -51,9 +51,15 @@ const projects = [
     },
 ]
 
-const ProjectCard = memo(function ProjectCard({ project, index, isActive, onClick }) {
+const ProjectCard = memo(function ProjectCard({ project, index, isActive, onToggle }) {
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
+
+    // Optimization: Memoize style object to prevent re-renders
+    const style = useMemo(() => ({ '--project-color': project.color }), [project.color])
+    
+    // Optimization: Stable callback for click handler
+    const handleClick = useCallback(() => onToggle(project.id), [onToggle, project.id])
 
     return (
         <motion.div
@@ -70,8 +76,8 @@ const ProjectCard = memo(function ProjectCard({ project, index, isActive, onClic
                 y: -10,
                 transition: { duration: 0.3 }
             }}
-            onClick={() => onClick(project.id)}
-            style={{ '--project-color': project.color }}
+            onClick={handleClick}
+            style={style}
             data-cursor
             data-cursor-text="VIEW"
         >
@@ -149,8 +155,8 @@ export default function ProjectsConstellation() {
         }))
     }, [])
 
-    const handleProjectClick = useCallback((id) => {
-        setActiveProject(prevId => (prevId === id ? null : id))
+    const handleProjectToggle = useCallback((id) => {
+        setActiveProject(prev => prev === id ? null : id)
     }, [])
 
     return (
@@ -187,7 +193,7 @@ export default function ProjectsConstellation() {
                         project={project}
                         index={index}
                         isActive={activeProject === project.id}
-                        onClick={handleProjectClick}
+                        onToggle={handleProjectToggle}
                     />
                 ))}
             </div>
