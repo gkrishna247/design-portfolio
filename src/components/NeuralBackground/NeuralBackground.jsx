@@ -1,21 +1,25 @@
-import React, { useRef, useMemo, useEffect } from 'react'
+import React, { useRef, useMemo, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Points, PointMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 import './NeuralBackground.css'
 
+// Particle counts - responsive for mobile performance
+const PARTICLE_COUNT_DESKTOP = 1500
+const PARTICLE_COUNT_MOBILE = 500
+
 // Particle system that reacts to scroll
-function NeuralParticles({ scrollProgress }) {
+function NeuralParticles({ scrollProgress, particleCount }) {
     const ref = useRef()
     const mouseRef = useRef({ x: 0, y: 0 })
+    const lastMouseUpdate = useRef(0)
 
     // Generate particles in a volumetric space
-    // Optimized: reduced from 3000 to 1500 particles for better performance
     const [positions] = useMemo(() => {
-        const particleCount = 1500
-        const positions = new Float32Array(particleCount * 3)
+        const count = particleCount
+        const positions = new Float32Array(count * 3)
 
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < count; i++) {
             // Distribute in 3D space with varying density
             const theta = Math.random() * Math.PI * 2
             const phi = Math.acos((Math.random() * 2) - 1)
@@ -27,16 +31,21 @@ function NeuralParticles({ scrollProgress }) {
         }
 
         return [positions]
-    }, [])
+    }, [particleCount])
 
     useEffect(() => {
+        // Throttled mouse handler - max 60fps (16.67ms)
         const handleMouseMove = (e) => {
+            const now = performance.now()
+            if (now - lastMouseUpdate.current < 16.67) return
+            lastMouseUpdate.current = now
+
             mouseRef.current = {
                 x: (e.clientX / window.innerWidth) * 2 - 1,
                 y: -(e.clientY / window.innerHeight) * 2 + 1
             }
         }
-        window.addEventListener('mousemove', handleMouseMove)
+        window.addEventListener('mousemove', handleMouseMove, { passive: true })
         return () => window.removeEventListener('mousemove', handleMouseMove)
     }, [])
 
@@ -170,6 +179,17 @@ function ConnectionLines() {
 
 
 function NeuralBackground({ scrollProgress }) {
+    // Responsive particle count for mobile performance
+    const [particleCount, setParticleCount] = useState(PARTICLE_COUNT_DESKTOP)
+
+    useEffect(() => {
+        const mobileQuery = window.matchMedia('(max-width: 768px)')
+        const handleChange = (e) => setParticleCount(e.matches ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT_DESKTOP)
+        handleChange(mobileQuery)
+        mobileQuery.addEventListener('change', handleChange)
+        return () => mobileQuery.removeEventListener('change', handleChange)
+    }, [])
+
     return (
         <div className="neural-background">
             <Canvas
@@ -182,7 +202,7 @@ function NeuralBackground({ scrollProgress }) {
                 }}
             >
                 <ambientLight intensity={0.5} />
-                <NeuralParticles scrollProgress={scrollProgress} />
+                <NeuralParticles scrollProgress={scrollProgress} particleCount={particleCount} />
                 <GlowingOrbs />
                 <ConnectionLines />
             </Canvas>

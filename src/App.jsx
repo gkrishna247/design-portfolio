@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, lazy, Suspense } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense, useMemo } from 'react'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
 
@@ -6,6 +6,7 @@ import Lenis from 'lenis'
 import MagneticCursor from './components/MagneticCursor/MagneticCursor'
 import OrbitalNavigation from './components/OrbitalNavigation/OrbitalNavigation'
 import HeroPortal from './components/HeroPortal/HeroPortal'
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 
 // Lazy loaded components (deferred loading for better initial performance)
 const NeuralBackground = lazy(() => import('./components/NeuralBackground/NeuralBackground'))
@@ -24,23 +25,31 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
 
+  // Detect reduced motion preference for accessibility
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  }, [])
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   })
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  })
+  // Reduce spring intensity for users who prefer reduced motion
+  const springConfig = prefersReducedMotion
+    ? { stiffness: 300, damping: 50, restDelta: 0.01 }
+    : { stiffness: 100, damping: 30, restDelta: 0.001 }
+
+  const smoothProgress = useSpring(scrollYProgress, springConfig)
 
   useEffect(() => {
     // Lenis smooth scroll initialization
+    // Reduce scroll smoothness for accessibility
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: prefersReducedMotion ? 0.5 : 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
+      smoothWheel: !prefersReducedMotion,
     })
 
     let rafId
@@ -52,14 +61,26 @@ function App() {
 
     rafId = requestAnimationFrame(raf)
 
-    // Set loaded state after a brief delay for entrance animation
+    /**
+     * FOUC Prevention Delay
+     * 
+     * This 100ms delay is intentional and necessary:
+     * 1. Lenis needs time to attach scroll listeners and calculate dimensions
+     * 2. React needs to complete hydration before entrance animations
+     * 3. Prevents flash of unstyled content during initial render
+     * 
+     * Alternatives considered:
+     * - requestIdleCallback: Not supported in Safari
+     * - document.readyState: Fires before layout stabilizes
+     * - Removing delay: Causes visible content flash
+     */
     setTimeout(() => setIsLoaded(true), 100)
 
     return () => {
       lenis.destroy()
       cancelAnimationFrame(rafId)
     }
-  }, [])
+  }, [prefersReducedMotion])
 
   // Update active section based on scroll
   useEffect(() => {
@@ -92,12 +113,16 @@ function App() {
       <motion.div
         className="scroll-progress-bar"
         style={{ scaleX: smoothProgress }}
+        role="progressbar"
+        aria-label="Page scroll progress"
       />
 
       {/* Neural background - reactive to scroll (lazy loaded - Three.js heavy) */}
-      <Suspense fallback={null}>
-        <NeuralBackground scrollProgress={smoothProgress} />
-      </Suspense>
+      <ErrorBoundary fallbackMessage="3D background failed to load.">
+        <Suspense fallback={null}>
+          <NeuralBackground scrollProgress={smoothProgress} />
+        </Suspense>
+      </ErrorBoundary>
 
       {/* Main content sections */}
       <AnimatePresence mode="sync">
@@ -108,32 +133,34 @@ function App() {
           </section>
 
           {/* Below-the-fold sections - lazy loaded for faster initial paint */}
-          <Suspense fallback={null}>
-            {/* Floating Identity - About section */}
-            <section id="about" className="section-about">
-              <FloatingIdentity />
-            </section>
+          <ErrorBoundary fallbackMessage="Content failed to load. Please refresh.">
+            <Suspense fallback={null}>
+              {/* Floating Identity - About section */}
+              <section id="about" className="section-about">
+                <FloatingIdentity />
+              </section>
 
-            {/* Projects Constellation */}
-            <section id="projects" className="section-projects">
-              <ProjectsConstellation />
-            </section>
+              {/* Projects Constellation */}
+              <section id="projects" className="section-projects">
+                <ProjectsConstellation />
+              </section>
 
-            {/* Skills Orbit */}
-            <section id="skills" className="section-skills">
-              <SkillsOrbit />
-            </section>
+              {/* Skills Orbit */}
+              <section id="skills" className="section-skills">
+                <SkillsOrbit />
+              </section>
 
-            {/* Experience Timeline */}
-            <section id="experience" className="section-experience">
-              <ExperienceTimeline />
-            </section>
+              {/* Experience Timeline */}
+              <section id="experience" className="section-experience">
+                <ExperienceTimeline />
+              </section>
 
-            {/* Contact Portal */}
-            <section id="contact" className="section-contact">
-              <ContactPortal />
-            </section>
-          </Suspense>
+              {/* Contact Portal */}
+              <section id="contact" className="section-contact">
+                <ContactPortal />
+              </section>
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </AnimatePresence>
 
@@ -142,3 +169,4 @@ function App() {
 }
 
 export default App
+
