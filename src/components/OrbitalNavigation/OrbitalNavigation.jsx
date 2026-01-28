@@ -45,8 +45,12 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
 
     // Close on Escape key press
     useEffect(() => {
+        if (!isExpanded) {
+            return
+        }
+
         const handleKeyDown = (e) => {
-            if (e.key === 'Escape' && isExpanded) {
+            if (e.key === 'Escape') {
                 setIsExpanded(false)
             }
         }

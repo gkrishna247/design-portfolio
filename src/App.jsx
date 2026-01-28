@@ -99,7 +99,7 @@ function App() {
   return (
     <div className="neural-flux-app" ref={containerRef}>
       {/* Skip link for keyboard users - WCAG 2.4.1 */}
-      <a href="#hero" className="skip-link">
+      <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
 
@@ -132,7 +132,7 @@ function App() {
 
       {/* Main content sections */}
       <AnimatePresence mode="sync">
-        <main className="neural-flux-main">
+        <main id="main-content" className="neural-flux-main" tabIndex={-1}>
           {/* Hero Portal - The grand entrance (eagerly loaded) */}
           <section id="hero" className="section-hero">
             <HeroPortal isLoaded={isLoaded} />
