@@ -7,6 +7,15 @@ export default [
   {
     ignores: ['dist/**', 'node_modules/**'],
   },
+  // Node.js globals for config files
+  {
+    files: ['playwright.config.js', 'benchmarks/**/*.js', 'vitest.config.js'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+      },
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
