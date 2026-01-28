@@ -55,7 +55,10 @@ const ProjectCard = memo(function ProjectCard({ project, index, isActive, onTogg
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
 
+    // Optimization: Memoize style object to prevent re-renders
     const style = useMemo(() => ({ '--project-color': project.color }), [project.color])
+    
+    // Optimization: Stable callback for click handler
     const handleClick = useCallback(() => onToggle(project.id), [onToggle, project.id])
 
     return (
