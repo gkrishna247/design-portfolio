@@ -12,7 +12,6 @@ const PARTICLE_COUNT_MOBILE = 500
 function NeuralParticles({ scrollProgress, particleCount }) {
     const ref = useRef()
     const mouseRef = useRef({ x: 0, y: 0 })
-    const lastMouseUpdate = useRef(0)
 
     // Generate particles in a volumetric space
     const [positions] = useMemo(() => {
@@ -34,12 +33,8 @@ function NeuralParticles({ scrollProgress, particleCount }) {
     }, [particleCount])
 
     useEffect(() => {
-        // Throttled mouse handler - max 60fps (16.67ms)
+        // Direct mouse update - smoothing is handled in useFrame interpolation
         const handleMouseMove = (e) => {
-            const now = performance.now()
-            if (now - lastMouseUpdate.current < 16.67) return
-            lastMouseUpdate.current = now
-
             mouseRef.current = {
                 x: (e.clientX / window.innerWidth) * 2 - 1,
                 y: -(e.clientY / window.innerHeight) * 2 + 1
