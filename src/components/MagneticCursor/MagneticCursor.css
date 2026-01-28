@@ -1,197 +1,77 @@
 /* ==========================================
-   MAGNETIC CURSOR - Arrow Design v2.0
-   Sleek Arrow Pointer with Trail Effect
+   INSTANT CURSOR - No Lag Design
+   Direct transforms, no spring animations
    ========================================== */
 
-/* === Main Arrow Cursor === */
-.cursor-arrow {
+/* === Center Dot - Instant following === */
+.cursor-dot {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
     pointer-events: none;
     z-index: 99999;
-    width: 28px;
-    height: 28px;
     will-change: transform;
+    box-shadow:
+        0 0 10px rgba(168, 85, 247, 0.8),
+        0 0 20px rgba(168, 85, 247, 0.4);
 }
 
-.arrow-icon {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
-    /* No transitions - Framer Motion handles animation */
-}
-
-.arrow-main {
-    fill: white;
-    stroke: rgba(168, 85, 247, 0.8);
-    stroke-width: 1;
-}
-
-.arrow-fill {
-    display: none;
-}
-
-/* Arrow glow effect */
-.arrow-glow {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: 14px;
-    height: 14px;
-    background: radial-gradient(circle,
-            rgba(168, 85, 247, 0.6) 0%,
-            rgba(139, 92, 246, 0.3) 50%,
-            transparent 70%);
-    border-radius: 50%;
-    opacity: 0.8;
-    pointer-events: none;
-    /* Removed blur filter for performance */
-}
-
-/* Hover state - simplified for performance */
-.cursor-arrow.hovering .arrow-icon {
-    transform: scale(1.15) rotate(-8deg);
-}
-
-.cursor-arrow.hovering .arrow-main {
-    fill: var(--neon-violet);
-    stroke: white;
-}
-
-.cursor-arrow.hovering .arrow-glow {
-    transform: scale(2);
-    opacity: 0.6;
-}
-
-/* Click state */
-.cursor-arrow.clicking .arrow-icon {
-    transform: scale(0.9);
-}
-
-.cursor-arrow.clicking .arrow-main {
-    fill: var(--neon-cyan);
-    stroke: white;
-}
-
-/* === Trail Arrow (Ghost) === */
-.cursor-arrow-trail {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 99997;
-    width: 28px;
-    height: 28px;
-    opacity: 0.3;
-    will-change: transform;
-}
-
-.arrow-icon-trail {
-    width: 100%;
-    height: 100%;
-}
-
-.arrow-trail-path {
-    fill: none;
-    stroke: var(--neon-violet);
-    stroke-width: 1.5;
-    opacity: 0.6;
-}
-
-.cursor-arrow-trail.hovering {
-    opacity: 0.6;
-}
-
-.cursor-arrow-trail.hovering .arrow-trail-path {
-    stroke: var(--neon-cyan);
-    stroke-width: 2.5;
-    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.5));
-}
-
-/* === Hover Ring === */
+/* === Cursor Ring === */
 .cursor-ring {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 50px;
-    height: 50px;
+    top: -20px;
+    left: -20px;
+    width: 40px;
+    height: 40px;
     pointer-events: none;
-    z-index: 99996;
-    transform: translate(-50%, -50%) translate(14px, 14px);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    z-index: 99998;
+    will-change: transform;
+}
+
+.cursor-ring-inner {
+    width: 100%;
+    height: 100%;
+    border: 1.5px solid rgba(168, 85, 247, 0.5);
     border-radius: 50%;
     transition:
-        width 0.35s var(--ease-elastic),
-        height 0.35s var(--ease-elastic),
-        border-color 0.3s,
-        opacity 0.3s;
-    opacity: 0;
-    will-change: transform, width, height;
+        transform 0.15s ease-out,
+        border-color 0.15s ease-out,
+        background 0.15s ease-out;
 }
 
-.cursor-ring.hovering {
-    width: 90px;
-    height: 90px;
-    border-color: rgba(168, 85, 247, 0.6);
-    background: rgba(168, 85, 247, 0.08);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border-width: 2px;
-    opacity: 1;
+/* === Hover State === */
+.cursor-ring.hovering .cursor-ring-inner {
+    transform: scale(1.5);
+    border-color: var(--neon-violet, #a855f7);
+    background: rgba(168, 85, 247, 0.1);
     box-shadow:
-        0 0 30px rgba(168, 85, 247, 0.45),
-        0 0 60px rgba(139, 92, 246, 0.25),
-        inset 0 0 30px rgba(168, 85, 247, 0.15);
+        0 0 20px rgba(168, 85, 247, 0.4),
+        inset 0 0 15px rgba(168, 85, 247, 0.1);
 }
 
-/* === Hover Label === */
-.cursor-label {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 99995;
-    transform: translate(40px, 10px);
-}
-
-.cursor-label-text {
-    display: inline-block;
-    padding: 6px 14px;
-    background: rgba(15, 15, 26, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.4);
-    border-radius: 6px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--neon-violet);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-    box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.4),
-        0 0 40px rgba(168, 85, 247, 0.15);
+/* === Click State === */
+.cursor-ring.clicking .cursor-ring-inner {
+    transform: scale(0.8);
+    border-color: var(--neon-cyan, #22d3ee);
+    background: rgba(34, 211, 238, 0.15);
 }
 
 /* === Hide on Mobile === */
 @media (hover: none) and (pointer: coarse) {
 
-    .cursor-arrow,
-    .cursor-arrow-trail,
-    .cursor-ring,
-    .cursor-label {
+    .cursor-dot,
+    .cursor-ring {
         display: none !important;
     }
 }
 
 /* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
-
-    .arrow-icon,
-    .arrow-glow,
-    .cursor-ring {
+    .cursor-ring-inner {
         transition-duration: 0.01ms !important;
     }
 }
