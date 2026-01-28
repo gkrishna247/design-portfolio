@@ -43,6 +43,17 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
         return () => document.removeEventListener('click', handleClick)
     }, [])
 
+    // Close on Escape key press
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && isExpanded) {
+                setIsExpanded(false)
+            }
+        }
+        document.addEventListener('keydown', handleKeyDown)
+        return () => document.removeEventListener('keydown', handleKeyDown)
+    }, [isExpanded])
+
     return (
         <nav
             ref={navRef}
@@ -54,6 +65,8 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
             <motion.button
                 className="orbital-core"
                 onClick={() => setIsExpanded(!isExpanded)}
+                aria-label={isExpanded ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isExpanded}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 data-cursor
@@ -80,6 +93,8 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
                                 <motion.button
                                     key={item.id}
                                     className={`orbital-item ${isActive ? 'active' : ''}`}
+                                    aria-label={`Navigate to ${item.fullLabel} section`}
+                                    aria-current={isActive ? 'page' : undefined}
                                     initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                                     animate={{
                                         opacity: 1,
