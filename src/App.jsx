@@ -82,13 +82,14 @@ function App() {
     }
   }, [prefersReducedMotion])
 
-  // Update active section based on scroll
+  // Update active section based on scroll (6 sections)
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (value) => {
-      if (value < 0.2) setActiveSection('hero')
-      else if (value < 0.4) setActiveSection('about')
-      else if (value < 0.6) setActiveSection('projects')
-      else if (value < 0.8) setActiveSection('skills')
+      if (value < 0.17) setActiveSection('hero')
+      else if (value < 0.33) setActiveSection('about')
+      else if (value < 0.50) setActiveSection('projects')
+      else if (value < 0.67) setActiveSection('skills')
+      else if (value < 0.83) setActiveSection('experience')
       else setActiveSection('contact')
     })
 
@@ -97,6 +98,11 @@ function App() {
 
   return (
     <div className="neural-flux-app" ref={containerRef}>
+      {/* Skip link for keyboard users - WCAG 2.4.1 */}
+      <a href="#hero" className="skip-link">
+        Skip to main content
+      </a>
+
       {/* Noise overlay for texture */}
       <div className="noise-overlay" aria-hidden="true" />
 
