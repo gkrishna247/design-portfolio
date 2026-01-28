@@ -1,77 +1,84 @@
 /* ==========================================
-   INSTANT CURSOR - No Lag Design
+   INSTANT ARROW CURSOR - No Lag Design
    Direct transforms, no spring animations
    ========================================== */
 
-/* === Center Dot - Instant following === */
-.cursor-dot {
+/* === Arrow Cursor === */
+.cursor-arrow {
     position: fixed;
-    top: -4px;
-    left: -4px;
-    width: 8px;
-    height: 8px;
-    background: white;
-    border-radius: 50%;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
     pointer-events: none;
     z-index: 99999;
     will-change: transform;
-    box-shadow:
-        0 0 10px rgba(168, 85, 247, 0.8),
-        0 0 20px rgba(168, 85, 247, 0.4);
 }
 
-/* === Cursor Ring === */
-.cursor-ring {
-    position: fixed;
-    top: -20px;
-    left: -20px;
-    width: 40px;
-    height: 40px;
-    pointer-events: none;
-    z-index: 99998;
-    will-change: transform;
-}
-
-.cursor-ring-inner {
+.arrow-svg {
     width: 100%;
     height: 100%;
-    border: 1.5px solid rgba(168, 85, 247, 0.5);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transition: transform 0.1s ease-out;
+}
+
+.arrow-path {
+    fill: white;
+    stroke: rgba(168, 85, 247, 0.8);
+    stroke-width: 1;
+    transition: fill 0.1s, stroke 0.1s;
+}
+
+/* Arrow glow */
+.arrow-glow {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, transparent 70%);
     border-radius: 50%;
-    transition:
-        transform 0.15s ease-out,
-        border-color 0.15s ease-out,
-        background 0.15s ease-out;
+    pointer-events: none;
+    transition: transform 0.1s, opacity 0.1s;
 }
 
 /* === Hover State === */
-.cursor-ring.hovering .cursor-ring-inner {
-    transform: scale(1.5);
-    border-color: var(--neon-violet, #a855f7);
-    background: rgba(168, 85, 247, 0.1);
-    box-shadow:
-        0 0 20px rgba(168, 85, 247, 0.4),
-        inset 0 0 15px rgba(168, 85, 247, 0.1);
+.cursor-arrow.hovering .arrow-svg {
+    transform: scale(1.2) rotate(-10deg);
+}
+
+.cursor-arrow.hovering .arrow-path {
+    fill: var(--neon-violet, #a855f7);
+    stroke: white;
+}
+
+.cursor-arrow.hovering .arrow-glow {
+    transform: scale(2);
+    opacity: 0.8;
 }
 
 /* === Click State === */
-.cursor-ring.clicking .cursor-ring-inner {
-    transform: scale(0.8);
-    border-color: var(--neon-cyan, #22d3ee);
-    background: rgba(34, 211, 238, 0.15);
+.cursor-arrow.clicking .arrow-svg {
+    transform: scale(0.85);
+}
+
+.cursor-arrow.clicking .arrow-path {
+    fill: var(--neon-cyan, #22d3ee);
+    stroke: white;
 }
 
 /* === Hide on Mobile === */
 @media (hover: none) and (pointer: coarse) {
-
-    .cursor-dot,
-    .cursor-ring {
+    .cursor-arrow {
         display: none !important;
     }
 }
 
 /* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
-    .cursor-ring-inner {
+
+    .arrow-svg,
+    .arrow-glow {
         transition-duration: 0.01ms !important;
     }
 }

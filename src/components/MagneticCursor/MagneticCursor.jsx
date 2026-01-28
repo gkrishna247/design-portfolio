@@ -2,22 +2,17 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import './MagneticCursor.css'
 
 /**
- * Simple, lag-free cursor using direct DOM transforms.
- * No Framer Motion springs = instant response.
+ * Instant arrow cursor - no lag, direct DOM transforms.
  */
 export default function MagneticCursor() {
-    const cursorRef = useRef(null)
-    const dotRef = useRef(null)
+    const arrowRef = useRef(null)
     const rafId = useRef(null)
     const mousePos = useRef({ x: 0, y: 0 })
 
     // Direct DOM update - no React, no springs, instant
     const updateCursor = useCallback(() => {
-        if (cursorRef.current) {
-            cursorRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`
-        }
-        if (dotRef.current) {
-            dotRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`
+        if (arrowRef.current) {
+            arrowRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`
         }
         rafId.current = null
     }, [])
@@ -25,29 +20,28 @@ export default function MagneticCursor() {
     const handleMouseMove = useCallback((e) => {
         mousePos.current = { x: e.clientX, y: e.clientY }
 
-        // Schedule update on next frame if not already scheduled
         if (!rafId.current) {
             rafId.current = requestAnimationFrame(updateCursor)
         }
     }, [updateCursor])
 
     const handleMouseDown = useCallback(() => {
-        cursorRef.current?.classList.add('clicking')
+        arrowRef.current?.classList.add('clicking')
     }, [])
 
     const handleMouseUp = useCallback(() => {
-        cursorRef.current?.classList.remove('clicking')
+        arrowRef.current?.classList.remove('clicking')
     }, [])
 
     const handleMouseOver = useCallback((e) => {
         if (e.target.closest('[data-cursor]')) {
-            cursorRef.current?.classList.add('hovering')
+            arrowRef.current?.classList.add('hovering')
         }
     }, [])
 
     const handleMouseOut = useCallback((e) => {
         if (e.target.closest('[data-cursor]')) {
-            cursorRef.current?.classList.remove('hovering')
+            arrowRef.current?.classList.remove('hovering')
         }
     }, [])
 
@@ -77,15 +71,11 @@ export default function MagneticCursor() {
     if (isTouchDevice) return null
 
     return (
-        <>
-            {/* Center dot - instant */}
-            <div ref={dotRef} className="cursor-dot" />
-
-            {/* Ring cursor */}
-            <div ref={cursorRef} className="cursor-ring">
-                <div className="cursor-ring-inner" />
-            </div>
-        </>
+        <div ref={arrowRef} className="cursor-arrow">
+            <svg viewBox="0 0 24 24" fill="none" className="arrow-svg">
+                <path d="M4 2L20 12L12 14L8 22L4 2Z" className="arrow-path" />
+            </svg>
+            <div className="arrow-glow" />
+        </div>
     )
 }
-
