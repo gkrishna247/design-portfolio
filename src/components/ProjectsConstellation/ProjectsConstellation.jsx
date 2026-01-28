@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useState, useMemo, useCallback, memo } from 'react'
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion'
 import './ProjectsConstellation.css'
 
@@ -51,7 +51,7 @@ const projects = [
     },
 ]
 
-function ProjectCard({ project, index, isActive, onClick }) {
+const ProjectCard = memo(function ProjectCard({ project, index, isActive, onClick }) {
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
 
@@ -70,7 +70,7 @@ function ProjectCard({ project, index, isActive, onClick }) {
                 y: -10,
                 transition: { duration: 0.3 }
             }}
-            onClick={onClick}
+            onClick={() => onClick(project.id)}
             style={{ '--project-color': project.color }}
             data-cursor
             data-cursor-text="VIEW"
@@ -125,7 +125,7 @@ function ProjectCard({ project, index, isActive, onClick }) {
             <div className="project-connector" />
         </motion.div>
     )
-}
+})
 
 export default function ProjectsConstellation() {
     const containerRef = useRef(null)
@@ -147,6 +147,10 @@ export default function ProjectsConstellation() {
             duration: 3 + Math.random() * 2,
             delay: Math.random() * 2,
         }))
+    }, [])
+
+    const handleProjectClick = useCallback((id) => {
+        setActiveProject(prevId => (prevId === id ? null : id))
     }, [])
 
     return (
@@ -183,9 +187,7 @@ export default function ProjectsConstellation() {
                         project={project}
                         index={index}
                         isActive={activeProject === project.id}
-                        onClick={() => setActiveProject(
-                            activeProject === project.id ? null : project.id
-                        )}
+                        onClick={handleProjectClick}
                     />
                 ))}
             </div>
