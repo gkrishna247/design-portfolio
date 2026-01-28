@@ -113,6 +113,8 @@ export default function ContactPortal() {
                         <motion.a
                             key={link.name}
                             href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className={`contact-link ${hoveredLink === link.name ? 'active' : ''}`}
                             style={{ '--link-color': link.color }}
                             initial={{ opacity: 0, y: 20 }}
