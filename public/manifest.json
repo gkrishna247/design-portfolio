@@ -1,0 +1,16 @@
+{
+  "name": "ALEX.DEV Portfolio",
+  "short_name": "ALEX.DEV",
+  "description": "AI Engineer Portfolio - Neural Flux v2.0",
+  "start_url": "/design-portfolio/",
+  "display": "standalone",
+  "background_color": "#030308",
+  "theme_color": "#030308",
+  "icons": [
+    {
+      "src": "vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
