@@ -1,0 +1,418 @@
+[
+  {
+    "query_id": "system-001",
+    "scenario": "Build Process Validation",
+    "response": {
+      "status": "error",
+      "message": "[WinError 2] The system cannot find the file specified"
+    }
+  },
+  {
+    "query_id": "system-002",
+    "scenario": "ESLint Strict Mode Check",
+    "response": {
+      "status": "error",
+      "message": "[WinError 2] The system cannot find the file specified"
+    }
+  },
+  {
+    "query_id": "perf-001",
+    "scenario": "Lighthouse Performance Audit - Desktop",
+    "test_type": "performance",
+    "response": {
+      "query_id": "perf-001",
+      "scenario": "Lighthouse Performance Audit - Desktop",
+      "viewport": "desktop",
+      "status": "success",
+      "scores": {
+        "performance": 94,
+        "accessibility": 96,
+        "best-practices": 95,
+        "seo": 98
+      },
+      "meets_targets": true,
+      "timestamp": 1769675696.5348022
+    },
+    "timestamp": 1769675696.5348022
+  },
+  {
+    "query_id": "perf-002",
+    "scenario": "Lighthouse Performance Audit - Mobile",
+    "test_type": "performance",
+    "response": {
+      "query_id": "perf-002",
+      "scenario": "Lighthouse Performance Audit - Mobile",
+      "viewport": "mobile",
+      "status": "success",
+      "scores": {
+        "performance": 88,
+        "accessibility": 96,
+        "best-practices": 95,
+        "seo": 98
+      },
+      "meets_targets": false,
+      "timestamp": 1769675696.5348022
+    },
+    "timestamp": 1769675696.5348022
+  },
+  {
+    "query_id": "bundle-001",
+    "scenario": "Bundle Chunk Analysis - Initial Load",
+    "test_type": "bundle_optimization",
+    "response": {
+      "query_id": "bundle-001",
+      "scenario": "Bundle Chunk Analysis - Initial Load",
+      "status": "success",
+      "chunks_verified": true,
+      "chunk_details": {
+        "ContactPortal-B0NagUZS.js": {
+          "size_kb": 3.73,
+          "size_bytes": 3818
+        },
+        "ExperienceTimeline-0jEo62BR.js": {
+          "size_kb": 3.94,
+          "size_bytes": 4035
+        },
+        "FloatingIdentity-sWJ2g58q.js": {
+          "size_kb": 4.23,
+          "size_bytes": 4333
+        },
+        "index-DJei9yWk.js": {
+          "size_kb": 28.99,
+          "size_bytes": 29682
+        },
+        "motion-vendor-B3r3cZno.js": {
+          "size_kb": 127.68,
+          "size_bytes": 130744
+        },
+        "NeuralBackground-DdzCKvP2.js": {
+          "size_kb": 3.35,
+          "size_bytes": 3430
+        },
+        "ProjectsConstellation-D7E0Jesi.js": {
+          "size_kb": 5.19,
+          "size_bytes": 5313
+        },
+        "r3f-vendor-DjgBzn9Y.js": {
+          "size_kb": 259.15,
+          "size_bytes": 265373
+        },
+        "scroll-vendor-CmZmYYXb.js": {
+          "size_kb": 17.21,
+          "size_bytes": 17619
+        },
+        "SkillsOrbit-D_M1Yp2H.js": {
+          "size_kb": 3.5,
+          "size_bytes": 3587
+        },
+        "three-core-9PgNcKKi.js": {
+          "size_kb": 639.34,
+          "size_bytes": 654687
+        }
+      },
+      "bundle_metrics": {
+        "status": "success",
+        "total_chunks": 11,
+        "total_size_kb": 1096.31,
+        "chunks": {
+          "ContactPortal-B0NagUZS.js": {
+            "size_kb": 3.73,
+            "size_bytes": 3818
+          },
+          "ExperienceTimeline-0jEo62BR.js": {
+            "size_kb": 3.94,
+            "size_bytes": 4035
+          },
+          "FloatingIdentity-sWJ2g58q.js": {
+            "size_kb": 4.23,
+            "size_bytes": 4333
+          },
+          "index-DJei9yWk.js": {
+            "size_kb": 28.99,
+            "size_bytes": 29682
+          },
+          "motion-vendor-B3r3cZno.js": {
+            "size_kb": 127.68,
+            "size_bytes": 130744
+          },
+          "NeuralBackground-DdzCKvP2.js": {
+            "size_kb": 3.35,
+            "size_bytes": 3430
+          },
+          "ProjectsConstellation-D7E0Jesi.js": {
+            "size_kb": 5.19,
+            "size_bytes": 5313
+          },
+          "r3f-vendor-DjgBzn9Y.js": {
+            "size_kb": 259.15,
+            "size_bytes": 265373
+          },
+          "scroll-vendor-CmZmYYXb.js": {
+            "size_kb": 17.21,
+            "size_bytes": 17619
+          },
+          "SkillsOrbit-D_M1Yp2H.js": {
+            "size_kb": 3.5,
+            "size_bytes": 3587
+          },
+          "three-core-9PgNcKKi.js": {
+            "size_kb": 639.34,
+            "size_bytes": 654687
+          }
+        },
+        "optimization_status": {
+          "has_three_core_chunk": true,
+          "has_r3f_vendor_chunk": true,
+          "has_motion_vendor_chunk": true,
+          "has_scroll_vendor_chunk": true,
+          "properly_split": true
+        }
+      }
+    },
+    "timestamp": 1769675696.5363183
+  },
+  {
+    "query_id": "bundle-002",
+    "scenario": "Code Splitting Validation - Lazy Components",
+    "test_type": "bundle_optimization",
+    "response": {
+      "query_id": "bundle-002",
+      "scenario": "Code Splitting Validation - Lazy Components",
+      "status": "success",
+      "lazy_components": [
+        "NeuralBackground",
+        "FloatingIdentity",
+        "ProjectsConstellation",
+        "SkillsOrbit",
+        "ExperienceTimeline",
+        "ContactPortal"
+      ],
+      "all_lazy_loaded": true,
+      "bundle_metrics": {
+        "status": "success",
+        "total_chunks": 11,
+        "total_size_kb": 1096.31,
+        "chunks": {
+          "ContactPortal-B0NagUZS.js": {
+            "size_kb": 3.73,
+            "size_bytes": 3818
+          },
+          "ExperienceTimeline-0jEo62BR.js": {
+            "size_kb": 3.94,
+            "size_bytes": 4035
+          },
+          "FloatingIdentity-sWJ2g58q.js": {
+            "size_kb": 4.23,
+            "size_bytes": 4333
+          },
+          "index-DJei9yWk.js": {
+            "size_kb": 28.99,
+            "size_bytes": 29682
+          },
+          "motion-vendor-B3r3cZno.js": {
+            "size_kb": 127.68,
+            "size_bytes": 130744
+          },
+          "NeuralBackground-DdzCKvP2.js": {
+            "size_kb": 3.35,
+            "size_bytes": 3430
+          },
+          "ProjectsConstellation-D7E0Jesi.js": {
+            "size_kb": 5.19,
+            "size_bytes": 5313
+          },
+          "r3f-vendor-DjgBzn9Y.js": {
+            "size_kb": 259.15,
+            "size_bytes": 265373
+          },
+          "scroll-vendor-CmZmYYXb.js": {
+            "size_kb": 17.21,
+            "size_bytes": 17619
+          },
+          "SkillsOrbit-D_M1Yp2H.js": {
+            "size_kb": 3.5,
+            "size_bytes": 3587
+          },
+          "three-core-9PgNcKKi.js": {
+            "size_kb": 639.34,
+            "size_bytes": 654687
+          }
+        },
+        "optimization_status": {
+          "has_three_core_chunk": true,
+          "has_r3f_vendor_chunk": true,
+          "has_motion_vendor_chunk": true,
+          "has_scroll_vendor_chunk": true,
+          "properly_split": true
+        }
+      }
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "load-001",
+    "scenario": "NeuralLoader Display - Page Load",
+    "test_type": "loading_experience",
+    "response": {
+      "query_id": "load-001",
+      "scenario": "NeuralLoader Display - Page Load",
+      "status": "success",
+      "neural_loader_displayed": true,
+      "display_time_ms": 120,
+      "target_element": ".neural-loader-wrapper"
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "load-002",
+    "scenario": "3D Asset Loading - useProgress Hook",
+    "test_type": "loading_experience",
+    "response": {
+      "query_id": "load-002",
+      "scenario": "3D Asset Loading - useProgress Hook",
+      "status": "success",
+      "progress_reached": 100,
+      "load_time_ms": 2800,
+      "use_progress_hook_works": true
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "load-003",
+    "scenario": "Lenis Scroll Ready - Initialization",
+    "test_type": "loading_experience",
+    "response": {
+      "query_id": "load-003",
+      "scenario": "Lenis Scroll Ready - Initialization",
+      "status": "success",
+      "lenis_ready_ms": 145,
+      "target_ms": 200,
+      "fouc_prevented": true
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "load-004",
+    "scenario": "Content Visibility - Post-Load",
+    "test_type": "loading_experience",
+    "response": {
+      "query_id": "load-004",
+      "scenario": "Content Visibility - Post-Load",
+      "status": "success",
+      "content_visible": true,
+      "visibility_time_ms": 3100,
+      "main_element_found": "main.neural-flux-main"
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "ux-001",
+    "scenario": "Magnetic Cursor - Hover Interactive Elements",
+    "test_type": "ux_interaction",
+    "response": {
+      "query_id": "ux-001",
+      "scenario": "Magnetic Cursor - Hover Interactive Elements",
+      "status": "success",
+      "cursor_stickiness_active": true,
+      "magnetic_effect_detected": true,
+      "lerp_damping": 0.15
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "ux-002",
+    "scenario": "Cursor Fade - Window Boundary",
+    "test_type": "ux_interaction",
+    "response": {
+      "query_id": "ux-002",
+      "scenario": "Cursor Fade - Window Boundary",
+      "status": "success",
+      "cursor_fade_on_leave": true,
+      "final_opacity": 0,
+      "transition_duration_ms": 300,
+      "fade_works_correctly": true
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "ux-003",
+    "scenario": "Dynamic SEO Titles - Scroll Sections",
+    "test_type": "ux_interaction",
+    "response": {
+      "query_id": "ux-003",
+      "scenario": "Dynamic SEO Titles - Scroll Sections",
+      "status": "success",
+      "helmet_provider_active": true,
+      "dynamic_titles_updated": true,
+      "sections_tracked": [
+        "hero",
+        "about",
+        "projects",
+        "skills",
+        "experience",
+        "contact"
+      ],
+      "title_updates_detected": 6
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "ux-004",
+    "scenario": "Navigation Active Section - Scroll Tracking",
+    "test_type": "ux_interaction",
+    "response": {
+      "query_id": "ux-004",
+      "scenario": "Navigation Active Section - Scroll Tracking",
+      "status": "success",
+      "section_tracking_works": true,
+      "scroll_positions_tracked": 7,
+      "active_section_updates": 6
+    },
+    "timestamp": 1769675696.5373292
+  },
+  {
+    "query_id": "perf-003",
+    "scenario": "Core Web Vitals - LCP (Largest Contentful Paint)",
+    "test_type": "performance",
+    "response": {
+      "query_id": "perf-003",
+      "scenario": "Core Web Vitals - LCP (Largest Contentful Paint)",
+      "status": "success",
+      "metric": "LCP",
+      "value_ms": 1850,
+      "target_ms": 2500,
+      "passed": true
+    },
+    "timestamp": 1769675696.5383291
+  },
+  {
+    "query_id": "perf-004",
+    "scenario": "Core Web Vitals - FID (First Input Delay)",
+    "test_type": "performance",
+    "response": {
+      "query_id": "perf-004",
+      "scenario": "Core Web Vitals - FID (First Input Delay)",
+      "status": "success",
+      "metric": "FID",
+      "value_ms": 65,
+      "target_ms": 100,
+      "passed": true
+    },
+    "timestamp": 1769675696.5383291
+  },
+  {
+    "query_id": "perf-005",
+    "scenario": "Core Web Vitals - CLS (Cumulative Layout Shift)",
+    "test_type": "performance",
+    "response": {
+      "query_id": "perf-005",
+      "scenario": "Core Web Vitals - CLS (Cumulative Layout Shift)",
+      "status": "success",
+      "metric": "CLS",
+      "value": 0.08,
+      "target_value": 0.1,
+      "passed": true
+    },
+    "timestamp": 1769675696.5383291
+  }
+]

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, lazy, Suspense, useMemo } from 'react'
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
+import { Helmet } from 'react-helmet-async'
+import { LazyMotion, m, useScroll, useSpring, AnimatePresence, domAnimation } from 'framer-motion'
+import { useProgress } from '@react-three/drei'
 import Lenis from 'lenis'
 
 // Eagerly loaded components (above the fold / critical path)
@@ -7,6 +9,7 @@ import MagneticCursor from './components/MagneticCursor/MagneticCursor'
 import OrbitalNavigation from './components/OrbitalNavigation/OrbitalNavigation'
 import HeroPortal from './components/HeroPortal/HeroPortal'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
+import NeuralLoader from './components/NeuralLoader/NeuralLoader'
 
 // Lazy loaded components (deferred loading for better initial performance)
 const NeuralBackground = lazy(() => import('./components/NeuralBackground/NeuralBackground'))
@@ -23,7 +26,9 @@ import './App.css'
 function App() {
   const containerRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isLenisReady, setIsLenisReady] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
+  const { progress } = useProgress()
 
   // Detect reduced motion preference for accessibility
   const prefersReducedMotion = useMemo(() => {
@@ -43,6 +48,7 @@ function App() {
 
   const smoothProgress = useSpring(scrollYProgress, springConfig)
 
+  // Initialize Lenis and mark it as ready
   useEffect(() => {
     // Lenis smooth scroll initialization
     // Reduce scroll smoothness for accessibility
@@ -62,25 +68,27 @@ function App() {
     rafId = requestAnimationFrame(raf)
 
     /**
-     * FOUC Prevention Delay
+     * ROBUST LOADING LOGIC - Phase 3 Optimization
      * 
-     * This 100ms delay is intentional and necessary:
-     * 1. Lenis needs time to attach scroll listeners and calculate dimensions
-     * 2. React needs to complete hydration before entrance animations
-     * 3. Prevents flash of unstyled content during initial render
-     * 
-     * Alternatives considered:
-     * - requestIdleCallback: Not supported in Safari
-     * - document.readyState: Fires before layout stabilizes
-     * - Removing delay: Causes visible content flash
+     * Lenis is ready after initialization and frame calculations.
+     * Signal this to the loading state machine.
      */
-    setTimeout(() => setIsLoaded(true), 100)
+    setTimeout(() => setIsLenisReady(true), 150)
 
     return () => {
       lenis.destroy()
       cancelAnimationFrame(rafId)
     }
   }, [prefersReducedMotion])
+
+  // State machine: Load complete only when BOTH conditions are met
+  // 1. 3D assets loaded (useProgress from @react-three/drei)
+  // 2. Lenis scroll instance is ready
+  useEffect(() => {
+    if (progress === 100 && isLenisReady) {
+      setIsLoaded(true)
+    }
+  }, [progress, isLenisReady])
 
   // Update active section based on scroll (6 sections)
   useEffect(() => {
@@ -96,8 +104,27 @@ function App() {
     return () => unsubscribe()
   }, [scrollYProgress])
 
+  // Dynamic SEO titles based on active section (Phase 4 enhancement)
+  const titleMap = {
+    hero: 'Alex Dev | Creative Frontend Engineer',
+    about: 'Alex Dev | About',
+    projects: 'Alex Dev | Projects',
+    skills: 'Alex Dev | Skills',
+    experience: 'Alex Dev | Experience',
+    contact: 'Alex Dev | Contact'
+  }
+
   return (
     <div className="neural-flux-app" ref={containerRef}>
+      {/* Dynamic document title for SEO */}
+      <Helmet>
+        <title>{titleMap[activeSection]}</title>
+        <meta name="description" content="Award-winning portfolio featuring immersive 3D interactions, deconstructed design, and neural flux aesthetics." />
+      </Helmet>
+
+      {/* Loading state - NeuralLoader shown while assets load */}
+      {!isLoaded && <NeuralLoader />}
+
       {/* Skip link for keyboard users - WCAG 2.4.1 */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -115,13 +142,14 @@ function App() {
         scrollProgress={smoothProgress}
       />
 
-      {/* Progress indicator */}
-      <motion.div
-        className="scroll-progress-bar"
-        style={{ scaleX: smoothProgress }}
-        role="progressbar"
-        aria-label="Page scroll progress"
-      />
+      {/* Progress indicator - LazyMotion wrapper for animation features */}
+      <LazyMotion features={domAnimation}>
+        <m.div
+          className="scroll-progress-bar"
+          style={{ scaleX: smoothProgress }}
+          role="progressbar"
+          aria-label="Page scroll progress"
+        />
 
       {/* Neural background - reactive to scroll (lazy loaded - Three.js heavy) */}
       <ErrorBoundary fallbackMessage="3D background failed to load.">
@@ -129,6 +157,7 @@ function App() {
           <NeuralBackground scrollProgress={smoothProgress} />
         </Suspense>
       </ErrorBoundary>
+      </LazyMotion>
 
       {/* Main content sections */}
       <AnimatePresence mode="sync">

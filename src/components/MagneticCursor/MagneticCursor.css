@@ -12,7 +12,9 @@
     height: 28px;
     pointer-events: none;
     z-index: 99999;
-    will-change: transform;
+    will-change: transform, opacity;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .arrow-svg {
@@ -65,6 +67,12 @@
 .cursor-arrow.clicking .arrow-path {
     fill: var(--neon-cyan, #22d3ee);
     stroke: white;
+}
+
+/* === Hidden State (window leave) === */
+.cursor-arrow.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* === Hide on Mobile === */

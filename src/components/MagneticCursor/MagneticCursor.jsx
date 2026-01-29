@@ -2,23 +2,38 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import './MagneticCursor.css'
 
 /**
- * Instant arrow cursor - no lag, direct DOM transforms.
+ * MagneticCursor - Enhanced with stickiness & fade on window leave
+ * 
+ * Features:
+ * - Instant tracking (no lag)
+ * - Fade opacity on mouseleave
+ * - Spring physics for clickable elements
+ * - GPU-accelerated transforms
  */
 export default function MagneticCursor() {
     const arrowRef = useRef(null)
     const rafId = useRef(null)
     const mousePos = useRef({ x: 0, y: 0 })
+    const targetPos = useRef({ x: 0, y: 0 })
+    const isHovering = useRef(false)
 
     // Direct DOM update - no React, no springs, instant
     const updateCursor = useCallback(() => {
-        if (arrowRef.current) {
-            arrowRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`
+        if (!arrowRef.current) return
+
+        // Smooth lerp to target for stickiness effect
+        if (isHovering.current) {
+            mousePos.current.x += (targetPos.current.x - mousePos.current.x) * 0.15
+            mousePos.current.y += (targetPos.current.y - mousePos.current.y) * 0.15
         }
+
+        arrowRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`
         rafId.current = null
     }, [])
 
     const handleMouseMove = useCallback((e) => {
         mousePos.current = { x: e.clientX, y: e.clientY }
+        targetPos.current = { x: e.clientX, y: e.clientY }
 
         if (!rafId.current) {
             rafId.current = requestAnimationFrame(updateCursor)
@@ -34,15 +49,35 @@ export default function MagneticCursor() {
     }, [])
 
     const handleMouseOver = useCallback((e) => {
-        if (e.target.closest('[data-cursor]')) {
+        const clickableElement = e.target.closest('[data-cursor], a, button')
+        if (clickableElement) {
             arrowRef.current?.classList.add('hovering')
+            isHovering.current = true
+            // Get element center for stickiness
+            const rect = clickableElement.getBoundingClientRect()
+            targetPos.current = {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
+            }
         }
     }, [])
 
     const handleMouseOut = useCallback((e) => {
-        if (e.target.closest('[data-cursor]')) {
+        const clickableElement = e.target.closest('[data-cursor], a, button')
+        if (clickableElement) {
             arrowRef.current?.classList.remove('hovering')
+            isHovering.current = false
         }
+    }, [])
+
+    // Fade cursor on window leave
+    const handleMouseLeave = useCallback(() => {
+        arrowRef.current?.classList.add('hidden')
+    }, [])
+
+    // Restore cursor on window enter
+    const handleMouseEnter = useCallback(() => {
+        arrowRef.current?.classList.remove('hidden')
     }, [])
 
     useEffect(() => {
@@ -51,6 +86,8 @@ export default function MagneticCursor() {
         window.addEventListener('mouseup', handleMouseUp, { passive: true })
         document.addEventListener('mouseover', handleMouseOver, { passive: true })
         document.addEventListener('mouseout', handleMouseOut, { passive: true })
+        document.addEventListener('mouseleave', handleMouseLeave, { passive: true })
+        document.addEventListener('mouseenter', handleMouseEnter, { passive: true })
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove)
@@ -58,9 +95,11 @@ export default function MagneticCursor() {
             window.removeEventListener('mouseup', handleMouseUp)
             document.removeEventListener('mouseover', handleMouseOver)
             document.removeEventListener('mouseout', handleMouseOut)
+            document.removeEventListener('mouseleave', handleMouseLeave)
+            document.removeEventListener('mouseenter', handleMouseEnter)
             if (rafId.current) cancelAnimationFrame(rafId.current)
         }
-    }, [handleMouseMove, handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut])
+    }, [handleMouseMove, handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut, handleMouseLeave, handleMouseEnter])
 
     // Hide on touch devices
     const [isTouchDevice, setIsTouchDevice] = useState(false)

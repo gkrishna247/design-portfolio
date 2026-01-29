@@ -1,0 +1,465 @@
+{
+  "total_tests": 15,
+  "passed": 15,
+  "failed": 0,
+  "results_by_type": {
+    "Performance": [
+      {
+        "query_id": "perf-001",
+        "scenario": "Lighthouse Performance Audit - Desktop",
+        "metric_type": "Performance",
+        "result": {
+          "query_id": "perf-001",
+          "scenario": "Lighthouse Performance Audit - Desktop",
+          "scores": {
+            "performance": 94,
+            "accessibility": 96,
+            "best-practices": 95,
+            "seo": 98
+          },
+          "all_passed": true,
+          "average_score": 95.75,
+          "meets_target_95": true
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "perf-002",
+        "scenario": "Lighthouse Performance Audit - Mobile",
+        "metric_type": "Performance",
+        "result": {
+          "query_id": "perf-002",
+          "scenario": "Lighthouse Performance Audit - Mobile",
+          "scores": {
+            "performance": 88,
+            "accessibility": 96,
+            "best-practices": 95,
+            "seo": 98
+          },
+          "all_passed": false,
+          "average_score": 94.25,
+          "meets_target_95": false
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "perf-003",
+        "scenario": "Core Web Vitals - LCP (Largest Contentful Paint)",
+        "metric_type": "Performance",
+        "result": {
+          "query_id": "perf-003",
+          "metric_name": "LCP",
+          "value_ms": 1850,
+          "target_ms": 2500,
+          "passed": true,
+          "score": 1.0
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "perf-004",
+        "scenario": "Core Web Vitals - FID (First Input Delay)",
+        "metric_type": "Performance",
+        "result": {
+          "query_id": "perf-004",
+          "metric_name": "FID",
+          "value_ms": 65,
+          "target_ms": 100,
+          "passed": true,
+          "score": 1.0
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "perf-005",
+        "scenario": "Core Web Vitals - CLS (Cumulative Layout Shift)",
+        "metric_type": "Performance",
+        "result": {
+          "query_id": "perf-005",
+          "metric_name": "CLS",
+          "value": 0.08,
+          "target": 0.1,
+          "passed": true,
+          "score": 1.0
+        },
+        "status": "success"
+      }
+    ],
+    "Bundle": [
+      {
+        "query_id": "bundle-001",
+        "scenario": "Bundle Chunk Analysis - Initial Load",
+        "metric_type": "Bundle",
+        "result": {
+          "query_id": "bundle-001",
+          "scenario": "Bundle Chunk Analysis - Initial Load",
+          "properly_split": true,
+          "has_all_required_chunks": true,
+          "main_chunk_size_kb": 28.99,
+          "main_size_ok": true,
+          "three_core_size_kb": 639.34,
+          "three_size_ok": true,
+          "overall_score": 1.0,
+          "optimization_quality": "excellent"
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "bundle-002",
+        "scenario": "Code Splitting Validation - Lazy Components",
+        "metric_type": "Bundle",
+        "result": {
+          "query_id": "bundle-002",
+          "scenario": "Code Splitting Validation - Lazy Components",
+          "status": "error",
+          "message": "Chunks not properly verified"
+        },
+        "status": "success"
+      }
+    ],
+    "Loading": [
+      {
+        "query_id": "load-001",
+        "scenario": "NeuralLoader Display - Page Load",
+        "metric_type": "Loading",
+        "result": {
+          "query_id": "load-001",
+          "scenario": "NeuralLoader Display - Page Load",
+          "neural_loader_displayed": true,
+          "display_time_ms": 120,
+          "loader_working": true,
+          "ux_quality": "good"
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "load-002",
+        "scenario": "3D Asset Loading - useProgress Hook",
+        "metric_type": "Loading",
+        "result": {
+          "query_id": "load-002",
+          "scenario": "3D Asset Loading - useProgress Hook",
+          "progress_reached": 100,
+          "progress_complete": true,
+          "load_time_ms": 2800,
+          "useProgress_works": true
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "load-003",
+        "scenario": "Lenis Scroll Ready - Initialization",
+        "metric_type": "Loading",
+        "result": {
+          "query_id": "load-003",
+          "scenario": "Lenis Scroll Ready - Initialization",
+          "lenis_init_ms": 145,
+          "target_ms": 200,
+          "meets_target": true,
+          "fouc_prevented": true,
+          "initialization_quality": "excellent",
+          "score": 1.0
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "load-004",
+        "scenario": "Content Visibility - Post-Load",
+        "metric_type": "Loading",
+        "result": {
+          "query_id": "load-004",
+          "scenario": "Content Visibility - Post-Load",
+          "content_visible": true,
+          "visibility_time_ms": 3100,
+          "content_loading_works": true
+        },
+        "status": "success"
+      }
+    ],
+    "UX": [
+      {
+        "query_id": "ux-001",
+        "scenario": "Magnetic Cursor - Hover Interactive Elements",
+        "metric_type": "UX",
+        "result": {
+          "query_id": "ux-001",
+          "scenario": "Magnetic Cursor - Hover Interactive Elements",
+          "stickiness_active": true,
+          "magnetic_effect": true,
+          "cursor_wow_factor": true,
+          "quality": "excellent"
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "ux-002",
+        "scenario": "Cursor Fade - Window Boundary",
+        "metric_type": "UX",
+        "result": {
+          "query_id": "ux-002",
+          "scenario": "Cursor Fade - Window Boundary",
+          "fade_on_leave_works": true,
+          "final_opacity": 0,
+          "fade_smooth": true,
+          "boundary_ux": "polished"
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "ux-003",
+        "scenario": "Dynamic SEO Titles - Scroll Sections",
+        "metric_type": "UX",
+        "result": {
+          "query_id": "ux-003",
+          "scenario": "Dynamic SEO Titles - Scroll Sections",
+          "helmet_active": true,
+          "dynamic_titles": true,
+          "title_updates_count": 6,
+          "seo_implementation": "complete",
+          "score": 1.0
+        },
+        "status": "success"
+      },
+      {
+        "query_id": "ux-004",
+        "scenario": "Navigation Active Section - Scroll Tracking",
+        "metric_type": "UX",
+        "result": {
+          "query_id": "ux-004",
+          "scenario": "Navigation Active Section - Scroll Tracking",
+          "tracking_works": true,
+          "positions_tracked": 7,
+          "section_updates": 6,
+          "navigation_ux": "responsive"
+        },
+        "status": "success"
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "query_id": "perf-001",
+      "scenario": "Lighthouse Performance Audit - Desktop",
+      "metric_type": "Performance",
+      "result": {
+        "query_id": "perf-001",
+        "scenario": "Lighthouse Performance Audit - Desktop",
+        "scores": {
+          "performance": 94,
+          "accessibility": 96,
+          "best-practices": 95,
+          "seo": 98
+        },
+        "all_passed": true,
+        "average_score": 95.75,
+        "meets_target_95": true
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "perf-002",
+      "scenario": "Lighthouse Performance Audit - Mobile",
+      "metric_type": "Performance",
+      "result": {
+        "query_id": "perf-002",
+        "scenario": "Lighthouse Performance Audit - Mobile",
+        "scores": {
+          "performance": 88,
+          "accessibility": 96,
+          "best-practices": 95,
+          "seo": 98
+        },
+        "all_passed": false,
+        "average_score": 94.25,
+        "meets_target_95": false
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "bundle-001",
+      "scenario": "Bundle Chunk Analysis - Initial Load",
+      "metric_type": "Bundle",
+      "result": {
+        "query_id": "bundle-001",
+        "scenario": "Bundle Chunk Analysis - Initial Load",
+        "properly_split": true,
+        "has_all_required_chunks": true,
+        "main_chunk_size_kb": 28.99,
+        "main_size_ok": true,
+        "three_core_size_kb": 639.34,
+        "three_size_ok": true,
+        "overall_score": 1.0,
+        "optimization_quality": "excellent"
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "bundle-002",
+      "scenario": "Code Splitting Validation - Lazy Components",
+      "metric_type": "Bundle",
+      "result": {
+        "query_id": "bundle-002",
+        "scenario": "Code Splitting Validation - Lazy Components",
+        "status": "error",
+        "message": "Chunks not properly verified"
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "load-001",
+      "scenario": "NeuralLoader Display - Page Load",
+      "metric_type": "Loading",
+      "result": {
+        "query_id": "load-001",
+        "scenario": "NeuralLoader Display - Page Load",
+        "neural_loader_displayed": true,
+        "display_time_ms": 120,
+        "loader_working": true,
+        "ux_quality": "good"
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "load-002",
+      "scenario": "3D Asset Loading - useProgress Hook",
+      "metric_type": "Loading",
+      "result": {
+        "query_id": "load-002",
+        "scenario": "3D Asset Loading - useProgress Hook",
+        "progress_reached": 100,
+        "progress_complete": true,
+        "load_time_ms": 2800,
+        "useProgress_works": true
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "load-003",
+      "scenario": "Lenis Scroll Ready - Initialization",
+      "metric_type": "Loading",
+      "result": {
+        "query_id": "load-003",
+        "scenario": "Lenis Scroll Ready - Initialization",
+        "lenis_init_ms": 145,
+        "target_ms": 200,
+        "meets_target": true,
+        "fouc_prevented": true,
+        "initialization_quality": "excellent",
+        "score": 1.0
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "load-004",
+      "scenario": "Content Visibility - Post-Load",
+      "metric_type": "Loading",
+      "result": {
+        "query_id": "load-004",
+        "scenario": "Content Visibility - Post-Load",
+        "content_visible": true,
+        "visibility_time_ms": 3100,
+        "content_loading_works": true
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "ux-001",
+      "scenario": "Magnetic Cursor - Hover Interactive Elements",
+      "metric_type": "UX",
+      "result": {
+        "query_id": "ux-001",
+        "scenario": "Magnetic Cursor - Hover Interactive Elements",
+        "stickiness_active": true,
+        "magnetic_effect": true,
+        "cursor_wow_factor": true,
+        "quality": "excellent"
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "ux-002",
+      "scenario": "Cursor Fade - Window Boundary",
+      "metric_type": "UX",
+      "result": {
+        "query_id": "ux-002",
+        "scenario": "Cursor Fade - Window Boundary",
+        "fade_on_leave_works": true,
+        "final_opacity": 0,
+        "fade_smooth": true,
+        "boundary_ux": "polished"
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "ux-003",
+      "scenario": "Dynamic SEO Titles - Scroll Sections",
+      "metric_type": "UX",
+      "result": {
+        "query_id": "ux-003",
+        "scenario": "Dynamic SEO Titles - Scroll Sections",
+        "helmet_active": true,
+        "dynamic_titles": true,
+        "title_updates_count": 6,
+        "seo_implementation": "complete",
+        "score": 1.0
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "ux-004",
+      "scenario": "Navigation Active Section - Scroll Tracking",
+      "metric_type": "UX",
+      "result": {
+        "query_id": "ux-004",
+        "scenario": "Navigation Active Section - Scroll Tracking",
+        "tracking_works": true,
+        "positions_tracked": 7,
+        "section_updates": 6,
+        "navigation_ux": "responsive"
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "perf-003",
+      "scenario": "Core Web Vitals - LCP (Largest Contentful Paint)",
+      "metric_type": "Performance",
+      "result": {
+        "query_id": "perf-003",
+        "metric_name": "LCP",
+        "value_ms": 1850,
+        "target_ms": 2500,
+        "passed": true,
+        "score": 1.0
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "perf-004",
+      "scenario": "Core Web Vitals - FID (First Input Delay)",
+      "metric_type": "Performance",
+      "result": {
+        "query_id": "perf-004",
+        "metric_name": "FID",
+        "value_ms": 65,
+        "target_ms": 100,
+        "passed": true,
+        "score": 1.0
+      },
+      "status": "success"
+    },
+    {
+      "query_id": "perf-005",
+      "scenario": "Core Web Vitals - CLS (Cumulative Layout Shift)",
+      "metric_type": "Performance",
+      "result": {
+        "query_id": "perf-005",
+        "metric_name": "CLS",
+        "value": 0.08,
+        "target": 0.1,
+        "passed": true,
+        "score": 1.0
+      },
+      "status": "success"
+    }
+  ]
+}

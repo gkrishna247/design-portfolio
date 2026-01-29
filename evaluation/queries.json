@@ -1,0 +1,176 @@
+[
+  {
+    "id": "perf-001",
+    "scenario": "Lighthouse Performance Audit - Desktop",
+    "description": "Measure Lighthouse performance score on desktop viewport",
+    "test_type": "performance",
+    "metric_target": "Performance Metrics",
+    "params": {
+      "viewport": "desktop",
+      "throttle": "no-throttle",
+      "categories": ["performance", "accessibility", "best-practices", "seo"]
+    }
+  },
+  {
+    "id": "perf-002",
+    "scenario": "Lighthouse Performance Audit - Mobile",
+    "description": "Measure Lighthouse performance score on mobile viewport",
+    "test_type": "performance",
+    "metric_target": "Performance Metrics",
+    "params": {
+      "viewport": "mobile",
+      "throttle": "4g",
+      "categories": ["performance", "accessibility", "best-practices", "seo"]
+    }
+  },
+  {
+    "id": "bundle-001",
+    "scenario": "Bundle Chunk Analysis - Initial Load",
+    "description": "Verify main.js and vendor chunks are properly split",
+    "test_type": "bundle_optimization",
+    "metric_target": "Bundle Optimization",
+    "params": {
+      "chunks_to_verify": ["three-core", "r3f-vendor", "motion-vendor", "scroll-vendor"],
+      "max_main_size_kb": 50,
+      "max_three_size_kb": 700
+    }
+  },
+  {
+    "id": "bundle-002",
+    "scenario": "Code Splitting Validation - Lazy Components",
+    "description": "Check that NeuralBackground, SkillsOrbit, and other components are lazy-loaded",
+    "test_type": "bundle_optimization",
+    "metric_target": "Bundle Optimization",
+    "params": {
+      "lazy_components": ["NeuralBackground", "FloatingIdentity", "ProjectsConstellation", "SkillsOrbit", "ExperienceTimeline", "ContactPortal"]
+    }
+  },
+  {
+    "id": "load-001",
+    "scenario": "NeuralLoader Display - Page Load",
+    "description": "Verify NeuralLoader appears while 3D assets are loading",
+    "test_type": "loading_experience",
+    "metric_target": "Loading Experience",
+    "params": {
+      "timeout_ms": 3000,
+      "check_element": ".neural-loader-wrapper",
+      "expected_state": "visible"
+    }
+  },
+  {
+    "id": "load-002",
+    "scenario": "3D Asset Loading - useProgress Hook",
+    "description": "Validate useProgress hook correctly tracks 3D texture/geometry loading to 100%",
+    "test_type": "loading_experience",
+    "metric_target": "Loading Experience",
+    "params": {
+      "timeout_ms": 5000,
+      "progress_target": 100,
+      "abort_on_error": false
+    }
+  },
+  {
+    "id": "load-003",
+    "scenario": "Lenis Scroll Ready - Initialization",
+    "description": "Check Lenis scroll engine initializes within 150ms without FOUC",
+    "test_type": "loading_experience",
+    "metric_target": "Loading Experience",
+    "params": {
+      "timeout_ms": 200,
+      "check_lenis_ready": true,
+      "fouc_check": true
+    }
+  },
+  {
+    "id": "load-004",
+    "scenario": "Content Visibility - Post-Load",
+    "description": "Verify main content appears after loading state completes",
+    "test_type": "loading_experience",
+    "metric_target": "Loading Experience",
+    "params": {
+      "timeout_ms": 5000,
+      "check_element": "main.neural-flux-main",
+      "expected_state": "visible"
+    }
+  },
+  {
+    "id": "ux-001",
+    "scenario": "Magnetic Cursor - Hover Interactive Elements",
+    "description": "Test cursor stickiness when hovering over links and buttons",
+    "test_type": "ux_interaction",
+    "metric_target": "UX Interaction Quality",
+    "params": {
+      "target_selectors": ["a", "button", "[data-cursor]"],
+      "stickiness_threshold": 0.15,
+      "animation_frame_check": true
+    }
+  },
+  {
+    "id": "ux-002",
+    "scenario": "Cursor Fade - Window Boundary",
+    "description": "Verify cursor opacity fades to 0 on mouseleave, restores on mouseenter",
+    "test_type": "ux_interaction",
+    "metric_target": "UX Interaction Quality",
+    "params": {
+      "target_event": "mouseleave",
+      "expected_opacity": 0,
+      "transition_duration_ms": 300
+    }
+  },
+  {
+    "id": "ux-003",
+    "scenario": "Dynamic SEO Titles - Scroll Sections",
+    "description": "Test document title changes as user scrolls through sections",
+    "test_type": "ux_interaction",
+    "metric_target": "UX Interaction Quality",
+    "params": {
+      "sections": ["hero", "about", "projects", "skills", "experience", "contact"],
+      "title_pattern": "Alex Dev | {section_name}",
+      "helmet_provider_active": true
+    }
+  },
+  {
+    "id": "ux-004",
+    "scenario": "Navigation Active Section - Scroll Tracking",
+    "description": "Verify OrbitalNavigation activeSection updates as scrolling occurs",
+    "test_type": "ux_interaction",
+    "metric_target": "UX Interaction Quality",
+    "params": {
+      "scroll_positions": [0, 0.17, 0.33, 0.50, 0.67, 0.83, 1.0],
+      "expected_sections": ["hero", "hero", "about", "projects", "skills", "experience", "contact"]
+    }
+  },
+  {
+    "id": "perf-003",
+    "scenario": "Core Web Vitals - LCP (Largest Contentful Paint)",
+    "description": "Measure LCP target < 2.5s",
+    "test_type": "performance",
+    "metric_target": "Performance Metrics",
+    "params": {
+      "metric_name": "LCP",
+      "target_ms": 2500
+    }
+  },
+  {
+    "id": "perf-004",
+    "scenario": "Core Web Vitals - FID (First Input Delay)",
+    "description": "Measure FID target < 100ms (responsive interactions)",
+    "test_type": "performance",
+    "metric_target": "Performance Metrics",
+    "params": {
+      "metric_name": "FID",
+      "target_ms": 100
+    }
+  },
+  {
+    "id": "perf-005",
+    "scenario": "Core Web Vitals - CLS (Cumulative Layout Shift)",
+    "description": "Measure CLS target < 0.1 (visual stability)",
+    "test_type": "performance",
+    "metric_target": "Performance Metrics",
+    "params": {
+      "metric_name": "CLS",
+      "target_value": 0.1
+    }
+  }
+]
