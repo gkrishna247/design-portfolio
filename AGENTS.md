@@ -26,14 +26,15 @@ This repository hosts a high-end, award-winning caliber portfolio. The core desi
   - Defining the "Implementation Plan" for new features.
   - Researching new R3F techniques or shader optimizations.
   - Ensuring the "Neural Flux" aesthetic is preserved across modules.
-- **Tools**: `implementation_plan.md`, `design_critique` skill.
+- **Tools**: `implementation_plan.md`, `design_critique`, `state_manager`.
 
 ### 🔨 Execution Agent (The Builder)
 **Focus**: Implementation, bug fixing, maintenance.
 - **Responsibilities**:
   - Writing code strictly according to plans.
   - Running `npm run lint` and `npm run build` before every commit.
-  - Using ``r3f_component_gen`` for consistent 3D code.
+  - Using `r3f_component_gen` for consistent 3D code.
+- **Tools**: `r3f_component_gen`, `code_linter`, `state_manager`.
 - **Constraints**:
   - **NEVER** break the build. Run verification steps constantly.
   - **NEVER** introduce regression in animation smoothness (60fps target).
@@ -46,6 +47,7 @@ This repository hosts a high-end, award-winning caliber portfolio. The core desi
   - Checking bundle sizes via `npm run build` output.
   - Verifying "Design cohesion" (colors, typography).
   - **Visual QA**: Detect "Jank" or frame drops in complex scenes (mandate `motion_guide` compliance).
+- **Tools**: `build_verify`, `code_linter`, `design_critique`.
 
 ## 🛑 Global Rules
 1.  **Zero Console Errors**: The console must be clean in Dev and Prod.

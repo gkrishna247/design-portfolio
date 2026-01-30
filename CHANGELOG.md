@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [2.1.1] - 2026-01-30
+
+### Documentation
+- **README**: Comprehensive rewrite with detailed feature list based on line-by-line codebase analysis.
+  - Added Performance section (lazy loading, memoization, responsive particles).
+  - Added Accessibility section (skip link, reduced motion, ARIA labels, focus states).
+  - Added SEO/PWA section (Open Graph, sitemap, manifest).
+  - Added project structure diagram.
+  - Updated Tech Stack to table format with testing tools.
+- **AGENTS**: Updated agent roles with available skills (`build_verify`, `code_linter`, `state_manager`).
+
 ## [2.1.0] - 2026-01-28
 
 ### Added
