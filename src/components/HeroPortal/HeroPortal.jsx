@@ -81,20 +81,33 @@ export default function HeroPortal({ isLoaded }) {
 
     // Optimized: Event listener using motion values directly
     useEffect(() => {
+        let rafId = null
+
         const handleMouseMove = (e) => {
             if (!containerRef.current) return
 
-            const rect = containerRef.current.getBoundingClientRect()
-            const x = (e.clientX - rect.left) / rect.width
-            const y = (e.clientY - rect.top) / rect.height
+            const clientX = e.clientX
+            const clientY = e.clientY
 
-            mouseX.set(x)
-            mouseY.set(y)
+            if (rafId) return
+
+            rafId = requestAnimationFrame(() => {
+                if (!containerRef.current) return
+
+                const rect = containerRef.current.getBoundingClientRect()
+                const x = (clientX - rect.left) / rect.width
+                const y = (clientY - rect.top) / rect.height
+
+                mouseX.set(x)
+                mouseY.set(y)
+                rafId = null
+            })
         }
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true })
         return () => {
             window.removeEventListener('mousemove', handleMouseMove)
+            if (rafId) cancelAnimationFrame(rafId)
         }
     }, [mouseX, mouseY])
 
