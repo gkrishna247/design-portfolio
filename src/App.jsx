@@ -38,9 +38,10 @@ function App() {
   })
 
   // Reduce spring intensity for users who prefer reduced motion
-  const springConfig = prefersReducedMotion
+  const springConfig = useMemo(() => (prefersReducedMotion
     ? { stiffness: 300, damping: 50, restDelta: 0.01 }
     : { stiffness: 100, damping: 30, restDelta: 0.001 }
+  ), [prefersReducedMotion])
 
   const smoothProgress = useSpring(scrollYProgress, springConfig)
 
