@@ -1,26 +1,45 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useAnimationFrame } from 'framer-motion'
-import { useMouseMotion } from '../../context/MouseMotionContext'
+import { useMouse } from '../../contexts/MouseContext'
 import './MagneticCursor.css'
 
 /**
  * Instant arrow cursor - no lag, direct DOM transforms.
  */
 export default function MagneticCursor() {
+    const { mouseRef, subscribe } = useMouse()
     const arrowRef = useRef(null)
-    const { mouseX, mouseY } = useMouseMotion()
-    const lastPos = useRef({ x: 0, y: 0 })
+    const rafId = useRef(null)
 
-    // Use animation frame for smooth updates without redundant DOM writes
-    useAnimationFrame(() => {
-        const x = mouseX.get()
-        const y = mouseY.get()
-
-        if (arrowRef.current && (x !== lastPos.current.x || y !== lastPos.current.y)) {
-            arrowRef.current.style.transform = `translate(${x}px, ${y}px)`
-            lastPos.current = { x, y }
-        }
+    // Check touch capability immediately to avoid setting up listeners on mobile
+    const [isTouchDevice] = useState(() => {
+        if (typeof window === 'undefined') return false
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0
     })
+
+    // Direct DOM update - no React, no springs, instant
+    const updateCursor = useCallback(() => {
+        if (arrowRef.current && mouseRef.current) {
+            const { x, y } = mouseRef.current
+            arrowRef.current.style.transform = `translate(${x}px, ${y}px)`
+        }
+        rafId.current = null
+    }, [mouseRef])
+
+    // Subscribe to global mouse moves via context
+    useEffect(() => {
+        if (isTouchDevice) return
+
+        const unsubscribe = subscribe(() => {
+            if (!rafId.current) {
+                rafId.current = requestAnimationFrame(updateCursor)
+            }
+        })
+
+        return () => {
+            unsubscribe()
+            if (rafId.current) cancelAnimationFrame(rafId.current)
+        }
+    }, [subscribe, updateCursor, isTouchDevice])
 
     const handleMouseDown = useCallback(() => {
         arrowRef.current?.classList.add('clicking')
@@ -43,6 +62,8 @@ export default function MagneticCursor() {
     }, [])
 
     useEffect(() => {
+        if (isTouchDevice) return
+
         window.addEventListener('mousedown', handleMouseDown, { passive: true })
         window.addEventListener('mouseup', handleMouseUp, { passive: true })
         document.addEventListener('mouseover', handleMouseOver, { passive: true })
@@ -54,13 +75,7 @@ export default function MagneticCursor() {
             document.removeEventListener('mouseover', handleMouseOver)
             document.removeEventListener('mouseout', handleMouseOut)
         }
-    }, [handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut])
-
-    // Hide on touch devices
-    const [isTouchDevice, setIsTouchDevice] = useState(false)
-    useEffect(() => {
-        setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
-    }, [])
+    }, [handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut, isTouchDevice])
 
     if (isTouchDevice) return null
 

@@ -2,7 +2,7 @@ import React, { useRef, useMemo, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Points, PointMaterial } from '@react-three/drei'
 import * as THREE from 'three'
-import { useMouseMotion } from '../../context/MouseMotionContext'
+import { useMouse } from '../../contexts/MouseContext'
 import './NeuralBackground.css'
 
 // Particle counts - responsive for mobile performance
@@ -10,7 +10,7 @@ const PARTICLE_COUNT_DESKTOP = 1500
 const PARTICLE_COUNT_MOBILE = 500
 
 // Particle system that reacts to scroll
-function NeuralParticles({ scrollProgress, particleCount, mouseX, mouseY }) {
+function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialized }) {
     const ref = useRef()
 
     // Generate particles in a volumetric space
@@ -35,6 +35,16 @@ function NeuralParticles({ scrollProgress, particleCount, mouseX, mouseY }) {
     useFrame((state, delta) => {
         if (!ref.current) return
 
+        // Compute normalized mouse position from shared ref
+        let mouseX = 0
+        let mouseY = 0
+
+        if (mouseRef && mouseRef.current && isInitialized && isInitialized.current) {
+            const { clientX, clientY } = mouseRef.current
+            mouseX = (clientX / window.innerWidth) * 2 - 1
+            mouseY = -(clientY / window.innerHeight) * 2 + 1
+        }
+
         // Base rotation
         ref.current.rotation.y += delta * 0.05
         ref.current.rotation.x += delta * 0.02
@@ -44,8 +54,8 @@ function NeuralParticles({ scrollProgress, particleCount, mouseX, mouseY }) {
         const currentY = -(mouseY.get() / window.innerHeight) * 2 + 1
 
         // Mouse influence
-        ref.current.rotation.x += (currentY * 0.3 - ref.current.rotation.x) * 0.02
-        ref.current.rotation.y += (currentX * 0.3 - ref.current.rotation.y) * 0.02
+        ref.current.rotation.x += (mouseY * 0.3 - ref.current.rotation.x) * 0.02
+        ref.current.rotation.y += (mouseX * 0.3 - ref.current.rotation.y) * 0.02
 
         // Scroll influence - expand/contract
         const scrollVal = scrollProgress?.get() || 0
@@ -168,7 +178,7 @@ function ConnectionLines() {
 function NeuralBackground({ scrollProgress }) {
     // Responsive particle count for mobile performance
     const [particleCount, setParticleCount] = useState(PARTICLE_COUNT_DESKTOP)
-    const { mouseX, mouseY } = useMouseMotion()
+    const { mouseRef, isInitialized } = useMouse()
 
     useEffect(() => {
         const mobileQuery = window.matchMedia('(max-width: 768px)')
@@ -193,8 +203,8 @@ function NeuralBackground({ scrollProgress }) {
                 <NeuralParticles
                     scrollProgress={scrollProgress}
                     particleCount={particleCount}
-                    mouseX={mouseX}
-                    mouseY={mouseY}
+                    mouseRef={mouseRef}
+                    isInitialized={isInitialized}
                 />
                 <GlowingOrbs />
                 <ConnectionLines />
