@@ -75,11 +75,12 @@ function App() {
      * - document.readyState: Fires before layout stabilizes
      * - Removing delay: Causes visible content flash
      */
-    setTimeout(() => setIsLoaded(true), 100)
+    const loadTimeout = setTimeout(() => setIsLoaded(true), 100)
 
     return () => {
       lenis.destroy()
       cancelAnimationFrame(rafId)
+      clearTimeout(loadTimeout)
     }
   }, [prefersReducedMotion])
 
