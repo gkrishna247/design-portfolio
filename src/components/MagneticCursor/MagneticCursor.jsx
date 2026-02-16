@@ -112,13 +112,7 @@ export default function MagneticCursor() {
 
             if (rafId.current) cancelAnimationFrame(rafId.current)
         }
-    }, [handleMouseMove, handleMouseDown, handleMouseUp])
-
-    // Hide on touch devices
-    const [isTouchDevice, setIsTouchDevice] = useState(false)
-    useEffect(() => {
-        setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
-    }, [])
+    }, [handleMouseDown, handleMouseUp, isTouchDevice])
 
     if (isTouchDevice) return null
 

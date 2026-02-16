@@ -1,6 +1,7 @@
 import { render, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import MagneticCursor from './MagneticCursor'
+import { MouseProvider } from '../../contexts/MouseContext'
 import React from 'react'
 
 describe('MagneticCursor', () => {
@@ -21,7 +22,11 @@ describe('MagneticCursor', () => {
         el.setAttribute('data-cursor', 'true')
         document.body.appendChild(el)
 
-        const { container } = render(<MagneticCursor />)
+        const { container } = render(
+            <MouseProvider>
+                <MagneticCursor />
+            </MouseProvider>
+        )
         // Debug
         // console.log(container.innerHTML)
 
@@ -41,7 +46,11 @@ describe('MagneticCursor', () => {
     })
 
     it('attaches listeners to dynamically added data-cursor elements', async () => {
-        render(<MagneticCursor />)
+        render(
+            <MouseProvider>
+                <MagneticCursor />
+            </MouseProvider>
+        )
 
         const cursor = document.querySelector('.cursor-arrow')
 
@@ -66,7 +75,11 @@ describe('MagneticCursor', () => {
     })
 
     it('handles nested data-cursor elements being added', async () => {
-        render(<MagneticCursor />)
+        render(
+            <MouseProvider>
+                <MagneticCursor />
+            </MouseProvider>
+        )
         const cursor = document.querySelector('.cursor-arrow')
 
         const container = document.createElement('div')
@@ -86,7 +99,11 @@ describe('MagneticCursor', () => {
     })
 
     it('handles attribute changes', async () => {
-        render(<MagneticCursor />)
+        render(
+            <MouseProvider>
+                <MagneticCursor />
+            </MouseProvider>
+        )
         const cursor = document.querySelector('.cursor-arrow')
         const el = document.createElement('div')
         document.body.appendChild(el)
