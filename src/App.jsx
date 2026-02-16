@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, lazy, Suspense, useMemo } from 'react'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
+import { MouseMotionProvider } from './context/MouseMotionContext'
 
 // Eagerly loaded components (above the fold / critical path)
 import MagneticCursor from './components/MagneticCursor/MagneticCursor'
@@ -37,9 +38,10 @@ function App() {
   })
 
   // Reduce spring intensity for users who prefer reduced motion
-  const springConfig = prefersReducedMotion
+  const springConfig = useMemo(() => (prefersReducedMotion
     ? { stiffness: 300, damping: 50, restDelta: 0.01 }
     : { stiffness: 100, damping: 30, restDelta: 0.001 }
+  ), [prefersReducedMotion])
 
   const smoothProgress = useSpring(scrollYProgress, springConfig)
 
@@ -74,11 +76,12 @@ function App() {
      * - document.readyState: Fires before layout stabilizes
      * - Removing delay: Causes visible content flash
      */
-    setTimeout(() => setIsLoaded(true), 100)
+    const loadTimeout = setTimeout(() => setIsLoaded(true), 100)
 
     return () => {
       lenis.destroy()
       cancelAnimationFrame(rafId)
+      clearTimeout(loadTimeout)
     }
   }, [prefersReducedMotion])
 
@@ -97,8 +100,9 @@ function App() {
   }, [scrollYProgress])
 
   return (
-    <div className="neural-flux-app" ref={containerRef}>
-      {/* Skip link for keyboard users - WCAG 2.4.1 */}
+    <MouseMotionProvider>
+      <div className="neural-flux-app" ref={containerRef}>
+        {/* Skip link for keyboard users - WCAG 2.4.1 */}
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
@@ -170,7 +174,8 @@ function App() {
         </main>
       </AnimatePresence>
 
-    </div>
+      </div>
+    </MouseMotionProvider>
   )
 }
 

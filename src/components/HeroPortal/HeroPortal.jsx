@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion'
+import { useMouse } from '../../contexts/MouseContext'
 import './HeroPortal.css'
 
 // Text scramble effect hook
@@ -50,6 +51,9 @@ export default function HeroPortal({ isLoaded }) {
     const mouseX = useMotionValue(0.5)
     const mouseY = useMotionValue(0.5)
 
+    // Get global mouse coordinates
+    const { mouseX: globalX, mouseY: globalY } = useMouseMotion()
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end start"]
@@ -79,24 +83,21 @@ export default function HeroPortal({ isLoaded }) {
     const scrambledName = useScrambleText('ALEX.DEV', isLoaded)
     const scrambledTitle = useScrambleText('AI ENGINEER', isLoaded)
 
+    const { subscribe } = useMouse()
+
     // Optimized: Event listener using motion values directly
     useEffect(() => {
-        const handleMouseMove = (e) => {
+        const unsubscribe = subscribe((e) => {
             if (!containerRef.current) return
 
-            const rect = containerRef.current.getBoundingClientRect()
-            const x = (e.clientX - rect.left) / rect.width
-            const y = (e.clientY - rect.top) / rect.height
+        const rect = containerRef.current.getBoundingClientRect()
 
             mouseX.set(x)
             mouseY.set(y)
-        }
+        })
 
-        window.addEventListener('mousemove', handleMouseMove, { passive: true })
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove)
-        }
-    }, [mouseX, mouseY])
+        return () => unsubscribe()
+    }, [subscribe, mouseX, mouseY])
 
     return (
         <div className="hero-portal" ref={containerRef}>
