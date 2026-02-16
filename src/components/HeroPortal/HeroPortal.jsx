@@ -51,6 +51,9 @@ export default function HeroPortal({ isLoaded }) {
     const mouseX = useMotionValue(0.5)
     const mouseY = useMotionValue(0.5)
 
+    // Get global mouse coordinates
+    const { mouseX: globalX, mouseY: globalY } = useMouseMotion()
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end start"]
@@ -87,9 +90,7 @@ export default function HeroPortal({ isLoaded }) {
         const unsubscribe = subscribe((e) => {
             if (!containerRef.current) return
 
-            const rect = containerRef.current.getBoundingClientRect()
-            const x = (e.clientX - rect.left) / rect.width
-            const y = (e.clientY - rect.top) / rect.height
+        const rect = containerRef.current.getBoundingClientRect()
 
             mouseX.set(x)
             mouseY.set(y)

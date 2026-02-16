@@ -49,6 +49,10 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
         ref.current.rotation.y += delta * 0.05
         ref.current.rotation.x += delta * 0.02
 
+        // Get current mouse position from motion values
+        const currentX = (mouseX.get() / window.innerWidth) * 2 - 1
+        const currentY = -(mouseY.get() / window.innerHeight) * 2 + 1
+
         // Mouse influence
         ref.current.rotation.x += (mouseY * 0.3 - ref.current.rotation.x) * 0.02
         ref.current.rotation.y += (mouseX * 0.3 - ref.current.rotation.y) * 0.02
