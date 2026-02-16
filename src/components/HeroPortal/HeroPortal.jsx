@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionValueEvent } from 'framer-motion'
+import { useMouseMotion } from '../../context/MouseMotionContext'
 import './HeroPortal.css'
 
 // Text scramble effect hook
@@ -50,6 +51,9 @@ export default function HeroPortal({ isLoaded }) {
     const mouseX = useMotionValue(0.5)
     const mouseY = useMotionValue(0.5)
 
+    // Get global mouse coordinates
+    const { mouseX: globalX, mouseY: globalY } = useMouseMotion()
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end start"]
@@ -79,24 +83,21 @@ export default function HeroPortal({ isLoaded }) {
     const scrambledName = useScrambleText('ALEX.DEV', isLoaded)
     const scrambledTitle = useScrambleText('AI ENGINEER', isLoaded)
 
-    // Optimized: Event listener using motion values directly
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            if (!containerRef.current) return
+    // Update relative mouse position based on global mouse motion
+    const updateMouse = useCallback(() => {
+        if (!containerRef.current) return
 
-            const rect = containerRef.current.getBoundingClientRect()
-            const x = (e.clientX - rect.left) / rect.width
-            const y = (e.clientY - rect.top) / rect.height
+        const rect = containerRef.current.getBoundingClientRect()
 
-            mouseX.set(x)
-            mouseY.set(y)
-        }
+        const x = (globalX.get() - rect.left) / rect.width
+        const y = (globalY.get() - rect.top) / rect.height
 
-        window.addEventListener('mousemove', handleMouseMove, { passive: true })
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove)
-        }
-    }, [mouseX, mouseY])
+        mouseX.set(x)
+        mouseY.set(y)
+    }, [globalX, globalY, mouseX, mouseY])
+
+    useMotionValueEvent(globalX, "change", updateMouse)
+    useMotionValueEvent(globalY, "change", updateMouse)
 
     return (
         <div className="hero-portal" ref={containerRef}>

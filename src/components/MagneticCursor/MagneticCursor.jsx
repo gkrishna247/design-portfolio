@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
+import { useAnimationFrame } from 'framer-motion'
+import { useMouseMotion } from '../../context/MouseMotionContext'
 import './MagneticCursor.css'
 
 /**
@@ -6,24 +8,19 @@ import './MagneticCursor.css'
  */
 export default function MagneticCursor() {
     const arrowRef = useRef(null)
-    const rafId = useRef(null)
-    const mousePos = useRef({ x: 0, y: 0 })
+    const { mouseX, mouseY } = useMouseMotion()
+    const lastPos = useRef({ x: 0, y: 0 })
 
-    // Direct DOM update - no React, no springs, instant
-    const updateCursor = useCallback(() => {
-        if (arrowRef.current) {
-            arrowRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`
+    // Use animation frame for smooth updates without redundant DOM writes
+    useAnimationFrame(() => {
+        const x = mouseX.get()
+        const y = mouseY.get()
+
+        if (arrowRef.current && (x !== lastPos.current.x || y !== lastPos.current.y)) {
+            arrowRef.current.style.transform = `translate(${x}px, ${y}px)`
+            lastPos.current = { x, y }
         }
-        rafId.current = null
-    }, [])
-
-    const handleMouseMove = useCallback((e) => {
-        mousePos.current = { x: e.clientX, y: e.clientY }
-
-        if (!rafId.current) {
-            rafId.current = requestAnimationFrame(updateCursor)
-        }
-    }, [updateCursor])
+    })
 
     const handleMouseDown = useCallback(() => {
         arrowRef.current?.classList.add('clicking')
@@ -46,21 +43,18 @@ export default function MagneticCursor() {
     }, [])
 
     useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove, { passive: true })
         window.addEventListener('mousedown', handleMouseDown, { passive: true })
         window.addEventListener('mouseup', handleMouseUp, { passive: true })
         document.addEventListener('mouseover', handleMouseOver, { passive: true })
         document.addEventListener('mouseout', handleMouseOut, { passive: true })
 
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove)
             window.removeEventListener('mousedown', handleMouseDown)
             window.removeEventListener('mouseup', handleMouseUp)
             document.removeEventListener('mouseover', handleMouseOver)
             document.removeEventListener('mouseout', handleMouseOut)
-            if (rafId.current) cancelAnimationFrame(rafId.current)
         }
-    }, [handleMouseMove, handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut])
+    }, [handleMouseDown, handleMouseUp, handleMouseOver, handleMouseOut])
 
     // Hide on touch devices
     const [isTouchDevice, setIsTouchDevice] = useState(false)

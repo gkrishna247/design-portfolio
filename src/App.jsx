@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, lazy, Suspense, useMemo } from 'react'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
+import { MouseMotionProvider } from './context/MouseMotionContext'
 
 // Eagerly loaded components (above the fold / critical path)
 import MagneticCursor from './components/MagneticCursor/MagneticCursor'
@@ -97,8 +98,9 @@ function App() {
   }, [scrollYProgress])
 
   return (
-    <div className="neural-flux-app" ref={containerRef}>
-      {/* Skip link for keyboard users - WCAG 2.4.1 */}
+    <MouseMotionProvider>
+      <div className="neural-flux-app" ref={containerRef}>
+        {/* Skip link for keyboard users - WCAG 2.4.1 */}
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
@@ -170,7 +172,8 @@ function App() {
         </main>
       </AnimatePresence>
 
-    </div>
+      </div>
+    </MouseMotionProvider>
   )
 }
 
