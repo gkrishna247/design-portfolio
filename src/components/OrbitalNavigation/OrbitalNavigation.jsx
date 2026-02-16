@@ -17,6 +17,12 @@ const navItems = [
     return { ...item, x, y }
 })
 
+// Create an optimized lookup map for O(1) access
+const navItemsMap = navItems.reduce((acc, item) => {
+    acc[item.id] = item
+    return acc
+}, {})
+
 export default function OrbitalNavigation({ activeSection, scrollProgress }) {
     const [isExpanded, setIsExpanded] = useState(false)
     const [hoveredItem, setHoveredItem] = useState(null)
@@ -139,7 +145,7 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
                         exit={{ opacity: 0, x: 20 }}
                     >
                         <span className="mono">
-                            {navItems.find(n => n.id === hoveredItem)?.fullLabel}
+                            {navItemsMap[hoveredItem]?.fullLabel}
                         </span>
                     </motion.div>
                 )}
