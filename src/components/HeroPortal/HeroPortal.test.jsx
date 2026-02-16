@@ -1,6 +1,7 @@
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import HeroPortal from './HeroPortal'
+import { MouseProvider } from '../../contexts/MouseContext'
 import * as FramerMotion from 'framer-motion'
 
 // Mock Framer Motion
@@ -32,7 +33,13 @@ describe('HeroPortal Performance', () => {
     let mockSetX
 
     beforeEach(() => {
-        vi.useFakeTimers()
+        vi.useFakeTimers({
+            toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'requestAnimationFrame', 'cancelAnimationFrame']
+        })
+
+        // Ensure not touch device
+        delete window.ontouchstart
+        Object.defineProperty(navigator, 'maxTouchPoints', { value: 0, writable: true })
 
         // Setup spies for motion values
         mockSetX = vi.fn()
@@ -55,7 +62,11 @@ describe('HeroPortal Performance', () => {
     })
 
     it('throttles mousemove events using requestAnimationFrame', () => {
-        const { container } = render(<HeroPortal isLoaded={true} />)
+        const { container } = render(
+            <MouseProvider>
+                <HeroPortal isLoaded={true} />
+            </MouseProvider>
+        )
 
         // Mock getBoundingClientRect
         const element = container.firstChild
@@ -81,18 +92,16 @@ describe('HeroPortal Performance', () => {
         // If throttled (future state), this should be 0.
         const initialCallCount = mockSetX.mock.calls.length
 
-        // Log for debugging visibility
-        console.log(`Initial call count (synchronous): ${initialCallCount}`)
-
         // If we are strictly testing that it IS throttled, we expect this to be 0
         // However, to use this as a verification test that passes *after* optimization,
         // we should assert based on the *optimized* behavior.
 
         // Run any pending timers/animation frames
-        vi.runAllTimers() // or vi.runAllTicks() depending on implementation
+        act(() => {
+            vi.runAllTimers()
+        })
 
         const finalCallCount = mockSetX.mock.calls.length
-        console.log(`Final call count (after timers): ${finalCallCount}`)
 
         // Assertion for Optimized Behavior:
         // 1. Immediate calls should be 0 (because rAF is async)

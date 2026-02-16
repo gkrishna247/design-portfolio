@@ -51,9 +51,6 @@ export default function HeroPortal({ isLoaded }) {
     const mouseX = useMotionValue(0.5)
     const mouseY = useMotionValue(0.5)
 
-    // Get global mouse coordinates
-    const { mouseX: globalX, mouseY: globalY } = useMouseMotion()
-
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end start"]
@@ -87,16 +84,32 @@ export default function HeroPortal({ isLoaded }) {
 
     // Optimized: Event listener using motion values directly
     useEffect(() => {
+        let rafId = null
+
         const unsubscribe = subscribe((e) => {
             if (!containerRef.current) return
 
-        const rect = containerRef.current.getBoundingClientRect()
+            if (rafId) return
 
-            mouseX.set(x)
-            mouseY.set(y)
+            const { clientX, clientY } = e
+
+            rafId = requestAnimationFrame(() => {
+                if (containerRef.current) {
+                    const rect = containerRef.current.getBoundingClientRect()
+                    const x = (clientX - rect.left) / rect.width
+                    const y = (clientY - rect.top) / rect.height
+
+                    mouseX.set(x)
+                    mouseY.set(y)
+                }
+                rafId = null
+            })
         })
 
-        return () => unsubscribe()
+        return () => {
+            unsubscribe()
+            if (rafId) cancelAnimationFrame(rafId)
+        }
     }, [subscribe, mouseX, mouseY])
 
     return (

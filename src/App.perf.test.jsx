@@ -8,7 +8,7 @@ vi.mock('framer-motion', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
-    useSpring: vi.fn((source, config) => {
+    useSpring: vi.fn((_source, _config) => {
         // Return a dummy motion value to satisfy usage
         return { get: () => 0, onChange: () => {} }
     }),
