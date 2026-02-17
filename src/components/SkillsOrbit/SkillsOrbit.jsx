@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, memo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import './SkillsOrbit.css'
 
@@ -35,7 +35,7 @@ const skillCategories = [
     }
 ]
 
-function SkillOrbitRing({ category, index, total, isActive, onHover }) {
+const SkillOrbitRing = memo(function SkillOrbitRing({ category, index, total, isActive, onHover }) {
     const angle = (index / total) * 360
     const radius = 200 + index * 30
 
@@ -92,7 +92,7 @@ function SkillOrbitRing({ category, index, total, isActive, onHover }) {
             })}
         </motion.div>
     )
-}
+})
 
 export default function SkillsOrbit() {
     const containerRef = useRef(null)
