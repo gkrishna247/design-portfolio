@@ -9,7 +9,6 @@ describe('MagneticCursor', () => {
         vi.stubGlobal('requestAnimationFrame', (cb) => setTimeout(cb, 0))
         vi.stubGlobal('cancelAnimationFrame', (id) => clearTimeout(id))
         // Ensure not touch device
-        // 'ontouchstart' in window check: we need to ensure the property is NOT present
         try { delete window.ontouchstart } catch (e) {
             // ignore
         }
@@ -17,7 +16,7 @@ describe('MagneticCursor', () => {
         document.body.innerHTML = ''
     })
 
-    it('attaches listeners to existing data-cursor elements', () => {
+    it('reacts to hover on existing data-cursor elements', () => {
         const el = document.createElement('div')
         el.setAttribute('data-cursor', 'true')
         document.body.appendChild(el)
@@ -27,8 +26,6 @@ describe('MagneticCursor', () => {
                 <MagneticCursor />
             </MouseProvider>
         )
-        // Debug
-        // console.log(container.innerHTML)
 
         const cursor = container.querySelector('.cursor-arrow')
         expect(cursor).not.toBeNull()
@@ -37,7 +34,8 @@ describe('MagneticCursor', () => {
         expect(cursor.classList.contains('hovering')).toBe(false)
 
         // Simulate hover
-        const event = new MouseEvent('mouseenter', { bubbles: false })
+        // Use mouseover with bubbles: true for delegation
+        const event = new MouseEvent('mouseover', { bubbles: true })
         act(() => {
             el.dispatchEvent(event)
         })
@@ -45,7 +43,7 @@ describe('MagneticCursor', () => {
         expect(cursor.classList.contains('hovering')).toBe(true)
     })
 
-    it('attaches listeners to dynamically added data-cursor elements', async () => {
+    it('reacts to hover on dynamically added data-cursor elements', () => {
         render(
             <MouseProvider>
                 <MagneticCursor />
@@ -57,24 +55,26 @@ describe('MagneticCursor', () => {
         const el = document.createElement('div')
         el.setAttribute('data-cursor', 'true')
 
-        await act(async () => {
+        // Add to DOM
+        act(() => {
             document.body.appendChild(el)
-            // Wait for MutationObserver
-            await new Promise(resolve => setTimeout(resolve, 0))
         })
 
+        // Simulate hover
         act(() => {
-            el.dispatchEvent(new MouseEvent('mouseenter'))
+            el.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
         })
         expect(cursor.classList.contains('hovering')).toBe(true)
 
+        // Simulate leave
         act(() => {
-            el.dispatchEvent(new MouseEvent('mouseleave'))
+            // Move to body
+            el.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, relatedTarget: document.body }))
         })
         expect(cursor.classList.contains('hovering')).toBe(false)
     })
 
-    it('handles nested data-cursor elements being added', async () => {
+    it('handles nested data-cursor elements being added', () => {
         render(
             <MouseProvider>
                 <MagneticCursor />
@@ -87,18 +87,17 @@ describe('MagneticCursor', () => {
         el.setAttribute('data-cursor', 'true')
         container.appendChild(el)
 
-        await act(async () => {
+        act(() => {
             document.body.appendChild(container)
-            await new Promise(resolve => setTimeout(resolve, 0))
         })
 
         act(() => {
-            el.dispatchEvent(new MouseEvent('mouseenter'))
+            el.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
         })
         expect(cursor.classList.contains('hovering')).toBe(true)
     })
 
-    it('handles attribute changes', async () => {
+    it('handles attribute changes', () => {
         render(
             <MouseProvider>
                 <MagneticCursor />
@@ -108,20 +107,20 @@ describe('MagneticCursor', () => {
         const el = document.createElement('div')
         document.body.appendChild(el)
 
-        // Initially no cursor
+        // Initially no cursor attribute, so mouseover shouldn't trigger hover
         act(() => {
-            el.dispatchEvent(new MouseEvent('mouseenter'))
+            el.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
         })
         expect(cursor.classList.contains('hovering')).toBe(false)
 
         // Add attribute
-        await act(async () => {
+        act(() => {
             el.setAttribute('data-cursor', 'true')
-            await new Promise(resolve => setTimeout(resolve, 0))
         })
 
+        // Dispatch again
         act(() => {
-            el.dispatchEvent(new MouseEvent('mouseenter'))
+            el.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
         })
         expect(cursor.classList.contains('hovering')).toBe(true)
     })

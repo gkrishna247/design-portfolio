@@ -55,60 +55,31 @@ export default function MagneticCursor() {
         window.addEventListener('mousedown', handleMouseDown, { passive: true })
         window.addEventListener('mouseup', handleMouseUp, { passive: true })
 
-        const handleMouseEnter = () => arrowRef.current?.classList.add('hovering')
-        const handleMouseLeave = () => arrowRef.current?.classList.remove('hovering')
-
-        const attach = (el) => {
-            el.addEventListener('mouseenter', handleMouseEnter)
-            el.addEventListener('mouseleave', handleMouseLeave)
+        const handleMouseOver = (e) => {
+            if (e.target.closest('[data-cursor]')) {
+                arrowRef.current?.classList.add('hovering')
+            }
         }
 
-        const detach = (el) => {
-            el.removeEventListener('mouseenter', handleMouseEnter)
-            el.removeEventListener('mouseleave', handleMouseLeave)
-        }
-
-        // Initial scan
-        document.querySelectorAll('[data-cursor]').forEach(attach)
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList') {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.nodeType === 1) {
-                            if (node.matches('[data-cursor]')) attach(node)
-                            node.querySelectorAll('[data-cursor]').forEach(attach)
-                        }
-                    })
-                    mutation.removedNodes.forEach((node) => {
-                        if (node.nodeType === 1) {
-                            if (node.matches('[data-cursor]')) detach(node)
-                            node.querySelectorAll('[data-cursor]').forEach(detach)
-                        }
-                    })
-                } else if (mutation.type === 'attributes') {
-                    if (mutation.target.hasAttribute('data-cursor')) {
-                        attach(mutation.target)
-                    } else {
-                        detach(mutation.target)
-                    }
+        const handleMouseOut = (e) => {
+            const cursorTarget = e.target.closest('[data-cursor]')
+            if (cursorTarget) {
+                // If we're moving to an element that is NOT inside the same cursor target, remove hover
+                if (!e.relatedTarget || !cursorTarget.contains(e.relatedTarget)) {
+                    arrowRef.current?.classList.remove('hovering')
                 }
-            })
-        })
+            }
+        }
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['data-cursor']
-        })
+        document.addEventListener('mouseover', handleMouseOver, { passive: true })
+        document.addEventListener('mouseout', handleMouseOut, { passive: true })
 
         return () => {
             window.removeEventListener('mousedown', handleMouseDown)
             window.removeEventListener('mouseup', handleMouseUp)
 
-            observer.disconnect()
-            document.querySelectorAll('[data-cursor]').forEach(detach)
+            document.removeEventListener('mouseover', handleMouseOver)
+            document.removeEventListener('mouseout', handleMouseOut)
 
             if (rafId.current) cancelAnimationFrame(rafId.current)
         }
