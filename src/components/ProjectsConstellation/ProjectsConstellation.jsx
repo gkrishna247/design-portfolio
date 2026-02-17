@@ -7,6 +7,12 @@ import './ProjectsConstellation.css'
 const DOT_COUNT_DESKTOP = 20
 const DOT_COUNT_MOBILE = 8
 
+// Animation constants to avoid re-creation on every render
+const DOT_ANIMATION = {
+    opacity: [0.2, 0.8, 0.2],
+    scale: [1, 1.5, 1],
+}
+
 const ProjectCard = memo(function ProjectCard({ project, index, isActive, onToggle }) {
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
@@ -192,10 +198,7 @@ export default function ProjectsConstellation() {
                                 left: `${dot.left}%`,
                                 top: `${dot.top}%`,
                             }}
-                            animate={{
-                                opacity: [0.2, 0.8, 0.2],
-                                scale: [1, 1.5, 1],
-                            }}
+                            animate={DOT_ANIMATION}
                             transition={{
                                 duration: dot.duration,
                                 repeat: Infinity,
