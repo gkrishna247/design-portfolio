@@ -75,10 +75,11 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
 
 // Floating orbs with glow
 function GlowingOrbs() {
-    const groupRef = useRef()
+    const meshRef = useRef()
 
     // Shared geometry for better performance
     const geometry = useMemo(() => new THREE.IcosahedronGeometry(1, 1), [])
+    const dummy = useMemo(() => new THREE.Object3D(), [])
 
     const orbs = useMemo(() => {
         return Array.from({ length: 5 }, (_, i) => ({
@@ -89,40 +90,51 @@ function GlowingOrbs() {
             ],
             scale: 0.3 + Math.random() * 0.5,
             color: [`#a855f7`, `#3b82f6`, `#22d3ee`, `#ec4899`, `#10b981`][i],
-            phase: Math.random() * Math.PI * 2
+            phase: Math.random() * Math.PI * 2,
+            rotation: { x: 0, y: 0 }
         }))
     }, [])
 
-    useFrame((state, delta) => {
-        if (!groupRef.current) return
-        groupRef.current.children.forEach((orbMesh, i) => {
-            const orbData = orbs[i]
-            // Optimized: Use absolute time for stable oscillation instead of accumulation
-            orbMesh.position.y = orbData.initialPosition[1] + Math.sin(state.clock.elapsedTime + orbData.phase) * 0.5
+    useEffect(() => {
+        if (meshRef.current) {
+            orbs.forEach((orb, i) => {
+                const color = new THREE.Color(orb.color)
+                meshRef.current.setColorAt(i, color)
+            })
+            meshRef.current.instanceColor.needsUpdate = true
+        }
+    }, [orbs])
 
-            orbMesh.rotation.x += delta * 0.2
-            orbMesh.rotation.y += delta * 0.3
+    useFrame((state, delta) => {
+        if (!meshRef.current) return
+
+        orbs.forEach((orbData, i) => {
+            // Optimized: Use absolute time for stable oscillation instead of accumulation
+            const y = orbData.initialPosition[1] + Math.sin(state.clock.elapsedTime + orbData.phase) * 0.5
+
+            // Accumulate rotation
+            orbData.rotation.x += delta * 0.2
+            orbData.rotation.y += delta * 0.3
+
+            dummy.position.set(orbData.initialPosition[0], y, orbData.initialPosition[2])
+            dummy.rotation.set(orbData.rotation.x, orbData.rotation.y, 0)
+            dummy.scale.setScalar(orbData.scale)
+
+            dummy.updateMatrix()
+            meshRef.current.setMatrixAt(i, dummy.matrix)
         })
+        meshRef.current.instanceMatrix.needsUpdate = true
     })
 
     return (
-        <group ref={groupRef}>
-            {orbs.map((orb, i) => (
-                <mesh
-                    key={i}
-                    position={orb.initialPosition}
-                    scale={[orb.scale, orb.scale, orb.scale]}
-                    geometry={geometry}
-                >
-                    <meshBasicMaterial
-                        color={orb.color}
-                        transparent
-                        opacity={0.3}
-                        wireframe
-                    />
-                </mesh>
-            ))}
-        </group>
+        <instancedMesh ref={meshRef} args={[geometry, null, orbs.length]} frustumCulled={false}>
+            <meshBasicMaterial
+                transparent
+                opacity={0.3}
+                wireframe
+                vertexColors
+            />
+        </instancedMesh>
     )
 }
 
