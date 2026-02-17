@@ -1,20 +1,23 @@
-import { useEffect, useRef, useState, lazy, Suspense, useMemo } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense, useMemo, memo } from 'react'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
 
 // Eagerly loaded components (above the fold / critical path)
-import MagneticCursor from './components/MagneticCursor/MagneticCursor'
+import MagneticCursorComponent from './components/MagneticCursor/MagneticCursor'
 import OrbitalNavigation from './components/OrbitalNavigation/OrbitalNavigation'
-import HeroPortal from './components/HeroPortal/HeroPortal'
+import HeroPortalComponent from './components/HeroPortal/HeroPortal'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 
+const MagneticCursor = memo(MagneticCursorComponent)
+const HeroPortal = memo(HeroPortalComponent)
+
 // Lazy loaded components (deferred loading for better initial performance)
-const NeuralBackground = lazy(() => import('./components/NeuralBackground/NeuralBackground'))
-const FloatingIdentity = lazy(() => import('./components/FloatingIdentity/FloatingIdentity'))
-const ProjectsConstellation = lazy(() => import('./components/ProjectsConstellation/ProjectsConstellation'))
-const SkillsOrbit = lazy(() => import('./components/SkillsOrbit/SkillsOrbit'))
-const ExperienceTimeline = lazy(() => import('./components/ExperienceTimeline/ExperienceTimeline'))
-const ContactPortal = lazy(() => import('./components/ContactPortal/ContactPortal'))
+const NeuralBackground = memo(lazy(() => import('./components/NeuralBackground/NeuralBackground')))
+const FloatingIdentity = memo(lazy(() => import('./components/FloatingIdentity/FloatingIdentity')))
+const ProjectsConstellation = memo(lazy(() => import('./components/ProjectsConstellation/ProjectsConstellation')))
+const SkillsOrbit = memo(lazy(() => import('./components/SkillsOrbit/SkillsOrbit')))
+const ExperienceTimeline = memo(lazy(() => import('./components/ExperienceTimeline/ExperienceTimeline')))
+const ContactPortal = memo(lazy(() => import('./components/ContactPortal/ContactPortal')))
 
 // Styles
 import './styles/index.css'
