@@ -97,6 +97,22 @@ const ProjectCard = memo(function ProjectCard({ project, index, isActive, onTogg
     )
 })
 
+const ProjectList = memo(function ProjectList({ activeProject, onToggle }) {
+    return (
+        <div className="projects-grid">
+            {projects.map((project, index) => (
+                <ProjectCard
+                    key={project.id}
+                    project={project}
+                    index={index}
+                    isActive={activeProject === project.id}
+                    onToggle={onToggle}
+                />
+            ))}
+        </div>
+    )
+})
+
 export default function ProjectsConstellation() {
     const containerRef = useRef(null)
     const [activeProject, setActiveProject] = useState(null)
@@ -175,17 +191,7 @@ export default function ProjectsConstellation() {
             </div>
 
             {/* Project cards - alternating layout */}
-            <div className="projects-grid">
-                {projects.map((project, index) => (
-                    <ProjectCard
-                        key={project.id}
-                        project={project}
-                        index={index}
-                        isActive={activeProject === project.id}
-                        onToggle={handleProjectToggle}
-                    />
-                ))}
-            </div>
+            <ProjectList activeProject={activeProject} onToggle={handleProjectToggle} />
 
             {/* Background constellation dots - disabled for reduced motion */}
             {!prefersReducedMotion && (
