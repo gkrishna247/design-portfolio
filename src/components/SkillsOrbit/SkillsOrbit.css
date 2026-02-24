@@ -133,6 +133,11 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    --skill-opacity: 1;
+}
+
+.orbit-ring[data-active="false"] {
+    --skill-opacity: 0.3;
 }
 
 .orbit-ring-circle {
@@ -143,7 +148,7 @@
     transition: border-color var(--duration-normal);
 }
 
-.orbit-ring.active .orbit-ring-circle {
+.orbit-ring[data-active="true"] .orbit-ring-circle {
     border-color: var(--ring-color);
     border-style: solid;
 }

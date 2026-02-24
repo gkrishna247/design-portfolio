@@ -1,4 +1,4 @@
-import { useRef, useState, memo } from 'react'
+import { useRef, useState, memo, forwardRef, useEffect, createRef, useMemo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import './SkillsOrbit.css'
 
@@ -35,13 +35,14 @@ const skillCategories = [
     }
 ]
 
-const SkillOrbitRing = memo(function SkillOrbitRing({ category, index, total, isActive, onHover }) {
+const SkillOrbitRing = memo(forwardRef(function SkillOrbitRing({ category, index, total, onHover }, ref) {
     const angle = (index / total) * 360
     const radius = 200 + index * 30
 
     return (
         <motion.div
-            className={`orbit-ring ${isActive ? 'active' : ''}`}
+            ref={ref}
+            className="orbit-ring"
             style={{
                 '--ring-color': category.color,
                 '--rotation': `${angle}deg`,
@@ -51,6 +52,7 @@ const SkillOrbitRing = memo(function SkillOrbitRing({ category, index, total, is
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: index * 0.1 }}
+            data-active="true" // Default state
         >
             {/* Ring circle */}
             <div className="orbit-ring-circle" />
@@ -82,7 +84,7 @@ const SkillOrbitRing = memo(function SkillOrbitRing({ category, index, total, is
                             transform: `rotate(${skillAngle}deg) translateX(${radius}px) rotate(${-skillAngle}deg)`
                         }}
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: isActive ? 1 : 0.3 }}
+                        animate={{ opacity: 'var(--skill-opacity, 1)' }}
                         whileHover={{ scale: 1.1 }}
                         transition={{ delay: skillIndex * 0.05 }}
                     >
@@ -92,12 +94,28 @@ const SkillOrbitRing = memo(function SkillOrbitRing({ category, index, total, is
             })}
         </motion.div>
     )
-})
+}))
 
 export default function SkillsOrbit() {
     const containerRef = useRef(null)
+    // Create stable refs for each ring to avoid re-renders when passing ref callback
+    const ringRefs = useMemo(() => skillCategories.map(() => createRef()), [])
     const [activeCategory, setActiveCategory] = useState(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+
+    useEffect(() => {
+        ringRefs.forEach((ref, idx) => {
+            const el = ref.current
+            if (!el) return
+            const category = skillCategories[idx]
+            const isActive = activeCategory === null || activeCategory === category.name
+
+            const newValue = isActive ? 'true' : 'false'
+            if (el.dataset.active !== newValue) {
+                el.dataset.active = newValue
+            }
+        })
+    }, [activeCategory, ringRefs])
 
     return (
         <div className="skills-orbit" ref={containerRef}>
@@ -138,10 +156,10 @@ export default function SkillsOrbit() {
                 {skillCategories.map((category, index) => (
                     <SkillOrbitRing
                         key={category.name}
+                        ref={ringRefs[index]}
                         category={category}
                         index={index}
                         total={skillCategories.length}
-                        isActive={activeCategory === null || activeCategory === category.name}
                         onHover={setActiveCategory}
                     />
                 ))}
