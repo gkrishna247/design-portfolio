@@ -110,6 +110,23 @@
     box-shadow:
         0 0 40px color-mix(in srgb, var(--project-color) 35%, transparent),
         0 0 80px color-mix(in srgb, var(--project-color) 20%, transparent);
+    animation: active-card-pulse 3s ease-in-out infinite;
+}
+
+@keyframes active-card-pulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 40px color-mix(in srgb, var(--project-color) 35%, transparent),
+            0 0 80px color-mix(in srgb, var(--project-color) 20%, transparent);
+    }
+
+    50% {
+        box-shadow:
+            0 0 50px color-mix(in srgb, var(--project-color) 45%, transparent),
+            0 0 100px color-mix(in srgb, var(--project-color) 28%, transparent);
+    }
 }
 
 .project-card-glow {
@@ -126,7 +143,7 @@
 }
 
 .project-card:hover .project-card-glow {
-    opacity: 0.45;
+    opacity: 0.55;
 }
 
 /* Index number */
@@ -196,6 +213,13 @@
     border-radius: 100px;
     font-size: var(--text-xs);
     color: var(--text-secondary);
+    transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.tech-tag:hover {
+    border-color: var(--project-color, var(--neon-violet));
+    color: var(--text-primary);
+    background: rgba(168, 85, 247, 0.1);
 }
 
 /* Stats */
@@ -262,6 +286,7 @@
     height: 4px;
     background: var(--neon-violet);
     border-radius: 50%;
+    box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
 }
 
 /* CTA */

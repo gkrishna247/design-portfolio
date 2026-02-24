@@ -18,8 +18,8 @@
 .arrow-svg {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    transition: transform 0.1s ease-out;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(168, 85, 247, 0.3));
+    transition: transform 0.1s ease-out, filter 0.15s ease-out;
 }
 
 .arrow-path {
@@ -32,11 +32,11 @@
 /* Arrow glow */
 .arrow-glow {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 12px;
-    height: 12px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, transparent 70%);
+    top: 6px;
+    left: 6px;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, rgba(139, 92, 246, 0.3) 50%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     transition: transform 0.1s, opacity 0.1s;
@@ -53,8 +53,8 @@
 }
 
 .cursor-arrow.hovering .arrow-glow {
-    transform: scale(2);
-    opacity: 0.8;
+    transform: scale(2.5);
+    opacity: 0.9;
 }
 
 /* === Click State === */
@@ -65,6 +65,7 @@
 .cursor-arrow.clicking .arrow-path {
     fill: var(--neon-cyan, #22d3ee);
     stroke: white;
+    filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.6));
 }
 
 /* === Hide on Mobile === */

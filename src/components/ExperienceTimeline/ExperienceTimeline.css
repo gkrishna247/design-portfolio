@@ -133,7 +133,10 @@
 
 .timeline-card:hover .timeline-card-content {
     border-color: var(--exp-color);
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px color-mix(in srgb, var(--exp-color) 20%, transparent);
 }
 
 .timeline-card-glow {
@@ -157,7 +160,7 @@
 }
 
 .timeline-card:hover .timeline-card-glow {
-    opacity: 0.3;
+    opacity: 0.4;
 }
 
 /* Header */
@@ -276,6 +279,7 @@
     height: 8px;
     background: var(--exp-color);
     border-radius: 50%;
+    box-shadow: 0 0 10px var(--exp-color);
 }
 
 /* End indicator */

@@ -86,6 +86,9 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
+    box-shadow:
+        0 0 15px rgba(168, 85, 247, 0.3),
+        inset 0 0 20px rgba(168, 85, 247, 0.1);
 }
 
 .orbit-core-icon {
@@ -221,10 +224,10 @@
 
 .skills-list-category:hover {
     border-color: var(--category-color);
-    transform: translateY(-8px);
+    transform: translateY(-10px);
     box-shadow:
-        0 0 25px color-mix(in srgb, var(--category-color) 25%, transparent),
-        0 0 50px color-mix(in srgb, var(--category-color) 10%, transparent);
+        0 0 30px color-mix(in srgb, var(--category-color) 30%, transparent),
+        0 0 60px color-mix(in srgb, var(--category-color) 12%, transparent);
 }
 
 .category-header {
@@ -266,7 +269,8 @@
 .skill-pill:hover {
     border-color: var(--category-color);
     background: rgba(168, 85, 247, 0.15);
-    box-shadow: 0 0 15px color-mix(in srgb, var(--category-color) 25%, transparent);
+    box-shadow: 0 0 25px color-mix(in srgb, var(--category-color) 30%, transparent);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--category-color) 50%, transparent);
 }
 
 /* Responsive */
