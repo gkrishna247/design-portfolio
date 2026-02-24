@@ -1,48 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion'
 import { useMouse } from '../../contexts/MouseContext'
+import ScrambleText from './ScrambleText'
 import './HeroPortal.css'
-
-// Text scramble effect hook
-function useScrambleText(text, isActive) {
-    const [displayText, setDisplayText] = useState('')
-    const chars = '!<>-_\\/[]{}—=+*^?#_01アイウエオカキクケコ'
-
-    useEffect(() => {
-        if (!isActive) {
-            setDisplayText('')
-            return
-        }
-
-        let iteration = 0
-        const totalIterations = text.length * 2 // Ensure we complete all characters
-
-        const interval = setInterval(() => {
-            setDisplayText(
-                text
-                    .split('')
-                    .map((letter, index) => {
-                        if (index < Math.floor(iteration / 2)) {
-                            return text[index]
-                        }
-                        return chars[Math.floor(Math.random() * chars.length)]
-                    })
-                    .join('')
-            )
-
-            iteration++
-
-            if (iteration >= totalIterations) {
-                setDisplayText(text) // Ensure final text is correct
-                clearInterval(interval)
-            }
-        }, 50)
-
-        return () => clearInterval(interval)
-    }, [text, isActive])
-
-    return displayText || text // Fallback to full text
-}
 
 export default function HeroPortal({ isLoaded }) {
     const containerRef = useRef(null)
@@ -76,9 +36,6 @@ export default function HeroPortal({ isLoaded }) {
 
     const frag3X = useTransform(mouseX, [0, 1], [-10, 10])
     const frag3Y = useTransform(mouseY, [0, 1], [10, -10])
-
-    const scrambledName = useScrambleText('ALEX.DEV', isLoaded)
-    const scrambledTitle = useScrambleText('AI ENGINEER', isLoaded)
 
     const { subscribe } = useMouse()
 
@@ -166,18 +123,22 @@ export default function HeroPortal({ isLoaded }) {
                     </motion.div>
 
                     {/* Name with glitch effect */}
-                    <motion.h1
+                    <ScrambleText
+                        as={motion.h1}
+                        text="ALEX.DEV"
+                        isActive={isLoaded}
                         className="hero-name glitch"
                         style={{ y: titleYSpring }}
-                        data-text={scrambledName}
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.3 }}
                     >
-                        <span className="hero-name-text gradient-text-aurora">
-                            {scrambledName}
-                        </span>
-                    </motion.h1>
+                        {(scrambled) => (
+                            <span className="hero-name-text gradient-text-aurora">
+                                {scrambled}
+                            </span>
+                        )}
+                    </ScrambleText>
 
                     {/* Title */}
                     <motion.div
@@ -188,7 +149,12 @@ export default function HeroPortal({ isLoaded }) {
                         transition={{ duration: 1, delay: 0.6 }}
                     >
                         <div className="hero-title-line" />
-                        <h2 className="hero-title mono">{scrambledTitle}</h2>
+                        <ScrambleText
+                            as="h2"
+                            text="AI ENGINEER"
+                            isActive={isLoaded}
+                            className="hero-title mono"
+                        />
                         <div className="hero-title-line" />
                     </motion.div>
 
