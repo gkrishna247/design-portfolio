@@ -46,12 +46,18 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
         }
 
         // Base rotation
-        ref.current.rotation.y += delta * 0.05
-        ref.current.rotation.x += delta * 0.02
+        let rx = ref.current.rotation.x
+        let ry = ref.current.rotation.y
+
+        ry += delta * 0.05
+        rx += delta * 0.02
 
         // Mouse influence
-        ref.current.rotation.x += (mouseY * 0.3 - ref.current.rotation.x) * 0.02
-        ref.current.rotation.y += (mouseX * 0.3 - ref.current.rotation.y) * 0.02
+        rx += (mouseY * 0.3 - rx) * 0.02
+        ry += (mouseX * 0.3 - ry) * 0.02
+
+        ref.current.rotation.x = rx
+        ref.current.rotation.y = ry
 
         // Scroll influence - expand/contract
         const scrollVal = scrollProgress?.get() || 0
