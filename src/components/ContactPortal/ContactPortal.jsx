@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import './ContactPortal.css'
 
@@ -35,7 +35,6 @@ const contactLinks = [
 
 export default function ContactPortal() {
     const containerRef = useRef(null)
-    const [hoveredLink, setHoveredLink] = useState(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
     return (
@@ -115,13 +114,11 @@ export default function ContactPortal() {
                             href={link.url}
                             target={link.url.startsWith('http') ? '_blank' : undefined}
                             rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                            className={`contact-link ${hoveredLink === link.name ? 'active' : ''}`}
+                            className="contact-link"
                             style={{ '--link-color': link.color }}
                             initial={{ opacity: 0, y: 20 }}
                             animate={isInView ? { opacity: 1, y: 0 } : {}}
                             transition={{ delay: 0.9 + index * 0.1 }}
-                            onMouseEnter={() => setHoveredLink(link.name)}
-                            onMouseLeave={() => setHoveredLink(null)}
                             whileHover={{ y: -5 }}
                             data-cursor
                             data-cursor-text={link.name.toUpperCase()}
