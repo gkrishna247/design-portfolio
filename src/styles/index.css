@@ -344,24 +344,6 @@ a:focus-visible {
     0 0 16px rgba(168, 85, 247, 0.3);
 }
 
-.text-glow-pulse {
-  animation: text-glow-pulse-anim 3s ease-in-out infinite;
-}
-
-@keyframes text-glow-pulse-anim {
-  0%, 100% {
-    text-shadow:
-      0 0 8px rgba(168, 85, 247, 0.4),
-      0 0 16px rgba(168, 85, 247, 0.2);
-  }
-  50% {
-    text-shadow:
-      0 0 16px rgba(168, 85, 247, 0.7),
-      0 0 32px rgba(168, 85, 247, 0.4),
-      0 0 48px rgba(139, 92, 246, 0.2);
-  }
-}
-
 /* === GLASSMORPHISM - Enhanced === */
 .glass {
   background: var(--glass-bg);
