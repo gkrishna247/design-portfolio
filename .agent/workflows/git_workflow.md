@@ -8,7 +8,7 @@ Use this for proper version control practices and deployment.
 
 ---
 
-## Branch Naming Convention
+## Branch Naming
 
 | Type | Format | Example |
 |------|--------|---------|
@@ -16,157 +16,69 @@ Use this for proper version control practices and deployment.
 | Bug fix | `fix/[issue]` | `fix/cursor-jank` |
 | Refactor | `refactor/[name]` | `refactor/extract-hooks` |
 | Hotfix | `hotfix/[issue]` | `hotfix/build-error` |
-| Experiment | `experiment/[name]` | `experiment/new-shader` |
+| Design | `upgrade/[name]` | `upgrade/design-enhancements` |
 
 ---
 
-## Commit Message Convention
+## Commit Messages
 
 ### Format
 ```
 <type>(<scope>): <subject>
-
-[optional body]
-[optional footer]
 ```
 
 ### Types
-| Type | Use For |
-|------|---------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `style` | Visual/CSS changes |
-| `perf` | Performance improvement |
-| `refactor` | Code restructure |
-| `docs` | Documentation |
-| `chore` | Maintenance tasks |
-| `test` | Adding tests |
+| Type | Use For | Example |
+|------|---------|---------|
+| `feat` | New feature | `feat(hero): add parallax orbs` |
+| `fix` | Bug fix | `fix(cursor): resolve jank on scroll` |
+| `style` | Visual/CSS | `style(theme): increase neon glow` |
+| `perf` | Performance | `perf(3d): reduce draw calls by 40%` |
+| `refactor` | Code restructure | `refactor(hooks): extract useMousePosition` |
+| `chore` | Maintenance | `chore(deps): update framer-motion to v11` |
 
-### Examples
+---
+
+## Feature Branch Flow
+
+### 1. Start
 ```bash
-feat(hero): add parallax floating orbs
-fix(cursor): resolve jank on scroll
-style(theme): increase neon glow intensity
-perf(3d): reduce draw calls by 40%
-refactor(hooks): extract useMousePosition
-chore(deps): update framer-motion to v11
+git checkout -b feature/[name]
 ```
 
----
+### 2. During Development
+- Commit frequently (small, atomic commits).
 
-## Phase 1: Feature Development
+### 3. Ready to Merge
+- [ ] Run `build_verify` skill: `npm run lint && npm run build`
+- [ ] Review diff: `git diff main`
+- [ ] Check: no console.log, no hardcoded values, consistent naming.
 
-### 1.1 Start New Feature
-- [ ] Create feature branch:
-  ```bash
-  git checkout -b feature/[name]
-  ```
+### 4. Merge & Push
+```bash
+git checkout main
+git pull origin main
+git merge feature/[name]
+git push origin main
+git branch -d feature/[name]
+```
 
-### 1.2 During Development
-- [ ] Commit frequently (small, atomic commits).
-- [ ] Keep commits focused on single purpose.
-
-### 1.3 Ready to Merge
-- [ ] Ensure all verification passes:
-  ```bash
-  npm run lint
-  npm run build
-  ```
-
----
-
-## Phase 2: Code Review (Self)
-
-### 2.1 Review Changes
-- [ ] Review diff:
-  ```bash
-  git diff main
-  ```
-- [ ] Check for:
-  - [ ] console.log statements removed
-  - [ ] No hardcoded values
-  - [ ] Proper comments on complex code
-  - [ ] Consistent naming
-
-### 2.2 Squash if Needed
-- [ ] For messy commit history:
-  ```bash
-  git rebase -i main
-  ```
-
----
-
-## Phase 3: Merge & Push
-
-### 3.1 Merge to Main
-- [ ] Switch to main:
-  ```bash
-  git checkout main
-  ```
-- [ ] Pull latest:
-  ```bash
-  git pull origin main
-  ```
-- [ ] Merge feature:
-  ```bash
-  git merge feature/[name]
-  ```
-
-### 3.2 Push
-- [ ] Push to remote:
-  ```bash
-  git push origin main
-  ```
-
-### 3.3 Cleanup
-- [ ] Delete feature branch:
-  ```bash
-  git branch -d feature/[name]
-  ```
-- [ ] Delete remote branch (if pushed):
-  ```bash
-  git push origin --delete feature/[name]
-  ```
-
----
-
-## Phase 4: Deployment
-
-### 4.1 Verify GitHub Actions
+### 5. Verify Deployment
 - [ ] Check `.github/workflows/deploy.yml` status.
-- [ ] Verify deployment succeeded.
-
-### 4.2 Post-Deployment Check
-- [ ] Visit live site.
-- [ ] Verify changes are live.
-- [ ] Check console for errors.
+- [ ] Visit live site and verify changes.
 
 ---
 
 ## Hotfix Protocol
 
-For urgent production fixes:
-
-### 1. Create Hotfix
+// turbo
 ```bash
 git checkout main
 git checkout -b hotfix/[issue]
-```
-
-### 2. Fix & Test
-- [ ] Apply minimal fix.
-// turbo
-- [ ] Verify:
-  ```bash
-  npm run lint && npm run build
-  ```
-
-### 3. Merge & Deploy
-```bash
-git checkout main
-git merge hotfix/[issue]
-git push origin main
-git branch -d hotfix/[issue]
+# Apply minimal fix
+npm run lint && npm run build
+git checkout main && git merge hotfix/[issue]
+git push origin main && git branch -d hotfix/[issue]
 ```
 
 ---
@@ -179,7 +91,11 @@ git branch -d hotfix/[issue]
 | See log | `git log --oneline -10` |
 | Undo last commit | `git reset --soft HEAD~1` |
 | Discard changes | `git checkout -- .` |
-| Stash changes | `git stash` |
-| Apply stash | `git stash pop` |
-| See branches | `git branch -a` |
-| Clean branches | `git remote prune origin` |
+| Stash / Apply | `git stash` / `git stash pop` |
+
+---
+
+## ✅ Done When
+- All changes are committed with conventional commit messages
+- `npm run lint && npm run build` passes on merged branch
+- Deployment succeeds (GitHub Actions green)

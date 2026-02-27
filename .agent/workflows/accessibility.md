@@ -20,14 +20,14 @@ Use this to ensure the portfolio meets accessibility standards.
 
 ## Phase 1: Automated Audit
 
+// turbo
 ### 1.1 Run Lighthouse
-- [ ] In Chrome DevTools → Lighthouse tab.
-- [ ] Run accessibility audit.
-- [ ] Note score (target: > 90).
+- [ ] Chrome DevTools → Lighthouse tab → run accessibility audit.
+- [ ] Target: score > 90.
 
+// turbo
 ### 1.2 Check aXe DevTools
-- [ ] Install aXe browser extension.
-- [ ] Run full page scan.
+- [ ] Install aXe browser extension → run full page scan.
 - [ ] Address all critical issues.
 
 ---
@@ -35,147 +35,60 @@ Use this to ensure the portfolio meets accessibility standards.
 ## Phase 2: Manual Checks
 
 ### 2.1 Keyboard Navigation
-- [ ] Tab through entire page.
-- [ ] Verify:
-  - [ ] Focus visible on all interactive elements.
-  - [ ] Logical tab order.
-  - [ ] No keyboard traps.
-  - [ ] Escape closes modals.
+- [ ] Tab through entire page — verify focus visible, logical order, no traps.
+- [ ] Escape closes orbital nav menu.
 
 ### 2.2 Screen Reader
 - [ ] Test with NVDA (Windows) or VoiceOver (Mac).
-- [ ] Verify:
-  - [ ] All content announced.
-  - [ ] Images have alt text.
-  - [ ] Buttons have labels.
-  - [ ] Landmarks defined.
+- [ ] Verify: content announced, images have alt text, buttons labeled, landmarks defined.
 
 ### 2.3 Color Contrast
-- [ ] Use contrast checker tool.
-- [ ] Verify:
-  - [ ] Normal text: 4.5:1 ratio minimum.
-  - [ ] Large text: 3:1 ratio minimum.
-  - [ ] UI components: 3:1 ratio minimum.
+- [ ] Normal text: 4.5:1 ratio minimum.
+- [ ] Large text and UI components: 3:1 ratio minimum.
 
 ---
 
 ## Phase 3: Motion Accessibility
 
-### 3.1 Reduced Motion Support
-- [ ] Add CSS for reduced motion preference:
-  ```css
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-  ```
-
-### 3.2 Framer Motion Integration
-- [ ] Use `useReducedMotion` hook:
-  ```javascript
-  import { useReducedMotion } from 'framer-motion';
-
-  const prefersReducedMotion = useReducedMotion();
-  
-  const variants = prefersReducedMotion ? {} : animatedVariants;
-  ```
-
-### 3.3 3D Scene Fallback
-- [ ] For users with motion sensitivity:
-  - Reduce or disable particle effects.
-  - Slow down rotation speeds.
-  - Provide static fallback.
+### 3.1 Reduced Motion
+This project already implements `prefers-reduced-motion` in CSS (`index.css`, `App.css`) and JS (`App.jsx` adjusts Lenis and spring configs). Verify:
+- [ ] CSS animations disabled/shortened when reduced motion is preferred.
+- [ ] Framer Motion springs use faster settling config: `{ stiffness: 300, damping: 50 }`.
+- [ ] Lenis uses `duration: 0` and `smoothWheel: false`.
+- [ ] Particle effects reduced or disabled.
 
 ---
 
-## Phase 4: ARIA Implementation
+## Phase 4: ARIA & Focus
 
 ### 4.1 Landmarks
-- [ ] Define page regions:
-  ```html
-  <header role="banner">
-  <nav role="navigation">
-  <main role="main">
-  <footer role="contentinfo">
-  ```
+```html
+<header role="banner"> <nav role="navigation"> <main role="main"> <footer role="contentinfo">
+```
 
 ### 4.2 Interactive Elements
-- [ ] Buttons and links:
-  ```jsx
-  <button aria-label="Close menu" aria-expanded={isOpen}>
-  ```
+```jsx
+<button aria-label="Close menu" aria-expanded={isOpen}>
+```
 
-### 4.3 Live Regions
-- [ ] For dynamic content:
-  ```jsx
-  <div aria-live="polite" aria-atomic="true">
-    {statusMessage}
-  </div>
-  ```
+### 4.3 Skip Link
+Already implemented: `<a href="#main-content">` in `App.jsx`. Verify it works.
 
----
-
-## Phase 5: Focus Management
-
-### 5.1 Skip Links
-- [ ] Add skip to main content:
-  ```html
-  <a href="#main" class="skip-link">Skip to main content</a>
-  ```
-  ```css
-  .skip-link {
-    position: absolute;
-    left: -9999px;
-  }
-  .skip-link:focus {
-    left: 10px;
-    top: 10px;
-  }
-  ```
-
-### 5.2 Focus Styles
-- [ ] Visible focus indicators:
-  ```css
-  :focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-  ```
-
-### 5.3 Modal Focus Trap
-- [ ] When modal opens:
-  - Focus moves to modal.
-  - Tab cycles within modal.
-  - Escape closes modal.
-  - Focus returns to trigger on close.
+### 4.4 Focus Styles
+```css
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+```
 
 ---
 
-## Accessibility Checklist
+## Quick Checklist
 
-| Category | Check | Status |
-|----------|-------|--------|
-| **Perceivable** | | |
-| | Alt text on images | ☐ |
-| | Color contrast passes | ☐ |
-| | Text resizable to 200% | ☐ |
-| **Operable** | | |
-| | Keyboard accessible | ☐ |
-| | No keyboard traps | ☐ |
-| | Skip link present | ☐ |
-| | Focus visible | ☐ |
-| **Understandable** | | |
-| | Language declared | ☐ |
-| | Error messages clear | ☐ |
-| | Consistent navigation | ☐ |
-| **Robust** | | |
-| | Valid HTML | ☐ |
-| | ARIA used correctly | ☐ |
-| | Works with assistive tech | ☐ |
+| Category | Check |
+|----------|-------|
+| **Perceivable** | Alt text ☐ · Contrast ☐ · Resizable text ☐ |
+| **Operable** | Keyboard ☐ · No traps ☐ · Skip link ☐ · Focus visible ☐ |
+| **Understandable** | Language declared ☐ · Consistent nav ☐ |
+| **Robust** | Valid HTML ☐ · ARIA correct ☐ · Assistive tech ☐ |
 
 ---
 
@@ -183,9 +96,15 @@ Use this to ensure the portfolio meets accessibility standards.
 
 | Issue | Solution |
 |-------|----------|
-| Missing alt text | Add descriptive alt attribute |
-| Low contrast | Increase color difference |
+| Missing alt text | Add descriptive `alt` attribute |
+| Low contrast | Use CSS variables with sufficient contrast |
 | No focus style | Add `:focus-visible` CSS |
-| Keyboard trap | Add escape handling |
-| Missing labels | Add aria-label or visible label |
-| Motion sickness | Implement prefers-reduced-motion |
+| Keyboard trap | Add Escape handling |
+| Motion sickness | Check `prefers-reduced-motion` in JS and CSS |
+
+---
+
+## ✅ Done When
+- Lighthouse accessibility score ≥ 90
+- All keyboard navigation works without traps
+- Reduced motion support verified in CSS and JS
