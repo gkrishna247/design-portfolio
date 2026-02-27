@@ -20,11 +20,13 @@ Use this to ensure the portfolio meets accessibility standards.
 
 ## Phase 1: Automated Audit
 
+// turbo
 ### 1.1 Run Lighthouse
 - [ ] In Chrome DevTools → Lighthouse tab.
 - [ ] Run accessibility audit.
 - [ ] Note score (target: > 90).
 
+// turbo
 ### 1.2 Check aXe DevTools
 - [ ] Install aXe browser extension.
 - [ ] Run full page scan.

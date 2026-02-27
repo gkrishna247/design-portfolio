@@ -58,3 +58,10 @@ Use this for a quick project health assessment before starting work.
 2. **Build fails** → Run `/maintenance` workflow.
 3. **Performance issues** → Run `/optimization_pass` workflow.
 4. **Outdated deps** → Run `/dependency_update` workflow.
+
+---
+
+## ✅ Done When
+- `npm run lint` exits with 0 warnings
+- `npm run build` exits with code 0 and no chunk warnings
+- Dev server loads without console errors

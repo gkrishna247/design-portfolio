@@ -133,3 +133,10 @@ Use this for "Wow Factor" tuning and visual polish. **NO LOGIC CHANGES ALLOWED.*
 | Faster transitions | CSS | `--transition-duration` ↓ |
 | Deeper parallax | JSX | Scroll multiplier ↑ |
 | Subtler hover | JSX | `whileHover.scale` closer to 1.0 |
+
+---
+
+## ✅ Done When
+- Visual change achieves the intended aesthetic improvement
+- No functional behavior has changed
+- `npm run build` passes without errors

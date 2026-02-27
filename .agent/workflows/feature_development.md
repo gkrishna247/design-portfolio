@@ -136,3 +136,10 @@ If the feature breaks the build or causes visual regression:
 2. Identify the breaking change.
 3. Re-implement with fixes.
 4. Re-run full QA cycle.
+
+---
+
+## ✅ Done When
+- Feature works as specified in the implementation plan
+- `npm run lint && npm run build` passes
+- Component includes `.test.jsx` file with passing tests

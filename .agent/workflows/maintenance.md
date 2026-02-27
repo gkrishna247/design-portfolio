@@ -125,3 +125,10 @@ If fix is taking > 30 minutes:
 2. **Document** findings so far.
 3. **Consider** if this needs `/refactoring` workflow instead.
 4. **Ask** for second opinion if complex.
+
+---
+
+## ✅ Done When
+- Bug is fixed and verified manually
+- `npm run lint && npm run build` passes
+- No regression introduced in other components

@@ -21,6 +21,9 @@ Your last line of defense before committing code.
 2.  **TypeScript/Lint Errors**: Did you ignore `npm run lint`?
 3.  **Memory**: If heap OOM, ensure you aren't bundling massive `.glb` files directly. Move them to `public/` and `useGLTF('/path.glb')`.
 
+## ⚠️ Terser Console Stripping
+The production build strips `console.log`, `console.info`, and `console.debug` via terser `pure_funcs`. However, `console.error` and `console.warn` **are preserved** in production. Do not use `console.error` for non-error logging.
+
 ## 🤖 Automatable Step
 ```bash
 npm run lint && npm run build
