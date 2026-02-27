@@ -21,7 +21,7 @@ Use this skill to validate every UI component before implementation.
 | `--text-primary` | `#f0f0f5` | Main text |
 | `--text-secondary` | `#9ca3af` | Subdued text |
 | `--text-muted` | `#4b5563` | Dimmed labels |
-| `--glass-bg` | `rgba(255,255,255,0.03)` | Glass card backgrounds |
+| `--glass-bg` | `rgba(15, 15, 26, 0.45)` | Glass card backgrounds |
 | `--glass-border` | `rgba(255,255,255,0.08)` | Glass borders |
 
 > ❌ **NEVER hardcode hex values** in JSX data arrays. Use CSS variables via `style={{ '--project-color': color }}` and reference in CSS as `var(--project-color)`.
