@@ -69,36 +69,39 @@
     }
 
     100% {
-        opacity: 0.4;
+        opacity: 0.5;
     }
 }
 
 .ambient-orb--1 {
-    width: 600px;
-    height: 600px;
+    width: 700px;
+    height: 700px;
     background: radial-gradient(circle, #a855f7 0%, transparent 70%);
     top: -200px;
     right: -200px;
+    mix-blend-mode: screen;
     animation-delay: 0.3s, 2.8s;
     /* Stagger: fade-in delay, then float delay */
 }
 
 .ambient-orb--2 {
-    width: 500px;
-    height: 500px;
+    width: 550px;
+    height: 550px;
     background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
     bottom: -150px;
     left: -150px;
+    mix-blend-mode: screen;
     animation-delay: 0.6s, 3.1s;
 }
 
 .ambient-orb--3 {
-    width: 400px;
-    height: 400px;
+    width: 450px;
+    height: 450px;
     background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
     animation-delay: 0.9s, 3.4s;
 }
 
@@ -107,39 +110,39 @@
     0%,
     100% {
         transform: translate(0, 0) scale(1);
-        opacity: 0.3;
+        opacity: 0.35;
     }
 
     25% {
-        transform: translate(30px, -30px) scale(1.1);
-        opacity: 0.5;
+        transform: translate(40px, -40px) scale(1.12);
+        opacity: 0.55;
     }
 
     50% {
-        transform: translate(-20px, 20px) scale(0.95);
-        opacity: 0.4;
+        transform: translate(-25px, 25px) scale(0.95);
+        opacity: 0.45;
     }
 
     75% {
-        transform: translate(20px, 10px) scale(1.05);
-        opacity: 0.35;
+        transform: translate(25px, 15px) scale(1.08);
+        opacity: 0.4;
     }
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .ambient-orb--1 {
-        width: 300px;
-        height: 300px;
+        width: 350px;
+        height: 350px;
     }
 
     .ambient-orb--2 {
-        width: 250px;
-        height: 250px;
+        width: 280px;
+        height: 280px;
     }
 
     .ambient-orb--3 {
-        width: 200px;
-        height: 200px;
+        width: 220px;
+        height: 220px;
     }
 }

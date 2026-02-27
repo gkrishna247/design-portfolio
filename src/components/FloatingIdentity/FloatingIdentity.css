@@ -55,6 +55,28 @@
     padding: var(--space-12);
     border-radius: 24px;
     overflow: hidden;
+    transition: border-color var(--duration-normal) var(--ease-smooth);
+}
+
+.identity-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(168, 85, 247, 0.08) 25%,
+            rgba(34, 211, 238, 0.08) 50%,
+            rgba(236, 72, 153, 0.08) 75%,
+            rgba(255, 255, 255, 0.05) 100%);
+    background-size: 400% 400%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-slow) var(--ease-smooth);
+}
+
+.identity-card:hover::after {
+    opacity: 1;
+    animation: holographic 8s ease infinite;
 }
 
 .identity-card-glow {
@@ -120,11 +142,13 @@
     100% {
         transform: scale(1);
         opacity: 0.6;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
     }
 
     50% {
         transform: scale(1.15);
         opacity: 0.25;
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
     }
 }
 
@@ -241,7 +265,9 @@
     background: rgba(168, 85, 247, 0.15);
     box-shadow:
         0 0 20px rgba(168, 85, 247, 0.25),
-        0 0 40px rgba(139, 92, 246, 0.1);
+        0 0 40px rgba(139, 92, 246, 0.1),
+        0 0 60px rgba(168, 85, 247, 0.06);
+    transform: translateY(-3px);
 }
 
 .stat-value {
@@ -288,6 +314,8 @@
     border-color: var(--neon-violet);
     color: var(--neon-violet);
     background: rgba(168, 85, 247, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
 }
 
 /* Card tags */
