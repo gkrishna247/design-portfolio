@@ -291,6 +291,11 @@ a:focus-visible {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  /* Fix text clipping - ensure full text is visible */
+  display: inline-block;
+  padding-right: 0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .gradient-text-aurora {
@@ -302,7 +307,7 @@ a:focus-visible {
   animation: aurora-flow 8s ease infinite;
   /* Fix text clipping - ensure full text is visible */
   display: inline-block;
-  padding-right: 0.05em;
+  padding-right: 0.1em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -312,6 +317,11 @@ a:focus-visible {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  /* Fix text clipping - ensure full text is visible */
+  display: inline-block;
+  padding-right: 0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 @keyframes aurora-flow {
