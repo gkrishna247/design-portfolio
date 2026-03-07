@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, useTransform, AnimatePresence } from 'framer-motion'
 import './OrbitalNavigation.css'
 
@@ -10,34 +10,46 @@ const navItems = [
     { id: 'experience', label: '05', fullLabel: 'TIMELINE', icon: '◎' },
     { id: 'contact', label: '06', fullLabel: 'CONNECT', icon: '◉' },
 ].map((item, index) => {
-    const angle = (index * 60) - 90 // Start from top
-    const radius = 100 // Distance from center
+    const angle = (index * 60) - 90
+    const radius = 100
     const x = Math.cos((angle * Math.PI) / 180) * radius
     const y = Math.sin((angle * Math.PI) / 180) * radius
     return { ...item, x, y }
 })
 
-// Create an optimized lookup map for O(1) access
 const navItemsMap = navItems.reduce((acc, item) => {
     acc[item.id] = item
     return acc
 }, {})
 
-export default function OrbitalNavigation({ activeSection, scrollProgress }) {
+export default function OrbitalNavigation({ activeSectionRef, scrollProgress }) {
     const [isExpanded, setIsExpanded] = useState(false)
     const [hoveredItem, setHoveredItem] = useState(null)
+    // Perf: Local state for active section, synced from ref at low frequency
+    const [activeSection, setActiveSection] = useState('hero')
     const navRef = useRef(null)
     const toggleButtonRef = useRef(null)
 
     const rotation = useTransform(scrollProgress, [0, 1], [0, 360])
 
-    const scrollToSection = (id) => {
+    const scrollToSection = useCallback((id) => {
         const element = document.getElementById(id)
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' })
         }
         setIsExpanded(false)
-    }
+    }, [])
+
+    // Perf: Sync activeSection from ref at scroll rate (no parent re-render needed)
+    useEffect(() => {
+        const unsubscribe = scrollProgress.on('change', () => {
+            const current = activeSectionRef?.current
+            if (current) {
+                setActiveSection(prev => prev !== current ? current : prev)
+            }
+        })
+        return () => unsubscribe()
+    }, [scrollProgress, activeSectionRef])
 
     // Close on outside click
     useEffect(() => {

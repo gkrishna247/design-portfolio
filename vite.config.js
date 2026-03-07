@@ -8,7 +8,7 @@ export default defineConfig({
 
   plugins: [react()],
   build: {
-    target: 'es2020', // Modern browsers for smaller bundle
+    target: 'es2020',
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -20,13 +20,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+          // Perf: three-vendor removed — selective imports enable tree-shaking
           'motion-vendor': ['framer-motion'],
           'scroll-vendor': ['lenis']
         }
       }
     },
-    chunkSizeWarningLimit: 1000 // Three.js is large by nature
+    chunkSizeWarningLimit: 600
   },
   esbuild: {
     legalComments: 'none'

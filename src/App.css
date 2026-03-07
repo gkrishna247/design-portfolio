@@ -139,7 +139,6 @@
   opacity: 0.25;
   pointer-events: none;
   animation: pulse-glow 8s ease-in-out infinite;
-  will-change: transform, opacity;
 }
 
 .ambient-glow--violet {

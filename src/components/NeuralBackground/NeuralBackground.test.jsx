@@ -2,10 +2,11 @@ import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import NeuralBackground from './NeuralBackground';
 
-// Mock Canvas to NOT render children, avoiding the R3F/DOM mismatch issues for instancedMesh
+// Mock Canvas to NOT render children, avoiding the R3F/DOM mismatch issues
 vi.mock('@react-three/fiber', () => ({
   Canvas: ({ children, ...props }) => <div data-testid="canvas" {...props} />,
   useFrame: vi.fn(),
+  invalidate: vi.fn(),
   useThree: () => ({ camera: {}, gl: {}, size: { width: 100, height: 100 }, viewport: { width: 100, height: 100 } }),
 }));
 
@@ -16,16 +17,16 @@ vi.mock('../../contexts/MouseContext', () => ({
 
 // Mock matchMedia
 beforeAll(() => {
-    window.matchMedia = vi.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-    }));
+  window.matchMedia = vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
 });
 
 describe('NeuralBackground', () => {

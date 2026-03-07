@@ -1,34 +1,31 @@
-import { useEffect, useRef, useState, lazy, Suspense, useMemo, memo } from 'react'
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
+import { useEffect, useRef, useState, lazy, Suspense, useMemo } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import Lenis from 'lenis'
 
 // Eagerly loaded components (above the fold / critical path)
-import MagneticCursorComponent from './components/MagneticCursor/MagneticCursor'
+import MagneticCursor from './components/MagneticCursor/MagneticCursor'
 import OrbitalNavigation from './components/OrbitalNavigation/OrbitalNavigation'
-import HeroPortalComponent from './components/HeroPortal/HeroPortal'
+import HeroPortal from './components/HeroPortal/HeroPortal'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 
-const MagneticCursor = memo(MagneticCursorComponent)
-const HeroPortal = memo(HeroPortalComponent)
+// Perf: lazy() already returns a stable component — wrapping in memo() is unnecessary
+const NeuralBackground = lazy(() => import('./components/NeuralBackground/NeuralBackground'))
+const FloatingIdentity = lazy(() => import('./components/FloatingIdentity/FloatingIdentity'))
+const ProjectsConstellation = lazy(() => import('./components/ProjectsConstellation/ProjectsConstellation'))
+const SkillsOrbit = lazy(() => import('./components/SkillsOrbit/SkillsOrbit'))
+const ExperienceTimeline = lazy(() => import('./components/ExperienceTimeline/ExperienceTimeline'))
+const ContactPortal = lazy(() => import('./components/ContactPortal/ContactPortal'))
 
-// Lazy loaded components (deferred loading for better initial performance)
-const NeuralBackground = memo(lazy(() => import('./components/NeuralBackground/NeuralBackground')))
-const FloatingIdentity = memo(lazy(() => import('./components/FloatingIdentity/FloatingIdentity')))
-const ProjectsConstellation = memo(lazy(() => import('./components/ProjectsConstellation/ProjectsConstellation')))
-const SkillsOrbit = memo(lazy(() => import('./components/SkillsOrbit/SkillsOrbit')))
-const ExperienceTimeline = memo(lazy(() => import('./components/ExperienceTimeline/ExperienceTimeline')))
-const ContactPortal = memo(lazy(() => import('./components/ContactPortal/ContactPortal')))
-
-// Styles
-import './styles/index.css'
+// Perf: removed duplicate index.css import (already in main.jsx)
 import './App.css'
 
 function App() {
   const containerRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [activeSection, setActiveSection] = useState('hero')
 
-  // Detect reduced motion preference for accessibility
+  // Perf: Use ref for activeSection to avoid re-rendering entire App tree on scroll
+  const activeSectionRef = useRef('hero')
+
   const prefersReducedMotion = useMemo(() => {
     if (typeof window === 'undefined') return false
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -39,7 +36,6 @@ function App() {
     offset: ["start start", "end end"]
   })
 
-  // Reduce spring intensity for users who prefer reduced motion
   const springConfig = useMemo(() => (prefersReducedMotion
     ? { stiffness: 300, damping: 50, restDelta: 0.01 }
     : { stiffness: 100, damping: 30, restDelta: 0.001 }
@@ -48,8 +44,6 @@ function App() {
   const smoothProgress = useSpring(scrollYProgress, springConfig)
 
   useEffect(() => {
-    // Lenis smooth scroll initialization
-    // Reduce scroll smoothness for accessibility
     const lenis = new Lenis({
       duration: prefersReducedMotion ? 0 : 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -65,19 +59,6 @@ function App() {
 
     rafId = requestAnimationFrame(raf)
 
-    /**
-     * FOUC Prevention Delay
-     * 
-     * This 100ms delay is intentional and necessary:
-     * 1. Lenis needs time to attach scroll listeners and calculate dimensions
-     * 2. React needs to complete hydration before entrance animations
-     * 3. Prevents flash of unstyled content during initial render
-     * 
-     * Alternatives considered:
-     * - requestIdleCallback: Not supported in Safari
-     * - document.readyState: Fires before layout stabilizes
-     * - Removing delay: Causes visible content flash
-     */
     const loadTimeout = setTimeout(() => setIsLoaded(true), 100)
 
     return () => {
@@ -87,15 +68,18 @@ function App() {
     }
   }, [prefersReducedMotion])
 
-  // Update active section based on scroll (6 sections)
+  // Perf: Update activeSection via ref — no React re-renders on scroll
+  // OrbitalNavigation reads from the ref, updated via callback
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (value) => {
-      if (value < 0.17) setActiveSection('hero')
-      else if (value < 0.33) setActiveSection('about')
-      else if (value < 0.50) setActiveSection('projects')
-      else if (value < 0.67) setActiveSection('skills')
-      else if (value < 0.83) setActiveSection('experience')
-      else setActiveSection('contact')
+      let section = 'hero'
+      if (value >= 0.83) section = 'contact'
+      else if (value >= 0.67) section = 'experience'
+      else if (value >= 0.50) section = 'skills'
+      else if (value >= 0.33) section = 'projects'
+      else if (value >= 0.17) section = 'about'
+
+      activeSectionRef.current = section
     })
 
     return () => unsubscribe()
@@ -116,7 +100,7 @@ function App() {
 
       {/* Orbital navigation - always visible */}
       <OrbitalNavigation
-        activeSection={activeSection}
+        activeSectionRef={activeSectionRef}
         scrollProgress={smoothProgress}
       />
 
@@ -136,45 +120,53 @@ function App() {
       </ErrorBoundary>
 
       {/* Main content sections */}
-      <AnimatePresence mode="sync">
-        <main id="main-content" className="neural-flux-main" tabIndex={-1}>
-          {/* Hero Portal - The grand entrance (eagerly loaded) */}
-          <section id="hero" className="section-hero">
-            <HeroPortal isLoaded={isLoaded} />
-          </section>
+      <main id="main-content" className="neural-flux-main" tabIndex={-1}>
+        {/* Hero Portal - The grand entrance (eagerly loaded) */}
+        <section id="hero" className="section-hero">
+          <HeroPortal isLoaded={isLoaded} />
+        </section>
 
-          {/* Below-the-fold sections - lazy loaded for faster initial paint */}
-          <ErrorBoundary fallbackMessage="Content failed to load. Please refresh.">
-            <Suspense fallback={<div className="sr-only" aria-live="polite">Loading content sections...</div>}>
-              {/* Floating Identity - About section */}
-              <section id="about" className="section-about" aria-label="About Me">
-                <FloatingIdentity />
-              </section>
+        {/* Below-the-fold sections - lazy loaded for faster initial paint */}
+        <ErrorBoundary fallbackMessage="About section failed to load.">
+          <Suspense fallback={<div className="section-skeleton" aria-live="polite">Loading...</div>}>
+            <section id="about" className="section-about" aria-label="About Me">
+              <FloatingIdentity />
+            </section>
+          </Suspense>
+        </ErrorBoundary>
 
-              {/* Projects Constellation */}
-              <section id="projects" className="section-projects" aria-label="Projects Portfolio">
-                <ProjectsConstellation />
-              </section>
+        <ErrorBoundary fallbackMessage="Projects section failed to load.">
+          <Suspense fallback={<div className="section-skeleton" aria-live="polite">Loading...</div>}>
+            <section id="projects" className="section-projects" aria-label="Projects Portfolio">
+              <ProjectsConstellation />
+            </section>
+          </Suspense>
+        </ErrorBoundary>
 
-              {/* Skills Orbit */}
-              <section id="skills" className="section-skills" aria-label="Technical Skills">
-                <SkillsOrbit />
-              </section>
+        <ErrorBoundary fallbackMessage="Skills section failed to load.">
+          <Suspense fallback={<div className="section-skeleton" aria-live="polite">Loading...</div>}>
+            <section id="skills" className="section-skills" aria-label="Technical Skills">
+              <SkillsOrbit />
+            </section>
+          </Suspense>
+        </ErrorBoundary>
 
-              {/* Experience Timeline */}
-              <section id="experience" className="section-experience" aria-label="Work Experience">
-                <ExperienceTimeline />
-              </section>
+        <ErrorBoundary fallbackMessage="Experience section failed to load.">
+          <Suspense fallback={<div className="section-skeleton" aria-live="polite">Loading...</div>}>
+            <section id="experience" className="section-experience" aria-label="Work Experience">
+              <ExperienceTimeline />
+            </section>
+          </Suspense>
+        </ErrorBoundary>
 
-              {/* Contact Portal */}
-              <section id="contact" className="section-contact" aria-label="Contact Information">
-                <ContactPortal />
-              </section>
-            </Suspense>
-          </ErrorBoundary>
-        </main>
-      </AnimatePresence>
-
+        <ErrorBoundary fallbackMessage="Contact section failed to load.">
+          <Suspense fallback={<div className="section-skeleton" aria-live="polite">Loading...</div>}>
+            <section id="contact" className="section-contact" aria-label="Contact Information">
+              <ContactPortal />
+            </section>
+          </Suspense>
+        </ErrorBoundary>
+      </main>
     </div>
   )
 }

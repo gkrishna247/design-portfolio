@@ -4,7 +4,7 @@
    Enhanced with Premium Effects & Animations
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+/* Perf: Fonts loaded via <link> in index.html — @import blocks CSS parsing */
 
 :root {
   /* === COLOR PALETTE - Cosmic Neural Enhanced === */
@@ -174,21 +174,26 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   min-height: 100vh;
-  cursor: none;
 }
 
-/* Hide system cursor on ALL interactive elements */
-*,
-a,
-button,
-input,
-textarea,
-select,
-[data-cursor],
-[role="button"],
-[type="button"],
-[type="submit"] {
-  cursor: none !important;
+/* Perf/A11y: Only hide cursor on precise pointer devices (desktop with mouse) */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+
+  *,
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [data-cursor],
+  [role="button"],
+  [type="button"],
+  [type="submit"] {
+    cursor: none !important;
+  }
 }
 
 /* === SECTION PERFORMANCE === */
@@ -199,7 +204,27 @@ select,
 .section-experience,
 .section-contact {
   contain: layout style;
-  /* Performance: isolate layout recalculations */
+}
+
+/* Perf: content-visibility on below-fold sections reduces initial rendering cost */
+.section-about,
+.section-projects,
+.section-skills,
+.section-experience,
+.section-contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}
+
+/* Suspense fallback skeleton */
+.section-skeleton {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
 }
 
 /* === SELECTION === */

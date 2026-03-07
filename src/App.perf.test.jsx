@@ -9,17 +9,15 @@ vi.mock('framer-motion', async (importOriginal) => {
   return {
     ...actual,
     useSpring: vi.fn((_source, _config) => {
-        // Return a dummy motion value to satisfy usage
-        return { get: () => 0, onChange: () => {} }
+      return { get: () => 0, onChange: () => { }, on: vi.fn(() => vi.fn()) }
     }),
     useScroll: () => ({
       scrollYProgress: {
         on: vi.fn(() => vi.fn()),
         get: () => 0,
-        onChange: () => {}
+        onChange: () => { }
       }
     }),
-    AnimatePresence: ({ children }) => <>{children}</>,
     motion: {
       div: ({ children, ...props }) => <div {...props}>{children}</div>,
     }
@@ -29,9 +27,9 @@ vi.mock('framer-motion', async (importOriginal) => {
 vi.mock('lenis', () => {
   return {
     default: class Lenis {
-      constructor() {}
-      raf() {}
-      destroy() {}
+      constructor() { }
+      raf() { }
+      destroy() { }
     }
   }
 })

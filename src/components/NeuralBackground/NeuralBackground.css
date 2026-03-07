@@ -53,11 +53,10 @@
 .ambient-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
+    filter: blur(60px);
+    /* Perf: reduced from 100px for lower GPU cost */
     opacity: 0;
-    will-change: opacity;
     transform: translateZ(0);
-    /* Staggered fade-in animation */
     animation:
         orb-fade-in 2.5s ease-out forwards,
         ambient-float 20s ease-in-out 2.5s infinite;
