@@ -88,7 +88,7 @@ export default function MagneticCursor() {
     if (isTouchDevice) return null
 
     return (
-        <div ref={arrowRef} className="cursor-arrow">
+        <div ref={arrowRef} className="cursor-arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" className="arrow-svg">
                 <path d="M4 2L20 12L12 14L8 22L4 2Z" className="arrow-path" />
             </svg>
