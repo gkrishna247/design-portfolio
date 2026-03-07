@@ -152,18 +152,16 @@ function ConnectionLines() {
     const geometry = useMemo(() => {
         const points = []
         for (let i = 0; i < 20; i++) {
-            const startPos = new THREE.Vector3(
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 10
-            )
-            const endPos = new THREE.Vector3(
-                startPos.x + (Math.random() - 0.5) * 5,
-                startPos.y + (Math.random() - 0.5) * 5,
-                startPos.z + (Math.random() - 0.5) * 3
-            )
-            points.push(startPos.x, startPos.y, startPos.z)
-            points.push(endPos.x, endPos.y, endPos.z)
+            const startX = (Math.random() - 0.5) * 15;
+            const startY = (Math.random() - 0.5) * 15;
+            const startZ = (Math.random() - 0.5) * 10;
+
+            const endX = startX + (Math.random() - 0.5) * 5;
+            const endY = startY + (Math.random() - 0.5) * 5;
+            const endZ = startZ + (Math.random() - 0.5) * 3;
+
+            points.push(startX, startY, startZ)
+            points.push(endX, endY, endZ)
         }
 
         const geo = new THREE.BufferGeometry()
