@@ -203,7 +203,11 @@ function NeuralBackground({ scrollProgress }) {
 
     return (
         <div className="neural-background">
+            <div className="sr-only">
+                A dynamic, interactive 3D particle background representing a neural network. It subtly reacts to mouse movement and scrolling.
+            </div>
             <Canvas
+                aria-hidden="true"
                 camera={{ position: [0, 0, 10], fov: 60 }}
                 dpr={[1, 1.5]} // Optimized: reduced max DPR for better GPU performance
                 gl={{

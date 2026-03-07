@@ -102,8 +102,8 @@ function App() {
   }, [scrollYProgress])
 
   return (
-      <div className="neural-flux-app" ref={containerRef}>
-        {/* Skip link for keyboard users - WCAG 2.4.1 */}
+    <div className="neural-flux-app" ref={containerRef}>
+      {/* Skip link for keyboard users - WCAG 2.4.1 */}
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
@@ -130,7 +130,7 @@ function App() {
 
       {/* Neural background - reactive to scroll (lazy loaded - Three.js heavy) */}
       <ErrorBoundary fallbackMessage="3D background failed to load.">
-        <Suspense fallback={null}>
+        <Suspense fallback={<div className="sr-only" aria-live="polite">Loading interactive 3D background...</div>}>
           <NeuralBackground scrollProgress={smoothProgress} />
         </Suspense>
       </ErrorBoundary>
@@ -145,29 +145,29 @@ function App() {
 
           {/* Below-the-fold sections - lazy loaded for faster initial paint */}
           <ErrorBoundary fallbackMessage="Content failed to load. Please refresh.">
-            <Suspense fallback={null}>
+            <Suspense fallback={<div className="sr-only" aria-live="polite">Loading content sections...</div>}>
               {/* Floating Identity - About section */}
-              <section id="about" className="section-about">
+              <section id="about" className="section-about" aria-label="About Me">
                 <FloatingIdentity />
               </section>
 
               {/* Projects Constellation */}
-              <section id="projects" className="section-projects">
+              <section id="projects" className="section-projects" aria-label="Projects Portfolio">
                 <ProjectsConstellation />
               </section>
 
               {/* Skills Orbit */}
-              <section id="skills" className="section-skills">
+              <section id="skills" className="section-skills" aria-label="Technical Skills">
                 <SkillsOrbit />
               </section>
 
               {/* Experience Timeline */}
-              <section id="experience" className="section-experience">
+              <section id="experience" className="section-experience" aria-label="Work Experience">
                 <ExperienceTimeline />
               </section>
 
               {/* Contact Portal */}
-              <section id="contact" className="section-contact">
+              <section id="contact" className="section-contact" aria-label="Contact Information">
                 <ContactPortal />
               </section>
             </Suspense>
@@ -175,7 +175,7 @@ function App() {
         </main>
       </AnimatePresence>
 
-      </div>
+    </div>
   )
 }
 

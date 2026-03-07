@@ -246,13 +246,32 @@ a {
   transition: color var(--duration-normal) var(--ease-smooth);
 }
 
-a:focus-visible {
-  outline: 2px solid var(--neon-violet);
-  outline-offset: 2px;
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible,
+.orbital-item:focus-visible,
+.orbital-core:focus-visible,
+.skip-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
   border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 5px rgba(3, 3, 8, 0.9);
+  transition: outline-offset 0.1s ease;
 }
 
 /* === UTILITY CLASSES === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .mono {
   font-family: var(--font-mono);
   letter-spacing: -0.02em;
@@ -917,7 +936,7 @@ a:focus-visible {
   border-radius: var(--radius-sm);
 }
 
-/* === REDUCED MOTION === */
+/* === PERFORMANCE & ACCESSIBILITY OPTIMIZATIONS === */
 @media (prefers-reduced-motion: reduce) {
 
   *,
@@ -926,10 +945,23 @@ a:focus-visible {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  html {
-    scroll-behavior: auto;
+  .scroll-progress-bar,
+  .scroll-progress-bar::after,
+  .ambient-glow,
+  .gradient-text-aurora,
+  .scanlines::after,
+  .shimmer,
+  .glitch::before,
+  .glitch::after,
+  .holographic,
+  [data-stagger]>* {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    background-image: none !important;
   }
 }
 

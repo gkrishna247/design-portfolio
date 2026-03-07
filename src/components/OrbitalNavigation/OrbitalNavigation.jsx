@@ -27,6 +27,7 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
     const [isExpanded, setIsExpanded] = useState(false)
     const [hoveredItem, setHoveredItem] = useState(null)
     const navRef = useRef(null)
+    const toggleButtonRef = useRef(null)
 
     const rotation = useTransform(scrollProgress, [0, 1], [0, 360])
 
@@ -58,6 +59,10 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') {
                 setIsExpanded(false)
+                // Return focus to the toggle button when closed via keyboard
+                if (toggleButtonRef.current) {
+                    toggleButtonRef.current.focus()
+                }
             }
         }
         document.addEventListener('keydown', handleKeyDown)
@@ -73,10 +78,12 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
         >
             {/* Central orb */}
             <motion.button
+                ref={toggleButtonRef}
                 className="orbital-core"
                 onClick={() => setIsExpanded(!isExpanded)}
                 aria-label={isExpanded ? "Close navigation menu" : "Open navigation menu"}
                 aria-expanded={isExpanded}
+                aria-controls="orbital-menu-list"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 data-cursor
@@ -95,13 +102,14 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
             {/* Orbital items */}
             <AnimatePresence>
                 {isExpanded && (
-                    <div className="orbital-items">
+                    <div className="orbital-items" id="orbital-menu-list" role="menu">
                         {navItems.map((item, index) => {
                             const isActive = activeSection === item.id
 
                             return (
                                 <motion.button
                                     key={item.id}
+                                    role="menuitem"
                                     className={`orbital-item ${isActive ? 'active' : ''}`}
                                     aria-label={`Navigate to ${item.fullLabel} section`}
                                     aria-current={isActive ? 'page' : undefined}
