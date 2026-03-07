@@ -22,7 +22,7 @@ export default function HeroPortal({ isLoaded }) {
     const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
     const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
 
-    const springConfig = { stiffness: 100, damping: 30 }
+    const springConfig = { stiffness: 100, damping: 25 }
     const titleYSpring = useSpring(titleY, springConfig)
     const subtitleYSpring = useSpring(subtitleY, springConfig)
 
