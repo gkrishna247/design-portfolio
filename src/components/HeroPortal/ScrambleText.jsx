@@ -15,11 +15,11 @@ function useScrambleText(text, isActive) {
 
         let iteration = 0
         const totalIterations = text.length * 2
+        const textArray = text.split('')
 
         const interval = setInterval(() => {
             setDisplayText(
-                text
-                    .split('')
+                textArray
                     .map((letter, index) => {
                         if (index < Math.floor(iteration / 2)) {
                             return text[index]
