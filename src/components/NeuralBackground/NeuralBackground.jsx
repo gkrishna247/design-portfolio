@@ -86,6 +86,7 @@ function GlowingOrbs() {
     // Shared geometry for better performance
     const geometry = useMemo(() => new THREE.IcosahedronGeometry(1, 1), [])
     const dummy = useMemo(() => new THREE.Object3D(), [])
+    const color = useMemo(() => new THREE.Color(), [])
 
     const orbs = useMemo(() => {
         return Array.from({ length: 5 }, (_, i) => ({
@@ -104,12 +105,12 @@ function GlowingOrbs() {
     useEffect(() => {
         if (meshRef.current) {
             orbs.forEach((orb, i) => {
-                const color = new THREE.Color(orb.color)
+                color.set(orb.color)
                 meshRef.current.setColorAt(i, color)
             })
             meshRef.current.instanceColor.needsUpdate = true
         }
-    }, [orbs])
+    }, [orbs, color])
 
     useFrame((state, delta) => {
         if (!meshRef.current) return
@@ -152,18 +153,16 @@ function ConnectionLines() {
     const geometry = useMemo(() => {
         const points = []
         for (let i = 0; i < 20; i++) {
-            const startPos = new THREE.Vector3(
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 10
-            )
-            const endPos = new THREE.Vector3(
-                startPos.x + (Math.random() - 0.5) * 5,
-                startPos.y + (Math.random() - 0.5) * 5,
-                startPos.z + (Math.random() - 0.5) * 3
-            )
-            points.push(startPos.x, startPos.y, startPos.z)
-            points.push(endPos.x, endPos.y, endPos.z)
+            const sx = (Math.random() - 0.5) * 15
+            const sy = (Math.random() - 0.5) * 15
+            const sz = (Math.random() - 0.5) * 10
+
+            const ex = sx + (Math.random() - 0.5) * 5
+            const ey = sy + (Math.random() - 0.5) * 5
+            const ez = sz + (Math.random() - 0.5) * 3
+
+            points.push(sx, sy, sz)
+            points.push(ex, ey, ez)
         }
 
         const geo = new THREE.BufferGeometry()
