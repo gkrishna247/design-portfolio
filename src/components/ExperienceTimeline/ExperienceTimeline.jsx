@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import './ExperienceTimeline.css'
 
@@ -50,7 +50,7 @@ const experiences = [
     }
 ]
 
-function TimelineCard({ experience, index }) {
+const TimelineCard = memo(function TimelineCard({ experience, index }) {
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
 
@@ -123,9 +123,9 @@ function TimelineCard({ experience, index }) {
             </div>
         </motion.div>
     )
-}
+})
 
-export default function ExperienceTimeline() {
+export default memo(function ExperienceTimeline() {
     const containerRef = useRef(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
@@ -160,7 +160,7 @@ export default function ExperienceTimeline() {
                 <div className="timeline-line">
                     <motion.div
                         className="timeline-line-fill"
-                        style={{ height: lineHeight }}
+                        style={{ scaleY: lineHeight, transformOrigin: 'top' }}
                     />
                 </div>
 
@@ -188,4 +188,4 @@ export default function ExperienceTimeline() {
             </motion.div>
         </div>
     )
-}
+})

@@ -343,14 +343,28 @@
     opacity: 0.3;
 }
 
+@keyframes float-element-1 {
+    0%, 100% { transform: translateY(0) rotate(0deg) translateZ(0); }
+    50% { transform: translateY(-20px) rotate(5deg) translateZ(0); }
+}
+
+@keyframes float-element-2 {
+    0%, 100% { transform: translateY(0) rotate(0deg) translateZ(0); }
+    50% { transform: translateY(20px) rotate(-5deg) translateZ(0); }
+}
+
 .floating-element--1 {
     top: 10%;
     left: -5%;
+    animation: float-element-1 6s ease-in-out infinite;
+    will-change: transform;
 }
 
 .floating-element--2 {
     bottom: 10%;
     right: -5%;
+    animation: float-element-2 8s ease-in-out infinite;
+    will-change: transform;
 }
 
 .dim {

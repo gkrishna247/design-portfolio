@@ -1,4 +1,4 @@
-import { useRef, useState, memo, forwardRef, useEffect, createRef, useMemo } from 'react'
+import { useRef, memo, forwardRef, createRef, useMemo, useCallback } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import './SkillsOrbit.css'
 
@@ -65,7 +65,9 @@ const SkillOrbitRing = memo(forwardRef(function SkillOrbitRing({ category, index
                 }}
                 onMouseEnter={() => onHover(category.name)}
                 onMouseLeave={() => onHover(null)}
-                whileHover={{ scale: 1.2 }}
+                tabIndex={0}
+                onFocus={() => onHover(category.name)}
+                onBlur={() => onHover(null)}
                 data-cursor
                 data-cursor-text={category.name}
             >
@@ -96,26 +98,30 @@ const SkillOrbitRing = memo(forwardRef(function SkillOrbitRing({ category, index
     )
 }))
 
-export default function SkillsOrbit() {
+export default memo(function SkillsOrbit() {
     const containerRef = useRef(null)
     // Create stable refs for each ring to avoid re-renders when passing ref callback
     const ringRefs = useMemo(() => skillCategories.map(() => createRef()), [])
-    const [activeCategory, setActiveCategory] = useState(null)
+    const activeCategoryRef = useRef(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
-    useEffect(() => {
+    // Manual DOM manipulation avoids full re-renders of SkillsOrbit when hovering categories
+    const handleHover = useCallback((categoryName) => {
+        if (activeCategoryRef.current === categoryName) return
+        activeCategoryRef.current = categoryName
+
         ringRefs.forEach((ref, idx) => {
             const el = ref.current
             if (!el) return
             const category = skillCategories[idx]
-            const isActive = activeCategory === null || activeCategory === category.name
+            const isActive = categoryName === null || categoryName === category.name
 
             const newValue = isActive ? 'true' : 'false'
             if (el.dataset.active !== newValue) {
                 el.dataset.active = newValue
             }
         })
-    }, [activeCategory, ringRefs])
+    }, [ringRefs])
 
     return (
         <div className="skills-orbit" ref={containerRef}>
@@ -160,7 +166,7 @@ export default function SkillsOrbit() {
                         category={category}
                         index={index}
                         total={skillCategories.length}
-                        onHover={setActiveCategory}
+                        onHover={handleHover}
                     />
                 ))}
             </div>
@@ -180,8 +186,11 @@ export default function SkillsOrbit() {
                         initial={{ opacity: 0, x: -30 }}
                         animate={isInView ? { opacity: 1, x: 0 } : {}}
                         transition={{ delay: 0.6 + index * 0.1 }}
-                        onMouseEnter={() => setActiveCategory(category.name)}
-                        onMouseLeave={() => setActiveCategory(null)}
+                        onMouseEnter={() => handleHover(category.name)}
+                        onMouseLeave={() => handleHover(null)}
+                        tabIndex={0}
+                        onFocus={() => handleHover(category.name)}
+                        onBlur={() => handleHover(null)}
                     >
                         <div className="category-header">
                             <span className="category-indicator" />
@@ -203,4 +212,4 @@ export default function SkillsOrbit() {
             </motion.div>
         </div>
     )
-}
+})

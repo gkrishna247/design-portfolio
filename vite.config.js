@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // REPLACE 'design-portfolio' with your exact GitHub repository name
-  base: '/design-portfolio/',
+  // Relative paths so the HTML can be opened directly from the filesystem
+  base: './',
 
-  plugins: [react()],
+  plugins: [react(), viteSingleFile()],
   build: {
     target: 'es2020',
     minify: 'terser',
@@ -16,17 +17,7 @@ export default defineConfig({
         drop_debugger: true,
         pure_funcs: ['console.log', 'console.info', 'console.debug']
       }
-    },
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Perf: three-vendor removed — selective imports enable tree-shaking
-          'motion-vendor': ['framer-motion'],
-          'scroll-vendor': ['lenis']
-        }
-      }
-    },
-    chunkSizeWarningLimit: 600
+    }
   },
   esbuild: {
     legalComments: 'none'

@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, memo } from 'react'
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion'
 import { useMouse } from '../../contexts/MouseContext'
 import ScrambleText from './ScrambleText'
 import './HeroPortal.css'
 
-export default function HeroPortal({ isLoaded }) {
+export default memo(function HeroPortal({ isLoaded }) {
     const containerRef = useRef(null)
 
     // Performance optimization: Use motion values instead of state to prevent re-renders
@@ -84,25 +84,23 @@ export default function HeroPortal({ isLoaded }) {
             >
                 {/* Floating fragments */}
                 <motion.div
-                    className="portal-fragment portal-fragment--1"
+                    className="portal-fragment-wrapper portal-fragment-wrapper--1"
                     style={{ x: frag1X, y: frag1Y }}
-                    animate={{
-                        rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{ rotate: { duration: 10, repeat: Infinity } }}
-                />
+                >
+                    <div className="portal-fragment portal-fragment--1" />
+                </motion.div>
                 <motion.div
-                    className="portal-fragment portal-fragment--2"
+                    className="portal-fragment-wrapper portal-fragment-wrapper--2"
                     style={{ x: frag2X, y: frag2Y }}
-                    animate={{
-                        rotate: [0, -5, 5, 0],
-                    }}
-                    transition={{ rotate: { duration: 12, repeat: Infinity } }}
-                />
+                >
+                    <div className="portal-fragment portal-fragment--2" />
+                </motion.div>
                 <motion.div
-                    className="portal-fragment portal-fragment--3"
+                    className="portal-fragment-wrapper portal-fragment-wrapper--3"
                     style={{ x: frag3X, y: frag3Y }}
-                />
+                >
+                    <div className="portal-fragment portal-fragment--3" />
+                </motion.div>
 
                 {/* Main content */}
                 <motion.div
@@ -123,22 +121,26 @@ export default function HeroPortal({ isLoaded }) {
                     </motion.div>
 
                     {/* Name with glitch effect */}
-                    <ScrambleText
-                        as={motion.h1}
-                        text="ALEX.DEV"
-                        isActive={isLoaded}
-                        className="hero-name glitch"
-                        style={{ y: titleYSpring }}
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.3 }}
-                    >
-                        {(scrambled) => (
-                            <span className="hero-name-text gradient-text-aurora">
-                                {scrambled}
-                            </span>
-                        )}
-                    </ScrambleText>
+                    <div className="hero-name-container">
+                        <h1 className="sr-only">ALEX.DEV</h1>
+                        <ScrambleText
+                            as={motion.div}
+                            text="ALEX.DEV"
+                            isActive={isLoaded}
+                            className="hero-name glitch"
+                            style={{ y: titleYSpring }}
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.3 }}
+                            aria-hidden="true"
+                        >
+                            {(scrambled) => (
+                                <span className="hero-name-text gradient-text-aurora">
+                                    {scrambled}
+                                </span>
+                            )}
+                        </ScrambleText>
+                    </div>
 
                     {/* Title */}
                     <motion.div
@@ -212,11 +214,7 @@ export default function HeroPortal({ isLoaded }) {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2 }}
             >
-                <motion.div
-                    className="scroll-indicator-line"
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                />
+                <div className="scroll-indicator-line" />
                 <span className="mono">SCROLL</span>
             </motion.div>
 
@@ -237,4 +235,4 @@ export default function HeroPortal({ isLoaded }) {
             </div>
         </div>
     )
-}
+})

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import './FloatingIdentity.css'
 
@@ -16,7 +16,7 @@ const socialLinks = [
     { name: 'TWITTER', icon: 'X', url: '#' },
 ]
 
-export default function FloatingIdentity() {
+export default memo(function FloatingIdentity() {
     const containerRef = useRef(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
@@ -157,26 +157,12 @@ export default function FloatingIdentity() {
             </motion.div>
 
             {/* Floating elements */}
-            <motion.div
-                className="floating-element floating-element--1"
-                animate={{
-                    y: [0, -20, 0],
-                    rotate: [0, 5, 0]
-                }}
-                transition={{ duration: 6, repeat: Infinity }}
-            >
+            <div className="floating-element floating-element--1">
                 <span className="mono dim">{'<ai>'}</span>
-            </motion.div>
-            <motion.div
-                className="floating-element floating-element--2"
-                animate={{
-                    y: [0, 20, 0],
-                    rotate: [0, -5, 0]
-                }}
-                transition={{ duration: 8, repeat: Infinity }}
-            >
+            </div>
+            <div className="floating-element floating-element--2">
                 <span className="mono dim">{'</ml>'}</span>
-            </motion.div>
+            </div>
         </div>
     )
-}
+})

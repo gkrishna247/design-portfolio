@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { motion, useInView } from 'framer-motion'
 import './ContactPortal.css'
 
@@ -33,7 +33,7 @@ const contactLinks = [
     },
 ]
 
-export default function ContactPortal() {
+export default memo(function ContactPortal() {
     const containerRef = useRef(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
@@ -166,4 +166,4 @@ export default function ContactPortal() {
             </div>
         </div>
     )
-}
+})

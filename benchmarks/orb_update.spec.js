@@ -9,7 +9,7 @@ describe('Orb Update Performance', () => {
         const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial(), count);
 
         // Mock data
-        const orbs = Array.from({ length: count }).map((_, i) => ({
+        const orbs = Array.from({ length: count }).map(() => ({
             initialPosition: [Math.random() * 10, Math.random() * 10, Math.random() * 10],
             phase: Math.random() * Math.PI * 2
         }));

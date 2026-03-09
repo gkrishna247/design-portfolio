@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useRef, useState, memo, useCallback } from 'react'
 import { useMouse } from '../../contexts/MouseContext'
 import './MagneticCursor.css'
 
 /**
  * Instant arrow cursor - no lag, direct DOM transforms.
  */
-export default function MagneticCursor() {
+export default memo(function MagneticCursor() {
     const { mouseRef, subscribe } = useMouse()
     const arrowRef = useRef(null)
     const rafId = useRef(null)
@@ -95,4 +95,4 @@ export default function MagneticCursor() {
             <div className="arrow-glow" />
         </div>
     )
-}
+})

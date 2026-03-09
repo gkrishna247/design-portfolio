@@ -46,13 +46,14 @@ function useScrambleText(text, isActive) {
 /**
  * ScrambleText component to isolate re-renders caused by the scramble animation
  */
-const ScrambleText = memo(({ text, isActive, as: Component = 'span', children, ...props }) => {
+const ScrambleText = memo(({ text, isActive, as, children, ...props }) => {
     const scrambledText = useScrambleText(text, isActive)
+    const Element = as || 'span'
 
     return (
-        <Component data-text={scrambledText} {...props}>
+        <Element data-text={scrambledText} {...props}>
             {typeof children === 'function' ? children(scrambledText) : (children || scrambledText)}
-        </Component>
+        </Element>
     )
 })
 

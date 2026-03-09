@@ -7,12 +7,6 @@ import './ProjectsConstellation.css'
 const DOT_COUNT_DESKTOP = 20
 const DOT_COUNT_MOBILE = 8
 
-// Animation constants to avoid re-creation on every render
-const DOT_ANIMATION = {
-    opacity: [0.2, 0.8, 0.2],
-    scale: [1, 1.5, 1],
-}
-
 const ProjectCard = memo(function ProjectCard({ project, index, isActive, onToggle }) {
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
@@ -27,7 +21,9 @@ const ProjectCard = memo(function ProjectCard({ project, index, isActive, onTogg
         <motion.div
             ref={cardRef}
             className={`project-card ${isActive ? 'active' : ''}`}
-            role="article"
+            role="button"
+            tabIndex={0}
+            aria-expanded={isActive}
             aria-label={`Project: ${project.title} - ${project.category}`}
             initial={{ opacity: 0, y: 100, rotateX: 20 }}
             animate={isInView ? {
@@ -113,7 +109,7 @@ const ProjectList = memo(function ProjectList({ activeProject, onToggle }) {
     )
 })
 
-export default function ProjectsConstellation() {
+export default memo(function ProjectsConstellation() {
     const containerRef = useRef(null)
     const [activeProject, setActiveProject] = useState(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
@@ -197,18 +193,14 @@ export default function ProjectsConstellation() {
             {!prefersReducedMotion && (
                 <div className="constellation-dots" aria-hidden="true">
                     {dots.map((dot) => (
-                        <motion.div
+                        <div
                             key={dot.id}
                             className="constellation-dot"
                             style={{
                                 left: `${dot.left}%`,
                                 top: `${dot.top}%`,
-                            }}
-                            animate={DOT_ANIMATION}
-                            transition={{
-                                duration: dot.duration,
-                                repeat: Infinity,
-                                delay: dot.delay,
+                                animationDuration: `${dot.duration}s`,
+                                animationDelay: `${dot.delay}s`,
                             }}
                         />
                     ))}
@@ -236,4 +228,4 @@ export default function ProjectsConstellation() {
             </motion.div>
         </div>
     )
-}
+})
