@@ -23,6 +23,15 @@ const ProjectCard = memo(function ProjectCard({ project, index, isActive, onTogg
     // Optimization: Stable callback for click handler
     const handleClick = useCallback(() => onToggle(project.id), [onToggle, project.id])
 
+    // Optimization: Memoize stats transformation to avoid re-calculation on every render
+    const memoizedStats = useMemo(() => {
+        return Object.entries(project.stats).map(([key, value]) => ({
+            key,
+            value,
+            label: key.toUpperCase()
+        }))
+    }, [project.stats])
+
     return (
         <motion.div
             ref={cardRef}
@@ -74,10 +83,10 @@ const ProjectCard = memo(function ProjectCard({ project, index, isActive, onTogg
 
             {/* Stats */}
             <div className="project-stats">
-                {Object.entries(project.stats).map(([key, value]) => (
+                {memoizedStats.map(({ key, value, label }) => (
                     <div key={key} className="project-stat">
                         <span className="stat-value">{value}</span>
-                        <span className="stat-key mono">{key.toUpperCase()}</span>
+                        <span className="stat-key mono">{label}</span>
                     </div>
                 ))}
             </div>
