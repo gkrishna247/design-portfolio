@@ -52,7 +52,7 @@ function SkillsOrbitRoot({ children }) {
 
     return (
         <SkillsOrbitContext.Provider value={{ activeCategory, setActiveCategory, isInView }}>
-            <div className="skills-orbit" ref={containerRef}>
+            <div className={`skills-orbit ${activeCategory ? 'has-active' : ''}`} ref={containerRef}>
                 {children}
             </div>
         </SkillsOrbitContext.Provider>
@@ -106,40 +106,79 @@ const CategoryContext = createContext(null)
 const SkillsOrbitCategory = memo(function SkillsOrbitCategory({ name, color, index, total, children }) {
     const { activeCategory, setActiveCategory } = useSkillsOrbit()
     const isActive = activeCategory === null || activeCategory === name
+    
+    // Determine rotation direction based on index (even = 1, odd = -1)
+    const direction = index % 2 === 0 ? 1 : -1;
+    // Base duration, varying slightly by ring to create parallax/depth
+    const duration = 40 + (index * 5); 
 
     const angle = (index / total) * 360
-    const radius = 200 + index * 30
+    // Increased base radius and step to prevent rings overlapping
+    const radius = 220 + index * 50
 
     return (
-        <CategoryContext.Provider value={{ angle, radius, color, isActive }}>
+        <CategoryContext.Provider value={{ angle, radius, color, isActive, direction, duration }}>
             <motion.div
-                className="orbit-ring"
+                className={`orbit-ring ${activeCategory === name ? 'is-hovered' : ''}`}
                 style={{
                     '--ring-color': color,
-                    '--rotation': `${angle}deg`,
+                    '--radius': `${radius}px`,
                     width: radius * 2,
                     height: radius * 2,
                 }}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                initial={{ opacity: 0, scale: 0.5, rotate: angle }}
+                animate={{ 
+                    opacity: 1, 
+                    scale: 1,
+                    rotate: angle + (360 * direction)
+                }}
+                transition={{ 
+                    opacity: { duration: 0.8, delay: index * 0.1 },
+                    scale: { duration: 0.8, delay: index * 0.1 },
+                    rotate: { 
+                        repeat: Infinity, 
+                        duration: duration, 
+                        ease: "linear" 
+                    }
+                }}
                 data-active={isActive ? 'true' : 'false'}
             >
                 <div className="orbit-ring-circle" />
 
                 <motion.div
-                    className="orbit-category"
+                    className="orbit-category-container"
                     style={{
-                        transform: `rotate(${angle}deg) translateX(${radius}px) rotate(${-angle}deg)`
+                        position: 'absolute',
+                        left: '50%',
+                        top: '50%',
+                        width: '100%',
+                        height: '100%',
+                        marginTop: -radius,
+                        marginLeft: -radius
                     }}
-                    onMouseEnter={() => setActiveCategory(name)}
-                    onMouseLeave={() => setActiveCategory(null)}
-                    whileHover={{ scale: 1.2 }}
-                    data-cursor
-                    data-cursor-text={name}
                 >
-                    <span className="orbit-category-icon">⬡</span>
-                    <span className="orbit-category-label mono">{name}</span>
+                    <motion.div
+                        className="orbit-category"
+                        style={{
+                            transform: `translateX(${radius}px)`
+                        }}
+                        animate={{ rotate: -(angle + (360 * direction)) }}
+                        transition={{ 
+                            rotate: { 
+                                repeat: Infinity, 
+                                duration: duration, 
+                                ease: "linear" 
+                            }
+                        }}
+                        onMouseEnter={() => setActiveCategory(name)}
+                        onMouseLeave={() => setActiveCategory(null)}
+                        whileHover={{ scale: 1.2 }}
+                        data-cursor
+                        data-cursor-text={name}
+                    >
+                        <span className="orbit-category-icon">⬡</span>
+                        <span className="orbit-category-label mono">{name}</span>
+                    </motion.div>
                 </motion.div>
 
                 {children}
@@ -149,21 +188,53 @@ const SkillsOrbitCategory = memo(function SkillsOrbitCategory({ name, color, ind
 })
 
 function SkillsOrbitItem({ index, children }) {
-    const { angle, radius } = useContext(CategoryContext)
-    const skillAngle = angle + (index - 2) * 15
+    const { angle, radius, direction, duration } = useContext(CategoryContext)
+    
+    // Spread items further apart based on how large the ring is
+    // Larger rings can afford a smaller angular spread or the same angular spread means more pixels.
+    // 15 degrees at r=300 is ~78px. Maybe 20 degrees for safety. 
+    const skillAngleOffset = (index - 2) * 22;
+    
+    // We position the items relative to the ring center, rotated by the skillAngleOffset
+    // The items must counter-rotate the *ring's continuous rotation* PLUS the static skillAngleOffset to stay upright.
 
     return (
         <motion.div
-            className="orbit-skill"
+            className="orbit-skill-container"
             style={{
-                transform: `rotate(${skillAngle}deg) translateX(${radius}px) rotate(${-skillAngle}deg)`
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                width: '100%',
+                height: '100%',
+                marginTop: -radius,
+                marginLeft: -radius,
+                transform: `rotate(${skillAngleOffset}deg)`
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 'var(--skill-opacity, 1)' }}
-            whileHover={{ scale: 1.1 }}
-            transition={{ delay: index * 0.05 }}
         >
-            <span className="mono">{children}</span>
+            <motion.div
+                className="orbit-skill"
+                style={{
+                    transform: `translateX(${radius}px)`
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ 
+                    opacity: 'var(--skill-opacity, 1)',
+                    rotate: -(angle + skillAngleOffset + (360 * direction)) 
+                }}
+                whileHover={{ scale: 1.1 }}
+                transition={{ 
+                    opacity: { delay: index * 0.05 },
+                    scale: { duration: 0.2 },
+                    rotate: { 
+                        repeat: Infinity, 
+                        duration: duration, 
+                        ease: "linear" 
+                    }
+                }}
+            >
+                <span className="mono">{children}</span>
+            </motion.div>
         </motion.div>
     )
 }

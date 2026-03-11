@@ -140,36 +140,50 @@
 }
 
 .orbit-ring[data-active="false"] {
-    --skill-opacity: 0.3;
+    --skill-opacity: 0.15;
 }
 
+/* Base ring style */
 .orbit-ring-circle {
     position: absolute;
     inset: 0;
-    border: 1px dashed var(--glass-border);
+    border: 1px solid color-mix(in srgb, var(--ring-color) 20%, transparent);
     border-radius: 50%;
-    transition: border-color var(--duration-normal);
+    transition: all var(--duration-normal);
+    box-shadow: inset 0 0 20px color-mix(in srgb, var(--ring-color) 5%, transparent);
 }
 
-.orbit-ring[data-active="true"] .orbit-ring-circle {
+/* Hovered state */
+.orbit-ring.is-hovered .orbit-ring-circle {
     border-color: var(--ring-color);
-    border-style: solid;
+    box-shadow: 
+        0 0 30px color-mix(in srgb, var(--ring-color) 40%, transparent),
+        inset 0 0 30px color-mix(in srgb, var(--ring-color) 30%, transparent);
+}
+
+.skills-orbit.has-active .orbit-ring:not(.is-hovered) {
+    opacity: 0.3 !important; /* Dim other rings */
 }
 
 /* Category label on orbit */
+.orbit-category-container {
+    pointer-events: none;
+}
+
 .orbit-category {
     position: absolute;
     display: flex;
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--blur-sm));
+    background: color-mix(in srgb, var(--glass-bg) 80%, black);
+    backdrop-filter: blur(var(--blur-md));
     border: 1px solid var(--glass-border);
     border-radius: 100px;
     pointer-events: auto;
     cursor: pointer;
     transition: all var(--duration-normal);
+    transform-origin: center center;
 }
 
 .orbit-category:hover {
@@ -188,22 +202,30 @@
 }
 
 /* Skills on orbit */
+.orbit-skill-container {
+    pointer-events: none;
+}
+
 .orbit-skill {
     position: absolute;
     padding: var(--space-1) var(--space-3);
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--glass-border);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid color-mix(in srgb, var(--ring-color) 30%, transparent);
+    border-radius: 6px;
     font-size: var(--text-xs);
     color: var(--text-secondary);
     white-space: nowrap;
     pointer-events: auto;
     transition: all var(--duration-normal);
+    transform-origin: center center;
+    backdrop-filter: blur(var(--blur-sm));
 }
 
 .orbit-skill:hover {
     border-color: var(--ring-color);
     color: var(--text-primary);
+    background: color-mix(in srgb, var(--ring-color) 20%, rgba(0,0,0,0.8));
+    box-shadow: 0 0 15px color-mix(in srgb, var(--ring-color) 40%, transparent);
 }
 
 /* Skills list - mobile/tablet view */
