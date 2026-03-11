@@ -54,16 +54,25 @@ function TimelineCard({ experience, index }) {
     const cardRef = useRef(null)
     const isInView = useInView(cardRef, { once: true, margin: "-50px" })
 
+    const { scrollYProgress } = useScroll({
+        target: cardRef,
+        offset: ["start end", "center center"]
+    })
+
+    const opacity = useTransform(scrollYProgress, [0, 1], [0, 1])
+    const y = useTransform(scrollYProgress, [0, 1], [100, 0])
+
     const isEven = index % 2 === 0
 
     return (
         <motion.div
             ref={cardRef}
             className={`timeline-card ${isEven ? 'left' : 'right'}`}
-            style={{ '--exp-color': experience.color }}
-            initial={{ opacity: 0, x: isEven ? -100 : 100 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{
+                '--exp-color': experience.color,
+                opacity,
+                y
+            }}
         >
             {/* Year badge */}
             <motion.div
