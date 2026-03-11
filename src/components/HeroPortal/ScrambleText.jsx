@@ -1,15 +1,22 @@
 import { useState, useEffect, memo } from 'react'
+import { useReducedMotion } from '../../contexts/ReducedMotionContext'
 
 /**
  * Text scramble effect hook - isolates scramble state updates
  */
 function useScrambleText(text, isActive) {
+    const { prefersReducedMotion } = useReducedMotion()
     const [displayText, setDisplayText] = useState('')
     const chars = '!<>-_\\/[]{}—=+*^?#_01アイウエオカキクケコ'
 
     useEffect(() => {
         if (!isActive) {
             setDisplayText('')
+            return
+        }
+
+        if (prefersReducedMotion) {
+            setDisplayText(text)
             return
         }
 
