@@ -1,9 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, memo } from 'react'
 import { motion, useTransform, AnimatePresence } from 'framer-motion'
 import './OrbitalNavigation.css'
-import { useState, useEffect, useRef, memo } from "react";
-import { motion, useTransform, AnimatePresence } from "framer-motion";
-import "./OrbitalNavigation.css";
 
 const navItems = [
   { id: "hero", label: "01", fullLabel: "NEURAL_CORE", icon: "◉" },
