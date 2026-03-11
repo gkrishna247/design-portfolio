@@ -45,7 +45,7 @@ function useScrambleText(text, isActive) {
         }, 50)
 
         return () => clearInterval(interval)
-    }, [text, isActive])
+    }, [text, isActive, prefersReducedMotion])
 
     return displayText || text
 }
@@ -53,14 +53,14 @@ function useScrambleText(text, isActive) {
 /**
  * ScrambleText component to isolate re-renders caused by the scramble animation
  */
-const ScrambleText = memo(({ text, isActive, as: Tag = 'span', children, ...props }) => {
+const ScrambleText = memo(({ text, isActive, as: Component = 'span', children, ...props }) => {
     const scrambledText = useScrambleText(text, isActive)
 
     return (
         <>
-            <Tag aria-hidden="true" data-text={scrambledText} {...props}>
+            <Component aria-hidden="true" data-text={scrambledText} {...props}>
                 {typeof children === 'function' ? children(scrambledText) : (children || scrambledText)}
-            </Tag>
+            </Component>
             <span className="sr-only" aria-live="polite">
                 {text}
             </span>

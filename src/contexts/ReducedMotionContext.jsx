@@ -5,6 +5,7 @@ const ReducedMotionContext = createContext({
   toggleReducedMotion: () => {},
 })
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useReducedMotion = () => useContext(ReducedMotionContext)
 
 export const ReducedMotionProvider = ({ children }) => {

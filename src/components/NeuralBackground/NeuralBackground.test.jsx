@@ -4,7 +4,7 @@ import NeuralBackground from './NeuralBackground';
 
 // Mock Canvas to NOT render children, avoiding the R3F/DOM mismatch issues for instancedMesh
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children, ...props }) => <div data-testid="canvas" {...props} />,
+  Canvas: ({ children: _children, ...props }) => <div data-testid="canvas" {...props} />,
   useFrame: vi.fn(),
   useThree: () => ({ camera: {}, gl: {}, size: { width: 100, height: 100 }, viewport: { width: 100, height: 100 } }),
 }));

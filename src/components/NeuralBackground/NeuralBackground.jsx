@@ -5,227 +5,225 @@ import { useMouse } from '../../contexts/MouseContext'
 import { useReducedMotion } from '../../contexts/ReducedMotionContext'
 import './NeuralBackground.css'
 
-// Particle counts - responsive for mobile performance
-const PARTICLE_COUNT_DESKTOP = 1500
-const PARTICLE_COUNT_MOBILE = 500
+// Configuration for performance
+const CONFIG_DESKTOP = { terrainSegments: 60, particleCount: 1500 }
+const CONFIG_MOBILE = { terrainSegments: 25, particleCount: 500 }
 
-// Particle system that reacts to scroll
-function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialized }) {
-    const ref = useRef()
+function FloatingDust({ particleCount, scrollProgress, mouseRef, isInitialized }) {
+    const pointsRef = useRef()
     const { prefersReducedMotion } = useReducedMotion()
 
-    const dummy = useMemo(() => new THREE.Object3D(), [])
-    const geometry = useMemo(() => new THREE.IcosahedronGeometry(0.015, 0), [])
+    // Create a smooth circular gradient texture for particles
+    const particleTexture = useMemo(() => {
+        const canvas = document.createElement('canvas')
+        canvas.width = 32
+        canvas.height = 32
+        const ctx = canvas.getContext('2d')
+        const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16)
+        gradient.addColorStop(0, 'rgba(255,255,255,1)')
+        gradient.addColorStop(0.2, 'rgba(168, 85, 247, 0.8)') // neon violet glow
+        gradient.addColorStop(1, 'rgba(0,0,0,0)')
+        ctx.fillStyle = gradient
+        ctx.fillRect(0, 0, 32, 32)
+        return new THREE.CanvasTexture(canvas)
+    }, [])
 
-    // Generate particles in a volumetric space
-    const particles = useMemo(() => {
-        const count = particleCount
-        const data = []
-
-        for (let i = 0; i < count; i++) {
-            // Distribute in 3D space with varying density
+    const [positions, phases] = useMemo(() => {
+        const pos = new Float32Array(particleCount * 3)
+        const pha = new Float32Array(particleCount)
+        
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3
+            
+            // Distribute in a spherical volume
+            const r = 2 + Math.random() * 20
             const theta = Math.random() * Math.PI * 2
             const phi = Math.acos((Math.random() * 2) - 1)
-            const radius = 3 + Math.random() * 8
+            
+            pos[i3] = r * Math.sin(phi) * Math.cos(theta)
+            pos[i3 + 1] = (r * Math.sin(phi) * Math.sin(theta)) * 0.5 // flattened
+            pos[i3 + 2] = r * Math.cos(phi)
 
-            data.push({
-                x: radius * Math.sin(phi) * Math.cos(theta),
-                y: radius * Math.sin(phi) * Math.sin(theta),
-                z: radius * Math.cos(phi),
-                phase: Math.random() * Math.PI * 2,
-                speed: 0.1 + Math.random() * 0.2
-            })
+            pha[i] = Math.random() * Math.PI * 2
         }
-
-        return data
+        return [pos, pha]
     }, [particleCount])
 
     useFrame((state, delta) => {
-        if (!ref.current) return
-
+        if (!pointsRef.current) return
         if (prefersReducedMotion) return
-
-        // Compute normalized mouse position from shared ref
-        let mouseX = 0
-        let mouseY = 0
-
-        if (mouseRef && mouseRef.current && isInitialized && isInitialized.current) {
-            const { clientX, clientY } = mouseRef.current
-            mouseX = (clientX / window.innerWidth) * 2 - 1
-            mouseY = -(clientY / window.innerHeight) * 2 + 1
+        
+        // Base extremely slow orbit
+        pointsRef.current.rotation.y -= delta * 0.02
+        
+        // Tilt via mouse
+        if (mouseRef?.current && isInitialized?.current) {
+            const mouseX = (mouseRef.current.clientX / window.innerWidth) * 2 - 1
+            const mouseY = -(mouseRef.current.clientY / window.innerHeight) * 2 + 1
+            pointsRef.current.rotation.x += (mouseY * 0.1 - pointsRef.current.rotation.x) * 0.02
+            pointsRef.current.rotation.z += (mouseX * 0.1 - pointsRef.current.rotation.z) * 0.02
         }
 
-        // Base rotation
-        let rx = ref.current.rotation.x
-        let ry = ref.current.rotation.y
-
-        ry += delta * 0.05
-        rx += delta * 0.02
-
-        // Mouse influence
-        rx += (mouseY * 0.3 - rx) * 0.02
-        ry += (mouseX * 0.3 - ry) * 0.02
-
-        ref.current.rotation.x = rx
-        ref.current.rotation.y = ry
-
-        // Scroll influence - expand/contract
+        // Scroll influence (pushes particles physically closer)
         const scrollVal = scrollProgress?.get() || 0
-        const scale = 1 + scrollVal * 0.5
-        ref.current.scale.setScalar(scale)
-
-        // Update each particle matrix array
-        const time = state.clock.elapsedTime
-        for (let i = 0; i < particleCount; i++) {
-            const p = particles[i]
-
-            // Add subtle floating effect for each particle
-            const floatY = p.y + Math.sin(time * p.speed + p.phase) * 0.1
-            const floatX = p.x + Math.cos(time * p.speed + p.phase) * 0.1
-
-            dummy.position.set(floatX, floatY, p.z)
-            dummy.updateMatrix()
-            ref.current.setMatrixAt(i, dummy.matrix)
-        }
-
-        ref.current.instanceMatrix.needsUpdate = true
+        pointsRef.current.position.z = scrollVal * 3
     })
 
     return (
-        <instancedMesh ref={ref} args={[geometry, null, particleCount]} frustumCulled={true}>
-            <meshBasicMaterial
-                color="#ffffff"
-                transparent
-                opacity={0.8}
+        <points ref={pointsRef}>
+            <bufferGeometry>
+                <bufferAttribute attach="attributes-position" count={particleCount} array={positions} itemSize={3} />
+            </bufferGeometry>
+            <pointsMaterial 
+                size={0.4}
+                map={particleTexture}
+                transparent={true}
                 depthWrite={false}
                 blending={THREE.AdditiveBlending}
+                opacity={0.6}
+                color="#ffffff"
             />
-        </instancedMesh>
+        </points>
     )
 }
 
-// Floating orbs with glow
-function GlowingOrbs() {
+function FluidTerrain({ segments, speedScale, wireColor, yOffset, zPhase }) {
     const meshRef = useRef()
     const { prefersReducedMotion } = useReducedMotion()
-
-    // Shared geometry for better performance
-    const geometry = useMemo(() => new THREE.IcosahedronGeometry(1, 1), [])
-    const dummy = useMemo(() => new THREE.Object3D(), [])
-    const color = useMemo(() => new THREE.Color(), [])
-
-    const orbs = useMemo(() => {
-        return Array.from({ length: 5 }, (_, i) => ({
-            initialPosition: [
-                (Math.random() - 0.5) * 10,
-                (Math.random() - 0.5) * 10,
-                (Math.random() - 0.5) * 5
-            ],
-            scale: 0.3 + Math.random() * 0.5,
-            color: [`#a855f7`, `#3b82f6`, `#22d3ee`, `#ec4899`, `#10b981`][i],
-            phase: Math.random() * Math.PI * 2,
-            rotation: { x: 0, y: 0 }
-        }))
-    }, [])
-
-    useEffect(() => {
-        if (meshRef.current) {
-            orbs.forEach((orb, i) => {
-                color.set(orb.color)
-                meshRef.current.setColorAt(i, color)
-            })
-            meshRef.current.instanceColor.needsUpdate = true
-        }
-    }, [orbs, color])
-
-    useFrame((state, delta) => {
-        if (!meshRef.current) return
-
-        if (prefersReducedMotion) return
-
-        orbs.forEach((orbData, i) => {
-            // Optimized: Use absolute time for stable oscillation instead of accumulation
-            const y = orbData.initialPosition[1] + Math.sin(state.clock.elapsedTime + orbData.phase) * 0.5
-
-            // Accumulate rotation
-            orbData.rotation.x += delta * 0.2
-            orbData.rotation.y += delta * 0.3
-
-            dummy.position.set(orbData.initialPosition[0], y, orbData.initialPosition[2])
-            dummy.rotation.set(orbData.rotation.x, orbData.rotation.y, 0)
-            dummy.scale.setScalar(orbData.scale)
-
-            dummy.updateMatrix()
-            meshRef.current.setMatrixAt(i, dummy.matrix)
-        })
-        meshRef.current.instanceMatrix.needsUpdate = true
-    })
-
-    return (
-        <instancedMesh ref={meshRef} args={[geometry, null, orbs.length]} frustumCulled={false}>
-            <meshBasicMaterial
-                transparent
-                opacity={0.3}
-                wireframe
-                vertexColors
-            />
-        </instancedMesh>
-    )
-}
-
-// Connection lines between particles
-function ConnectionLines() {
-    const linesRef = useRef()
-    const { prefersReducedMotion } = useReducedMotion()
-
-    // Optimized: Use single buffer geometry for all lines
-    const geometry = useMemo(() => {
-        const points = []
-        for (let i = 0; i < 20; i++) {
-            const sx = (Math.random() - 0.5) * 15
-            const sy = (Math.random() - 0.5) * 15
-            const sz = (Math.random() - 0.5) * 10
-
-            const ex = sx + (Math.random() - 0.5) * 5
-            const ey = sy + (Math.random() - 0.5) * 5
-            const ez = sz + (Math.random() - 0.5) * 3
-
-            points.push(sx, sy, sz)
-            points.push(ex, ey, ez)
-        }
-
-        const geo = new THREE.BufferGeometry()
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(points, 3))
-        return geo
-    }, [])
+    
+    // We recreate the geometry only when segment count changes
+    const geometry = useMemo(() => new THREE.PlaneGeometry(60, 60, segments, segments), [segments])
+    
+    // Cache original X,Y to compute wave Z efficiently
+    const basePositions = useMemo(() => {
+        const arr = geometry.attributes.position.array
+        const output = new Float32Array(arr.length)
+        for (let i = 0; i < arr.length; i++) output[i] = arr[i]
+        return output
+    }, [geometry])
 
     useFrame((state) => {
-        if (!linesRef.current) return
+        if (!meshRef.current) return
         if (prefersReducedMotion) return
-        linesRef.current.rotation.y = state.clock.elapsedTime * 0.02
-        linesRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1
+        
+        const time = state.clock.elapsedTime * speedScale
+        const positions = meshRef.current.geometry.attributes.position.array
+        
+        // Modify Z to create organic rolling cyber waves
+        for (let i = 0; i < positions.length; i += 3) {
+            const x = basePositions[i]
+            const y = basePositions[i + 1]
+            // Sum of overlapping waves for complexity
+            const z = Math.sin(x * 0.2 + time) * 1.5 
+                    + Math.cos(y * 0.15 + time * 1.2) * 1.5
+                    + Math.sin((x + y) * 0.1 - time * zPhase) * 1.0
+            
+            positions[i + 2] = z
+        }
+        
+        meshRef.current.geometry.attributes.position.needsUpdate = true
     })
 
     return (
-        <lineSegments ref={linesRef} geometry={geometry}>
-            <lineBasicMaterial
-                color="#6366f1"
-                transparent
-                opacity={0.15}
+        <mesh ref={meshRef} position={[0, yOffset, -5]} rotation={[-Math.PI / 2 + 0.3, 0, 0]}>
+            <primitive object={geometry} attach="geometry" />
+            <meshBasicMaterial 
+                color={wireColor} 
+                wireframe 
+                transparent 
+                opacity={0.15} 
+                blending={THREE.AdditiveBlending}
             />
-        </lineSegments>
+        </mesh>
     )
 }
 
+function EnergyCore({ scrollProgress }) {
+    const coreRef = useRef()
+    const innerRingRef = useRef()
+    const outerRingRef = useRef()
+    const { prefersReducedMotion } = useReducedMotion()
+
+    useFrame((state, delta) => {
+        if (!coreRef.current || prefersReducedMotion) return
+        
+        const time = state.clock.elapsedTime
+        
+        // Spin and levitate
+        coreRef.current.rotation.y += delta * 0.2
+        coreRef.current.rotation.x += delta * 0.1
+        coreRef.current.position.y = Math.sin(time) * 0.5
+        
+        // Scale with scroll
+        const scrollVal = scrollProgress?.get() || 0
+        const scale = 1 + scrollVal * 0.5
+        coreRef.current.scale.setScalar(scale)
+
+        if (innerRingRef.current) {
+            innerRingRef.current.rotation.z -= delta * 0.5
+            innerRingRef.current.rotation.x = Math.PI / 2 + Math.sin(time * 0.5) * 0.2
+            innerRingRef.current.position.y = coreRef.current.position.y
+            innerRingRef.current.scale.setScalar(scale * (1 + Math.sin(time * 2) * 0.05))
+        }
+
+        if (outerRingRef.current) {
+            outerRingRef.current.rotation.y += delta * 0.3
+            outerRingRef.current.rotation.x = Math.PI / 2 + Math.cos(time * 0.4) * 0.3
+            outerRingRef.current.position.y = coreRef.current.position.y
+            outerRingRef.current.scale.setScalar(scale * (1 + Math.cos(time * 1.5) * 0.02))
+        }
+    })
+
+    return (
+        <group position={[0, 0, 0]}>
+            {/* Inner crystalline core */}
+            <mesh ref={coreRef}>
+                <icosahedronGeometry args={[1.2, 1]} />
+                <meshStandardMaterial 
+                    color="#22d3ee" 
+                    emissive="#106b79" 
+                    emissiveIntensity={0.5} 
+                    wireframe 
+                    transparent 
+                    opacity={0.8}
+                />
+            </mesh>
+            
+            {/* Outer high-energy accretion ring */}
+            <mesh ref={innerRingRef}>
+                <torusGeometry args={[2.5, 0.02, 16, 100]} />
+                <meshBasicMaterial 
+                    color="#ec4899" 
+                    transparent 
+                    opacity={0.6} 
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+            
+            <mesh ref={outerRingRef}>  {/* secondary ghost ring */}
+                <torusGeometry args={[3.2, 0.05, 16, 64]} />
+                <meshBasicMaterial 
+                    color="#a855f7" 
+                    wireframe
+                    transparent 
+                    opacity={0.3} 
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+            
+            {/* Ambient inner glow */}
+            <pointLight distance={10} intensity={2} color="#3b82f6" />
+        </group>
+    )
+}
 
 function NeuralBackground({ scrollProgress }) {
-    // Responsive particle count for mobile performance
-    const [particleCount, setParticleCount] = useState(PARTICLE_COUNT_DESKTOP)
+    const [config, setConfig] = useState(CONFIG_DESKTOP)
     const { mouseRef, isInitialized } = useMouse()
 
     useEffect(() => {
         const mobileQuery = window.matchMedia('(max-width: 768px)')
-        const handleChange = (e) => setParticleCount(e.matches ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT_DESKTOP)
+        const handleChange = (e) => setConfig(e.matches ? CONFIG_MOBILE : CONFIG_DESKTOP)
         handleChange(mobileQuery)
         mobileQuery.addEventListener('change', handleChange)
         return () => mobileQuery.removeEventListener('change', handleChange)
@@ -234,30 +232,47 @@ function NeuralBackground({ scrollProgress }) {
     return (
         <div className="neural-background">
             <div className="sr-only">
-                A dynamic, interactive 3D particle background representing a neural network. It subtly reacts to mouse movement and scrolling.
+                A high-graphics interactive 3D scene featuring a cyber-fluid terrain matrix and a levitating energy core.
             </div>
             <Canvas
                 aria-hidden="true"
                 camera={{ position: [0, 0, 10], fov: 60 }}
-                dpr={[1, 1.5]} // Optimized: reduced max DPR for better GPU performance
+                dpr={[1, 1.5]}
                 gl={{
                     antialias: true,
                     alpha: true,
-                    powerPreference: 'high-performance' // Prefer discrete GPU
+                    powerPreference: 'high-performance'
                 }}
             >
-                <ambientLight intensity={0.5} />
-                <NeuralParticles
+                <ambientLight intensity={0.2} />
+                
+                <EnergyCore scrollProgress={scrollProgress} />
+                
+                {/* Two layered shifting terrains */}
+                <FluidTerrain 
+                    segments={config.terrainSegments}
+                    speedScale={0.3}
+                    wireColor="#3b82f6"
+                    yOffset={-5}
+                    zPhase={0.5}
+                />
+                <FluidTerrain 
+                    segments={config.terrainSegments}
+                    speedScale={0.25}
+                    wireColor="#a855f7"
+                    yOffset={-6}
+                    zPhase={0.8}
+                />
+
+                <FloatingDust 
+                    particleCount={config.particleCount}
                     scrollProgress={scrollProgress}
-                    particleCount={particleCount}
                     mouseRef={mouseRef}
                     isInitialized={isInitialized}
                 />
-                <GlowingOrbs />
-                <ConnectionLines />
             </Canvas>
 
-            {/* CSS gradient overlays */}
+            {/* Ambient CSS Orbs for depth & color mixing without post-processing */}
             <div className="gradient-overlay gradient-overlay--top" />
             <div className="gradient-overlay gradient-overlay--bottom" />
             <div className="ambient-orb ambient-orb--1" />
@@ -267,5 +282,4 @@ function NeuralBackground({ scrollProgress }) {
     )
 }
 
-// Optimized: prevent re-renders on parent updates
 export default React.memo(NeuralBackground)

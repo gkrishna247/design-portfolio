@@ -79,23 +79,9 @@ function SkillsOrbitHeader() {
     )
 }
 
-function SkillsOrbitOrbit({ children }) {
-    const { isInView } = useSkillsOrbit()
+function SkillsMatrix({ children }) {
     return (
-        <div className="orbit-container">
-            <motion.div
-                className="orbit-core"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.8, type: 'spring' }}
-            >
-                <div className="orbit-core-inner">
-                    <span className="orbit-core-icon">◉</span>
-                    <span className="orbit-core-text mono">AI</span>
-                </div>
-                <div className="orbit-core-ring" />
-                <div className="orbit-core-ring orbit-core-ring--2" />
-            </motion.div>
+        <div className="skills-matrix-container">
             {children}
         </div>
     )
@@ -103,139 +89,53 @@ function SkillsOrbitOrbit({ children }) {
 
 const CategoryContext = createContext(null)
 
-const SkillsOrbitCategory = memo(function SkillsOrbitCategory({ name, color, index, total, children }) {
+const SkillsOrbitCategory = memo(function SkillsOrbitCategory({ name, color, index, children }) {
     const { activeCategory, setActiveCategory } = useSkillsOrbit()
     const isActive = activeCategory === null || activeCategory === name
-    
-    // Determine rotation direction based on index (even = 1, odd = -1)
-    const direction = index % 2 === 0 ? 1 : -1;
-    // Base duration, varying slightly by ring to create parallax/depth
-    const duration = 40 + (index * 5); 
-
-    const angle = (index / total) * 360
-    // Increased base radius and step to prevent rings overlapping
-    const radius = 220 + index * 50
 
     return (
-        <CategoryContext.Provider value={{ angle, radius, color, isActive, direction, duration }}>
+        <CategoryContext.Provider value={{ color, isActive }}>
             <motion.div
-                className={`orbit-ring ${activeCategory === name ? 'is-hovered' : ''}`}
+                className={`bento-card`}
                 style={{
-                    '--ring-color': color,
-                    '--radius': `${radius}px`,
-                    width: radius * 2,
-                    height: radius * 2,
+                    '--category-color': color,
                 }}
-                initial={{ opacity: 0, scale: 0.5, rotate: angle }}
-                animate={{ 
-                    opacity: 1, 
-                    scale: 1,
-                    rotate: angle + (360 * direction)
-                }}
-                transition={{ 
-                    opacity: { duration: 0.8, delay: index * 0.1 },
-                    scale: { duration: 0.8, delay: index * 0.1 },
-                    rotate: { 
-                        repeat: Infinity, 
-                        duration: duration, 
-                        ease: "linear" 
-                    }
-                }}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1, type: 'spring', stiffness: 100 }}
+                onMouseEnter={() => setActiveCategory(name)}
+                onMouseLeave={() => setActiveCategory(null)}
                 data-active={isActive ? 'true' : 'false'}
+                data-cursor
+                data-cursor-text={name}
             >
-                <div className="orbit-ring-circle" />
-
-                <motion.div
-                    className="orbit-category-container"
-                    style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        width: '100%',
-                        height: '100%',
-                        marginTop: -radius,
-                        marginLeft: -radius
-                    }}
-                >
-                    <motion.div
-                        className="orbit-category"
-                        style={{
-                            transform: `translateX(${radius}px)`
-                        }}
-                        animate={{ rotate: -(angle + (360 * direction)) }}
-                        transition={{ 
-                            rotate: { 
-                                repeat: Infinity, 
-                                duration: duration, 
-                                ease: "linear" 
-                            }
-                        }}
-                        onMouseEnter={() => setActiveCategory(name)}
-                        onMouseLeave={() => setActiveCategory(null)}
-                        whileHover={{ scale: 1.2 }}
-                        data-cursor
-                        data-cursor-text={name}
-                    >
-                        <span className="orbit-category-icon">⬡</span>
-                        <span className="orbit-category-label mono">{name}</span>
-                    </motion.div>
-                </motion.div>
-
-                {children}
+                <div className="bento-card-glow" />
+                <div className="bento-card-inner">
+                    <div className="bento-header">
+                        <span className="bento-icon" style={{ color: color }}>⬡</span>
+                        <h3 className="bento-title mono">{name}</h3>
+                    </div>
+                    <div className="bento-content">
+                        {children}
+                    </div>
+                </div>
             </motion.div>
         </CategoryContext.Provider>
     )
 })
 
 function SkillsOrbitItem({ index, children }) {
-    const { angle, radius, direction, duration } = useContext(CategoryContext)
-    
-    // Spread items further apart based on how large the ring is
-    // Larger rings can afford a smaller angular spread or the same angular spread means more pixels.
-    // 15 degrees at r=300 is ~78px. Maybe 20 degrees for safety. 
-    const skillAngleOffset = (index - 2) * 22;
-    
-    // We position the items relative to the ring center, rotated by the skillAngleOffset
-    // The items must counter-rotate the *ring's continuous rotation* PLUS the static skillAngleOffset to stay upright.
 
     return (
-        <motion.div
-            className="orbit-skill-container"
-            style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                width: '100%',
-                height: '100%',
-                marginTop: -radius,
-                marginLeft: -radius,
-                transform: `rotate(${skillAngleOffset}deg)`
-            }}
+        <motion.span
+            className="bento-skill-pill mono"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 + 0.2 }}
+            whileHover={{ scale: 1.05, y: -2 }}
         >
-            <motion.div
-                className="orbit-skill"
-                style={{
-                    transform: `translateX(${radius}px)`
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ 
-                    opacity: 'var(--skill-opacity, 1)',
-                    rotate: -(angle + skillAngleOffset + (360 * direction)) 
-                }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ 
-                    opacity: { delay: index * 0.05 },
-                    scale: { duration: 0.2 },
-                    rotate: { 
-                        repeat: Infinity, 
-                        duration: duration, 
-                        ease: "linear" 
-                    }
-                }}
-            >
-                <span className="mono">{children}</span>
-            </motion.div>
-        </motion.div>
+            {children}
+        </motion.span>
     )
 }
 
@@ -293,19 +193,16 @@ function SkillsOrbitListItem({ children }) {
 // Assemble Compound Component
 export const SkillsOrbit = Object.assign(SkillsOrbitRoot, {
     Header: SkillsOrbitHeader,
-    Orbit: SkillsOrbitOrbit,
+    Matrix: SkillsMatrix,
     Category: SkillsOrbitCategory,
     Item: SkillsOrbitItem,
-    List: SkillsOrbitList,
-    ListCategory: SkillsOrbitListCategory,
-    ListItem: SkillsOrbitListItem
 })
 
 export default function SkillsOrbitSection() {
     return (
         <SkillsOrbit>
             <SkillsOrbit.Header />
-            <SkillsOrbit.Orbit>
+            <SkillsOrbit.Matrix>
                 {skillCategories.map((category, index) => (
                     <SkillsOrbit.Category
                         key={category.name}
@@ -321,24 +218,7 @@ export default function SkillsOrbitSection() {
                         ))}
                     </SkillsOrbit.Category>
                 ))}
-            </SkillsOrbit.Orbit>
-
-            <SkillsOrbit.List>
-                {skillCategories.map((category, index) => (
-                    <SkillsOrbit.ListCategory
-                        key={category.name}
-                        name={category.name}
-                        color={category.color}
-                        index={index}
-                    >
-                        {category.skills.map((skill) => (
-                            <SkillsOrbit.ListItem key={skill}>
-                                {skill}
-                            </SkillsOrbit.ListItem>
-                        ))}
-                    </SkillsOrbit.ListCategory>
-                ))}
-            </SkillsOrbit.List>
+            </SkillsOrbit.Matrix>
         </SkillsOrbit>
     )
 }
