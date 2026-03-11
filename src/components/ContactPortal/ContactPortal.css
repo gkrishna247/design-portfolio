@@ -259,6 +259,24 @@
     text-align: center;
 }
 
+.motion-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    padding: var(--space-1) var(--space-3);
+    border-radius: 4px;
+    font-size: var(--text-xs);
+    cursor: pointer;
+    margin-bottom: var(--space-2);
+    transition: all var(--duration-normal);
+}
+
+.motion-toggle-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--neon-violet);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
 .footer-right {
     text-align: right;
 }

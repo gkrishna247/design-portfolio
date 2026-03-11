@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useMouse } from '../../contexts/MouseContext'
+import { useReducedMotion } from '../../contexts/ReducedMotionContext'
 import './NeuralBackground.css'
 
 // Particle counts - responsive for mobile performance
@@ -11,6 +12,7 @@ const PARTICLE_COUNT_MOBILE = 500
 // Particle system that reacts to scroll
 function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialized }) {
     const ref = useRef()
+    const { prefersReducedMotion } = useReducedMotion()
 
     const dummy = useMemo(() => new THREE.Object3D(), [])
     const geometry = useMemo(() => new THREE.IcosahedronGeometry(0.015, 0), [])
@@ -40,6 +42,8 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
 
     useFrame((state, delta) => {
         if (!ref.current) return
+
+        if (prefersReducedMotion) return
 
         // Compute normalized mouse position from shared ref
         let mouseX = 0
@@ -103,6 +107,7 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
 // Floating orbs with glow
 function GlowingOrbs() {
     const meshRef = useRef()
+    const { prefersReducedMotion } = useReducedMotion()
 
     // Shared geometry for better performance
     const geometry = useMemo(() => new THREE.IcosahedronGeometry(1, 1), [])
@@ -135,6 +140,8 @@ function GlowingOrbs() {
 
     useFrame((state, delta) => {
         if (!meshRef.current) return
+
+        if (prefersReducedMotion) return
 
         orbs.forEach((orbData, i) => {
             // Optimized: Use absolute time for stable oscillation instead of accumulation
@@ -169,6 +176,7 @@ function GlowingOrbs() {
 // Connection lines between particles
 function ConnectionLines() {
     const linesRef = useRef()
+    const { prefersReducedMotion } = useReducedMotion()
 
     // Optimized: Use single buffer geometry for all lines
     const geometry = useMemo(() => {
@@ -193,6 +201,7 @@ function ConnectionLines() {
 
     useFrame((state) => {
         if (!linesRef.current) return
+        if (prefersReducedMotion) return
         linesRef.current.rotation.y = state.clock.elapsedTime * 0.02
         linesRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1
     })

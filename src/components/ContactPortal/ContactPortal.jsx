@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { useReducedMotion } from '../../contexts/ReducedMotionContext'
 import './ContactPortal.css'
 
 const contactLinks = [
@@ -36,6 +37,7 @@ const contactLinks = [
 export default function ContactPortal() {
     const containerRef = useRef(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+    const { prefersReducedMotion, toggleReducedMotion } = useReducedMotion()
 
     return (
         <div className="contact-portal" ref={containerRef}>
@@ -148,6 +150,15 @@ export default function ContactPortal() {
                     <span className="dim">PORTFOLIO v2.0</span>
                 </div>
                 <div className="footer-center">
+                    <button
+                        className="motion-toggle-btn mono"
+                        onClick={toggleReducedMotion}
+                        aria-pressed={prefersReducedMotion}
+                        data-cursor
+                        data-cursor-text="TOGGLE"
+                    >
+                        ANIMATIONS: {prefersReducedMotion ? 'OFF' : 'ON'}
+                    </button>
                     <span className="mono dim">DESIGNED & BUILT BY</span>
                     <span className="gradient-text">ALEX.DEV</span>
                 </div>
