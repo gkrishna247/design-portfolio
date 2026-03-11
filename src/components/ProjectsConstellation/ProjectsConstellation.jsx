@@ -138,13 +138,13 @@ export default function ProjectsConstellation() {
         const mobileQuery = window.matchMedia('(max-width: 768px)')
         const handleMobileChange = (e) => setDotCount(e.matches ? DOT_COUNT_MOBILE : DOT_COUNT_DESKTOP)
         handleMobileChange(mobileQuery)
-        mobileQuery.addEventListener('change', handleMobileChange)
+        mobileQuery.addEventListener('change', handleMobileChange, { passive: true })
 
         // Check for reduced motion preference
         const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
         const handleMotionChange = (e) => setPrefersReducedMotion(e.matches)
         handleMotionChange(motionQuery)
-        motionQuery.addEventListener('change', handleMotionChange)
+        motionQuery.addEventListener('change', handleMotionChange, { passive: true })
 
         return () => {
             mobileQuery.removeEventListener('change', handleMobileChange)
@@ -168,6 +168,25 @@ export default function ProjectsConstellation() {
             delay: Math.random() * 2,
         }))
     }, [dotCount])
+
+    const renderedDots = useMemo(() => {
+        return dots.map((dot) => (
+            <motion.div
+                key={dot.id}
+                className="constellation-dot"
+                style={{
+                    left: `${dot.left}%`,
+                    top: `${dot.top}%`,
+                }}
+                animate={DOT_ANIMATION}
+                transition={{
+                    duration: dot.duration,
+                    repeat: Infinity,
+                    delay: dot.delay,
+                }}
+            />
+        ))
+    }, [dots])
 
     const handleProjectToggle = useCallback((id) => {
         setActiveProject(prev => prev === id ? null : id)
@@ -205,22 +224,7 @@ export default function ProjectsConstellation() {
             {/* Background constellation dots - disabled for reduced motion */}
             {!prefersReducedMotion && (
                 <div className="constellation-dots" aria-hidden="true">
-                    {dots.map((dot) => (
-                        <motion.div
-                            key={dot.id}
-                            className="constellation-dot"
-                            style={{
-                                left: `${dot.left}%`,
-                                top: `${dot.top}%`,
-                            }}
-                            animate={DOT_ANIMATION}
-                            transition={{
-                                duration: dot.duration,
-                                repeat: Infinity,
-                                delay: dot.delay,
-                            }}
-                        />
-                    ))}
+                    {renderedDots}
                 </div>
             )}
 

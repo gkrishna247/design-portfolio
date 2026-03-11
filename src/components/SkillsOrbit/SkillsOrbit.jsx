@@ -1,5 +1,5 @@
-import { useRef, useState, memo, forwardRef, useEffect, createRef, useMemo } from 'react'
-import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { createContext, useContext, useRef, useState, memo } from 'react'
+import { motion, useInView } from 'framer-motion'
 import './SkillsOrbit.css'
 
 const skillCategories = [
@@ -35,172 +35,239 @@ const skillCategories = [
     }
 ]
 
-const SkillOrbitRing = memo(forwardRef(function SkillOrbitRing({ category, index, total, onHover }, ref) {
+const SkillsOrbitContext = createContext(null)
+
+function useSkillsOrbit() {
+    const context = useContext(SkillsOrbitContext)
+    if (!context) {
+        throw new Error('SkillsOrbit components must be rendered within a SkillsOrbit root')
+    }
+    return context
+}
+
+function SkillsOrbitRoot({ children }) {
+    const containerRef = useRef(null)
+    const [activeCategory, setActiveCategory] = useState(null)
+    const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+
+    return (
+        <SkillsOrbitContext.Provider value={{ activeCategory, setActiveCategory, isInView }}>
+            <div className="skills-orbit" ref={containerRef}>
+                {children}
+            </div>
+        </SkillsOrbitContext.Provider>
+    )
+}
+
+function SkillsOrbitHeader() {
+    const { isInView } = useSkillsOrbit()
+    return (
+        <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 50 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+        >
+            <span className="section-number mono">03</span>
+            <h2 className="section-title">
+                <span className="section-title-line" />
+                <span className="gradient-text">ARSENAL</span>
+                <span className="section-title-line" />
+            </h2>
+            <p className="section-subtitle mono">TECH_STACK</p>
+        </motion.div>
+    )
+}
+
+function SkillsOrbitOrbit({ children }) {
+    const { isInView } = useSkillsOrbit()
+    return (
+        <div className="orbit-container">
+            <motion.div
+                className="orbit-core"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.8, type: 'spring' }}
+            >
+                <div className="orbit-core-inner">
+                    <span className="orbit-core-icon">◉</span>
+                    <span className="orbit-core-text mono">AI</span>
+                </div>
+                <div className="orbit-core-ring" />
+                <div className="orbit-core-ring orbit-core-ring--2" />
+            </motion.div>
+            {children}
+        </div>
+    )
+}
+
+const CategoryContext = createContext(null)
+
+const SkillsOrbitCategory = memo(function SkillsOrbitCategory({ name, color, index, total, children }) {
+    const { activeCategory, setActiveCategory } = useSkillsOrbit()
+    const isActive = activeCategory === null || activeCategory === name
+
     const angle = (index / total) * 360
     const radius = 200 + index * 30
 
     return (
-        <motion.div
-            ref={ref}
-            className="orbit-ring"
-            style={{
-                '--ring-color': category.color,
-                '--rotation': `${angle}deg`,
-                width: radius * 2,
-                height: radius * 2,
-            }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: index * 0.1 }}
-            data-active="true" // Default state
-        >
-            {/* Ring circle */}
-            <div className="orbit-ring-circle" />
-
-            {/* Category label */}
+        <CategoryContext.Provider value={{ angle, radius, color, isActive }}>
             <motion.div
-                className="orbit-category"
+                className="orbit-ring"
                 style={{
-                    transform: `rotate(${angle}deg) translateX(${radius}px) rotate(${-angle}deg)`
+                    '--ring-color': color,
+                    '--rotation': `${angle}deg`,
+                    width: radius * 2,
+                    height: radius * 2,
                 }}
-                onMouseEnter={() => onHover(category.name)}
-                onMouseLeave={() => onHover(null)}
-                whileHover={{ scale: 1.2 }}
-                data-cursor
-                data-cursor-text={category.name}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                data-active={isActive ? 'true' : 'false'}
             >
-                <span className="orbit-category-icon">⬡</span>
-                <span className="orbit-category-label mono">{category.name}</span>
-            </motion.div>
+                <div className="orbit-ring-circle" />
 
-            {/* Skills on the ring */}
-            {category.skills.map((skill, skillIndex) => {
-                const skillAngle = angle + (skillIndex - 2) * 15
-                return (
-                    <motion.div
-                        key={skill}
-                        className="orbit-skill"
-                        style={{
-                            transform: `rotate(${skillAngle}deg) translateX(${radius}px) rotate(${-skillAngle}deg)`
-                        }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 'var(--skill-opacity, 1)' }}
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ delay: skillIndex * 0.05 }}
-                    >
-                        <span className="mono">{skill}</span>
-                    </motion.div>
-                )
-            })}
-        </motion.div>
-    )
-}))
-
-export default function SkillsOrbit() {
-    const containerRef = useRef(null)
-    // Create stable refs for each ring to avoid re-renders when passing ref callback
-    const ringRefs = useMemo(() => skillCategories.map(() => createRef()), [])
-    const [activeCategory, setActiveCategory] = useState(null)
-    const isInView = useInView(containerRef, { once: true, margin: "-100px" })
-
-    useEffect(() => {
-        ringRefs.forEach((ref, idx) => {
-            const el = ref.current
-            if (!el) return
-            const category = skillCategories[idx]
-            const isActive = activeCategory === null || activeCategory === category.name
-
-            const newValue = isActive ? 'true' : 'false'
-            if (el.dataset.active !== newValue) {
-                el.dataset.active = newValue
-            }
-        })
-    }, [activeCategory, ringRefs])
-
-    return (
-        <div className="skills-orbit" ref={containerRef}>
-            {/* Section header */}
-            <motion.div
-                className="section-header"
-                initial={{ opacity: 0, y: 50 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8 }}
-            >
-                <span className="section-number mono">03</span>
-                <h2 className="section-title">
-                    <span className="section-title-line" />
-                    <span className="gradient-text">ARSENAL</span>
-                    <span className="section-title-line" />
-                </h2>
-                <p className="section-subtitle mono">TECH_STACK</p>
-            </motion.div>
-
-            {/* Orbit visualization */}
-            <div className="orbit-container">
-                {/* Central core */}
                 <motion.div
-                    className="orbit-core"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ duration: 0.8, type: 'spring' }}
+                    className="orbit-category"
+                    style={{
+                        transform: `rotate(${angle}deg) translateX(${radius}px) rotate(${-angle}deg)`
+                    }}
+                    onMouseEnter={() => setActiveCategory(name)}
+                    onMouseLeave={() => setActiveCategory(null)}
+                    whileHover={{ scale: 1.2 }}
+                    data-cursor
+                    data-cursor-text={name}
                 >
-                    <div className="orbit-core-inner">
-                        <span className="orbit-core-icon">◉</span>
-                        <span className="orbit-core-text mono">AI</span>
-                    </div>
-                    <div className="orbit-core-ring" />
-                    <div className="orbit-core-ring orbit-core-ring--2" />
+                    <span className="orbit-category-icon">⬡</span>
+                    <span className="orbit-category-label mono">{name}</span>
                 </motion.div>
 
-                {/* Orbit rings */}
+                {children}
+            </motion.div>
+        </CategoryContext.Provider>
+    )
+})
+
+function SkillsOrbitItem({ index, children }) {
+    const { angle, radius } = useContext(CategoryContext)
+    const skillAngle = angle + (index - 2) * 15
+
+    return (
+        <motion.div
+            className="orbit-skill"
+            style={{
+                transform: `rotate(${skillAngle}deg) translateX(${radius}px) rotate(${-skillAngle}deg)`
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 'var(--skill-opacity, 1)' }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ delay: index * 0.05 }}
+        >
+            <span className="mono">{children}</span>
+        </motion.div>
+    )
+}
+
+function SkillsOrbitList({ children }) {
+    const { isInView } = useSkillsOrbit()
+    return (
+        <motion.div
+            className="skills-list"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.5 }}
+        >
+            {children}
+        </motion.div>
+    )
+}
+
+function SkillsOrbitListCategory({ name, color, index, children }) {
+    const { activeCategory, setActiveCategory, isInView } = useSkillsOrbit()
+    const isActive = activeCategory === null || activeCategory === name
+
+    return (
+        <motion.div
+            className="skills-list-category"
+            style={{ '--category-color': color }}
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.6 + index * 0.1 }}
+            onMouseEnter={() => setActiveCategory(name)}
+            onMouseLeave={() => setActiveCategory(null)}
+            data-active={isActive ? 'true' : 'false'}
+        >
+            <div className="category-header">
+                <span className="category-indicator" />
+                <h4 className="mono">{name}</h4>
+            </div>
+            <div className="category-skills">
+                {children}
+            </div>
+        </motion.div>
+    )
+}
+
+function SkillsOrbitListItem({ children }) {
+    return (
+        <motion.span
+            className="skill-pill"
+            whileHover={{ scale: 1.05, y: -2 }}
+        >
+            {children}
+        </motion.span>
+    )
+}
+
+// Assemble Compound Component
+export const SkillsOrbit = Object.assign(SkillsOrbitRoot, {
+    Header: SkillsOrbitHeader,
+    Orbit: SkillsOrbitOrbit,
+    Category: SkillsOrbitCategory,
+    Item: SkillsOrbitItem,
+    List: SkillsOrbitList,
+    ListCategory: SkillsOrbitListCategory,
+    ListItem: SkillsOrbitListItem
+})
+
+export default function SkillsOrbitSection() {
+    return (
+        <SkillsOrbit>
+            <SkillsOrbit.Header />
+            <SkillsOrbit.Orbit>
                 {skillCategories.map((category, index) => (
-                    <SkillOrbitRing
+                    <SkillsOrbit.Category
                         key={category.name}
-                        ref={ringRefs[index]}
-                        category={category}
+                        name={category.name}
+                        color={category.color}
                         index={index}
                         total={skillCategories.length}
-                        onHover={setActiveCategory}
-                    />
-                ))}
-            </div>
-
-            {/* Skills list - alternative view */}
-            <motion.div
-                className="skills-list"
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ delay: 0.5 }}
-            >
-                {skillCategories.map((category, index) => (
-                    <motion.div
-                        key={category.name}
-                        className="skills-list-category"
-                        style={{ '--category-color': category.color }}
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={isInView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ delay: 0.6 + index * 0.1 }}
-                        onMouseEnter={() => setActiveCategory(category.name)}
-                        onMouseLeave={() => setActiveCategory(null)}
                     >
-                        <div className="category-header">
-                            <span className="category-indicator" />
-                            <h4 className="mono">{category.name}</h4>
-                        </div>
-                        <div className="category-skills">
-                            {category.skills.map((skill) => (
-                                <motion.span
-                                    key={skill}
-                                    className="skill-pill"
-                                    whileHover={{ scale: 1.05, y: -2 }}
-                                >
-                                    {skill}
-                                </motion.span>
-                            ))}
-                        </div>
-                    </motion.div>
+                        {category.skills.map((skill, skillIndex) => (
+                            <SkillsOrbit.Item key={skill} index={skillIndex}>
+                                {skill}
+                            </SkillsOrbit.Item>
+                        ))}
+                    </SkillsOrbit.Category>
                 ))}
-            </motion.div>
-        </div>
+            </SkillsOrbit.Orbit>
+
+            <SkillsOrbit.List>
+                {skillCategories.map((category, index) => (
+                    <SkillsOrbit.ListCategory
+                        key={category.name}
+                        name={category.name}
+                        color={category.color}
+                        index={index}
+                    >
+                        {category.skills.map((skill) => (
+                            <SkillsOrbit.ListItem key={skill}>
+                                {skill}
+                            </SkillsOrbit.ListItem>
+                        ))}
+                    </SkillsOrbit.ListCategory>
+                ))}
+            </SkillsOrbit.List>
+        </SkillsOrbit>
     )
 }

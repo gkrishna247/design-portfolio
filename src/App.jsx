@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, lazy, Suspense, useMemo, memo } from 'react'
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useSpring, AnimatePresence, MotionConfig } from 'framer-motion'
 import Lenis from 'lenis'
+import { useReducedMotion } from './contexts/ReducedMotionContext'
 
 // Eagerly loaded components (above the fold / critical path)
 import MagneticCursorComponent from './components/MagneticCursor/MagneticCursor'
@@ -29,10 +30,7 @@ function App() {
   const [activeSection, setActiveSection] = useState('hero')
 
   // Detect reduced motion preference for accessibility
-  const prefersReducedMotion = useMemo(() => {
-    if (typeof window === 'undefined') return false
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  }, [])
+  const { prefersReducedMotion } = useReducedMotion()
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -102,6 +100,7 @@ function App() {
   }, [scrollYProgress])
 
   return (
+    <MotionConfig reducedMotion={prefersReducedMotion ? "always" : "user"}>
     <div className="neural-flux-app" ref={containerRef}>
       {/* Skip link for keyboard users - WCAG 2.4.1 */}
       <a href="#main-content" className="skip-link">
@@ -176,6 +175,7 @@ function App() {
       </AnimatePresence>
 
     </div>
+    </MotionConfig>
   )
 }
 
