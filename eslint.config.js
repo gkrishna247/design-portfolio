@@ -9,7 +9,7 @@ export default [
   },
   // Node.js globals for config files
   {
-    files: ['playwright.config.js', 'benchmarks/**/*.js', 'vitest.config.js'],
+    files: ['playwright.config.js', 'benchmarks/**/*.js', 'vitest.config.js', 'scripts/**/*.js'],
     languageOptions: {
       globals: {
         process: 'readonly',
