@@ -1,7 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
-import { motion, useTransform, AnimatePresence } from 'framer-motion'
-import './OrbitalNavigation.css'
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, useMemo, memo } from "react";
 import { motion, useTransform, AnimatePresence } from "framer-motion";
 import "./OrbitalNavigation.css";
 

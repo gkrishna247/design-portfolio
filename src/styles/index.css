@@ -10,13 +10,10 @@
   /* === COLOR PALETTE - Cosmic Neural Enhanced === */
   --color-void: #030308;
   --color-abyss: #08080f;
-  --color-nebula: #0f0f1a;
-  --color-surface: rgba(15, 15, 26, 0.65);
   --color-elevated: rgba(20, 20, 35, 0.8);
 
   /* Primary Gradients - Richer & More Vibrant */
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 35%, #f472b6 100%);
-  --gradient-secondary: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #a855f7 100%);
   --gradient-aurora: linear-gradient(135deg,
       #ff6b9d 0%,
       #c44ced 20%,
@@ -30,19 +27,13 @@
       #4c1d95 50%,
       #7c3aed 75%,
       #a855f7 100%);
-  --gradient-fire: linear-gradient(135deg, #f43f5e 0%, #fb923c 50%, #fbbf24 100%);
-  --gradient-ocean: linear-gradient(135deg, #0891b2 0%, #0ea5e9 50%, #38bdf8 100%);
 
   /* Accent Colors - Neon Spectrum Enhanced */
   --neon-violet: #a855f7;
-  --neon-purple: #8b5cf6;
   --neon-blue: #3b82f6;
   --neon-cyan: #22d3ee;
-  --neon-teal: #14b8a6;
   --neon-pink: #ec4899;
-  --neon-rose: #fb7185;
   --neon-emerald: #10b981;
-  --neon-amber: #f59e0b;
 
   /* Text Colors - Enhanced Hierarchy */
   --text-primary: #f8fafc;
@@ -54,7 +45,6 @@
   /* === TYPOGRAPHY === */
   --font-display: 'Space Grotesk', 'Outfit', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Monaco', 'Consolas', monospace;
-  --font-body: 'Outfit', 'Space Grotesk', system-ui, sans-serif;
 
   /* Fluid Typography Scale - Refined */
   --text-xs: clamp(0.65rem, 0.6rem + 0.25vw, 0.75rem);
@@ -73,46 +63,34 @@
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
-  --space-5: 1.25rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
-  --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  --space-32: 8rem;
 
   /* === ANIMATION - Enhanced Timing === */
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-expo-in-out: cubic-bezier(0.87, 0, 0.13, 1);
-  --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Durations */
-  --duration-instant: 100ms;
   --duration-fast: 150ms;
   --duration-normal: 300ms;
   --duration-slow: 500ms;
-  --duration-slower: 800ms;
-  --duration-slowest: 1200ms;
 
   /* === EFFECTS === */
-  --blur-xs: 2px;
   --blur-sm: 4px;
   --blur-md: 12px;
   --blur-lg: 24px;
   --blur-xl: 48px;
-  --blur-2xl: 64px;
 
   /* Glassmorphism - Enhanced */
   --glass-bg: rgba(15, 15, 26, 0.45);
   --glass-bg-light: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-border-light: rgba(255, 255, 255, 0.12);
-  --glass-glow: rgba(139, 92, 246, 0.35);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 
   /* Border Radius */
@@ -120,7 +98,6 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
-  --radius-2xl: 32px;
   --radius-full: 9999px;
 }
 
