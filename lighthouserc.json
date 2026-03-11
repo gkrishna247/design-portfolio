@@ -1,7 +1,8 @@
 {
   "ci": {
     "collect": {
-      "staticDistDir": "./dist",
+      "startServerCommand": "npm run preview -- --port 4173",
+      "url": ["http://localhost:4173/design-portfolio/"],
       "numberOfRuns": 1
     },
     "assert": {
