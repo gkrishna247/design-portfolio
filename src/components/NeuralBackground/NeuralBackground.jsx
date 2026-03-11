@@ -1,6 +1,5 @@
 import React, { useRef, useMemo, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Points, PointMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 import { useMouse } from '../../contexts/MouseContext'
 import './NeuralBackground.css'
@@ -13,10 +12,13 @@ const PARTICLE_COUNT_MOBILE = 500
 function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialized }) {
     const ref = useRef()
 
+    const dummy = useMemo(() => new THREE.Object3D(), [])
+    const geometry = useMemo(() => new THREE.IcosahedronGeometry(0.015, 0), [])
+
     // Generate particles in a volumetric space
-    const [positions] = useMemo(() => {
+    const particles = useMemo(() => {
         const count = particleCount
-        const positions = new Float32Array(count * 3)
+        const data = []
 
         for (let i = 0; i < count; i++) {
             // Distribute in 3D space with varying density
@@ -24,12 +26,16 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
             const phi = Math.acos((Math.random() * 2) - 1)
             const radius = 3 + Math.random() * 8
 
-            positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta)
-            positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
-            positions[i * 3 + 2] = radius * Math.cos(phi)
+            data.push({
+                x: radius * Math.sin(phi) * Math.cos(theta),
+                y: radius * Math.sin(phi) * Math.sin(theta),
+                z: radius * Math.cos(phi),
+                phase: Math.random() * Math.PI * 2,
+                speed: 0.1 + Math.random() * 0.2
+            })
         }
 
-        return [positions]
+        return data
     }, [particleCount])
 
     useFrame((state, delta) => {
@@ -61,21 +67,36 @@ function NeuralParticles({ scrollProgress, particleCount, mouseRef, isInitialize
 
         // Scroll influence - expand/contract
         const scrollVal = scrollProgress?.get() || 0
-        ref.current.scale.setScalar(1 + scrollVal * 0.5)
+        const scale = 1 + scrollVal * 0.5
+        ref.current.scale.setScalar(scale)
+
+        // Update each particle matrix array
+        const time = state.clock.elapsedTime
+        for (let i = 0; i < particleCount; i++) {
+            const p = particles[i]
+
+            // Add subtle floating effect for each particle
+            const floatY = p.y + Math.sin(time * p.speed + p.phase) * 0.1
+            const floatX = p.x + Math.cos(time * p.speed + p.phase) * 0.1
+
+            dummy.position.set(floatX, floatY, p.z)
+            dummy.updateMatrix()
+            ref.current.setMatrixAt(i, dummy.matrix)
+        }
+
+        ref.current.instanceMatrix.needsUpdate = true
     })
 
     return (
-        <Points ref={ref} positions={positions} stride={3} frustumCulled={true}>
-            <PointMaterial
+        <instancedMesh ref={ref} args={[geometry, null, particleCount]} frustumCulled={true}>
+            <meshBasicMaterial
+                color="#ffffff"
                 transparent
-                vertexColors
-                size={0.015}
-                sizeAttenuation={true}
+                opacity={0.8}
                 depthWrite={false}
                 blending={THREE.AdditiveBlending}
-                opacity={0.8}
             />
-        </Points>
+        </instancedMesh>
     )
 }
 
