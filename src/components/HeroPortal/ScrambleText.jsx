@@ -46,13 +46,18 @@ function useScrambleText(text, isActive) {
 /**
  * ScrambleText component to isolate re-renders caused by the scramble animation
  */
-const ScrambleText = memo(({ text, isActive, as: Component = 'span', children, ...props }) => {
+const ScrambleText = memo(({ text, isActive, as: Tag = 'span', children, ...props }) => {
     const scrambledText = useScrambleText(text, isActive)
 
     return (
-        <Component data-text={scrambledText} {...props}>
-            {typeof children === 'function' ? children(scrambledText) : (children || scrambledText)}
-        </Component>
+        <>
+            <Tag aria-hidden="true" data-text={scrambledText} {...props}>
+                {typeof children === 'function' ? children(scrambledText) : (children || scrambledText)}
+            </Tag>
+            <span className="sr-only" aria-live="polite">
+                {text}
+            </span>
+        </>
     )
 })
 
