@@ -1,3 +1,6 @@
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { motion, useTransform, AnimatePresence } from 'framer-motion'
+import './OrbitalNavigation.css'
 import { useState, useEffect, useRef, memo } from "react";
 import { motion, useTransform, AnimatePresence } from "framer-motion";
 import "./OrbitalNavigation.css";
@@ -92,78 +95,102 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isExpanded]);
 
-  return (
-    <nav
-      ref={navRef}
-      className={`orbital-nav ${isExpanded ? "expanded" : ""}`}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
-    >
-      {/* Central orb */}
-      <motion.button
-        ref={toggleButtonRef}
-        className="orbital-core"
-        onClick={() => setIsExpanded(!isExpanded)}
-        aria-label={
-          isExpanded ? "Close navigation menu" : "Open navigation menu"
-        }
-        aria-expanded={isExpanded}
-        aria-controls="orbital-menu-list"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        data-cursor
-        data-cursor-text="NAV"
-      >
-        <motion.div className="orbital-core-inner" style={{ rotate: rotation }}>
-          <span className="orbital-core-icon">⬡</span>
-        </motion.div>
-        <div className="orbital-core-ring" />
-        <div className="orbital-core-ring orbital-core-ring--2" />
-      </motion.button>
+    const memoizedOrbitalItems = useMemo(() => {
+        return navItems.map((item, index) => {
+            const isActive = activeSection === item.id
 
-      {/* Orbital items */}
-      <AnimatePresence>
-        {isExpanded && (
-          <div className="orbital-items" id="orbital-menu-list" role="menu">
-            {navItems.map((item, index) => {
-              const isActive = activeSection === item.id;
-
-              return (
+            return (
                 <motion.button
-                  key={item.id}
-                  role="menuitem"
-                  className={`orbital-item ${isActive ? "active" : ""}`}
-                  aria-label={`Navigate to ${item.fullLabel} section`}
-                  aria-current={isActive ? "page" : undefined}
-                  initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    x: item.x,
-                    y: item.y,
-                    transition: { delay: index * 0.05, type: "spring" },
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0,
-                    x: 0,
-                    y: 0,
-                    transition: { delay: (navItems.length - index) * 0.03 },
-                  }}
-                  onClick={() => scrollToSection(item.id)}
-                  onMouseEnter={() => setHoveredItem(item.id)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  whileHover={{ scale: 1.2 }}
-                  data-cursor
+                    key={item.id}
+                    role="menuitem"
+                    className={`orbital-item ${isActive ? 'active' : ''}`}
+                    aria-label={`Navigate to ${item.fullLabel} section`}
+                    aria-current={isActive ? 'page' : undefined}
+                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                    animate={{
+                        opacity: 1,
+                        scale: 1,
+                        x: item.x,
+                        y: item.y,
+                        transition: { delay: index * 0.05, type: 'spring' }
+                    }}
+                    exit={{
+                        opacity: 0,
+                        scale: 0,
+                        x: 0,
+                        y: 0,
+                        transition: { delay: (navItems.length - index) * 0.03 }
+                    }}
+                    onClick={() => scrollToSection(item.id)}
+                    onMouseEnter={() => setHoveredItem(item.id)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    whileHover={{ scale: 1.2 }}
+                    data-cursor
                 >
-                  <span className="orbital-item-icon">{item.icon}</span>
-                  <span className="orbital-item-label mono">{item.label}</span>
+                    <span className="orbital-item-icon">{item.icon}</span>
+                    <span className="orbital-item-label mono">{item.label}</span>
                 </motion.button>
-              );
-            })}
-          </div>
-        )}
-      </AnimatePresence>
+            )
+        })
+    }, [activeSection])
+
+    const memoizedConnectionLines = useMemo(() => {
+        return navItems.map((item, index) => {
+            return (
+                <motion.line
+                    key={item.id}
+                    x1="0"
+                    y1="0"
+                    x2={item.x}
+                    y2={item.y}
+                    stroke="rgba(168, 85, 247, 0.3)"
+                    strokeWidth="1"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                />
+            )
+        })
+    }, [])
+
+    return (
+        <nav
+            ref={navRef}
+            className={`orbital-nav ${isExpanded ? 'expanded' : ''}`}
+            onMouseEnter={() => setIsExpanded(true)}
+            onMouseLeave={() => setIsExpanded(false)}
+        >
+            {/* Central orb */}
+            <motion.button
+                ref={toggleButtonRef}
+                className="orbital-core"
+                onClick={() => setIsExpanded(!isExpanded)}
+                aria-label={isExpanded ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isExpanded}
+                aria-controls="orbital-menu-list"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                data-cursor
+                data-cursor-text="NAV"
+            >
+                <motion.div
+                    className="orbital-core-inner"
+                    style={{ rotate: rotation }}
+                >
+                    <span className="orbital-core-icon">⬡</span>
+                </motion.div>
+                <div className="orbital-core-ring" />
+                <div className="orbital-core-ring orbital-core-ring--2" />
+            </motion.button>
+
+            {/* Orbital items */}
+            <AnimatePresence>
+                {isExpanded && (
+                    <div className="orbital-items" id="orbital-menu-list" role="menu">
+                        {memoizedOrbitalItems}
+                    </div>
+                )}
+            </AnimatePresence>
 
       {/* Tooltip */}
       <AnimatePresence>
@@ -179,17 +206,12 @@ export default function OrbitalNavigation({ activeSection, scrollProgress }) {
         )}
       </AnimatePresence>
 
-      {/* Connection lines */}
-      {isExpanded && (
-        <svg
-          className="orbital-lines"
-          width="240"
-          height="240"
-          viewBox="-120 -120 240 240"
-        >
-          <ConnectionLines />
-        </svg>
-      )}
-    </nav>
-  );
+            {/* Connection lines */}
+            {isExpanded && (
+                <svg className="orbital-lines" width="240" height="240" viewBox="-120 -120 240 240">
+                    {memoizedConnectionLines}
+                </svg>
+            )}
+        </nav>
+    )
 }
