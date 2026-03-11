@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, memo } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, useTransform, AnimatePresence } from 'framer-motion'
 import './OrbitalNavigation.css'
 
@@ -22,29 +22,6 @@ const navItemsMap = navItems.reduce((acc, item) => {
   acc[item.id] = item;
   return acc;
 }, {});
-
-const ConnectionLines = memo(function ConnectionLines() {
-  return (
-    <>
-      {navItems.map((item, index) => {
-        return (
-          <motion.line
-            key={item.id}
-            x1="0"
-            y1="0"
-            x2={item.x}
-            y2={item.y}
-            stroke="rgba(168, 85, 247, 0.3)"
-            strokeWidth="1"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ delay: index * 0.05, duration: 0.3 }}
-          />
-        );
-      })}
-    </>
-  );
-});
 
 export default function OrbitalNavigation({ activeSection, scrollProgress }) {
   const [isExpanded, setIsExpanded] = useState(false);

@@ -3,7 +3,23 @@
     "collect": {
       "startServerCommand": "npm run preview -- --port 4173",
       "url": ["http://localhost:4173/design-portfolio/"],
-      "numberOfRuns": 1
+      "numberOfRuns": 1,
+      "settings": {
+        "formFactor": "mobile",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 375,
+          "height": 812,
+          "deviceScaleFactor": 3,
+          "disabled": false
+        },
+        "throttlingMethod": "simulate",
+        "throttling": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "cpuSlowdownMultiplier": 4
+        }
+      }
     },
     "assert": {
       "assertions": {
