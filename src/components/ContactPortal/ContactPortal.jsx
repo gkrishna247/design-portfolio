@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useReducedMotion } from '../../contexts/ReducedMotionContext'
 import './ContactPortal.css'
@@ -38,6 +38,34 @@ export default function ContactPortal() {
     const containerRef = useRef(null)
     const isInView = useInView(containerRef, { once: true, margin: "-100px" })
     const { prefersReducedMotion, toggleReducedMotion } = useReducedMotion()
+
+    const renderedContactLinks = useMemo(() => {
+        return contactLinks.map((link, index) => (
+            <motion.a
+                key={link.name}
+                href={link.url}
+                target={link.url.startsWith('http') ? '_blank' : undefined}
+                rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="contact-link"
+                style={{ '--link-color': link.color }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.9 + index * 0.1 }}
+                whileHover={{ y: -5 }}
+                data-cursor
+                data-cursor-text={link.name.toUpperCase()}
+            >
+                <div className="link-icon-container">
+                    <span className="link-icon mono">{link.icon}</span>
+                </div>
+                <div className="link-info">
+                    <span className="link-name">{link.name}</span>
+                    <span className="link-handle mono">{link.handle}</span>
+                </div>
+                <span className="link-arrow">↗</span>
+            </motion.a>
+        ))
+    }, [isInView])
 
     return (
         <div className="contact-portal" ref={containerRef}>
@@ -110,31 +138,7 @@ export default function ContactPortal() {
                     animate={isInView ? { opacity: 1 } : {}}
                     transition={{ delay: 0.8 }}
                 >
-                    {contactLinks.map((link, index) => (
-                        <motion.a
-                            key={link.name}
-                            href={link.url}
-                            target={link.url.startsWith('http') ? '_blank' : undefined}
-                            rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                            className="contact-link"
-                            style={{ '--link-color': link.color }}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={isInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ delay: 0.9 + index * 0.1 }}
-                            whileHover={{ y: -5 }}
-                            data-cursor
-                            data-cursor-text={link.name.toUpperCase()}
-                        >
-                            <div className="link-icon-container">
-                                <span className="link-icon mono">{link.icon}</span>
-                            </div>
-                            <div className="link-info">
-                                <span className="link-name">{link.name}</span>
-                                <span className="link-handle mono">{link.handle}</span>
-                            </div>
-                            <span className="link-arrow">↗</span>
-                        </motion.a>
-                    ))}
+                    {renderedContactLinks}
                 </motion.div>
             </motion.div>
 
