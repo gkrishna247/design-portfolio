@@ -6,28 +6,28 @@ import './ContactPortal.css'
 const contactLinks = [
     {
         name: 'LinkedIn',
-        handle: '@alexdev',
+        handle: '@krishnag',
         url: 'https://linkedin.com',
         icon: 'LN',
         color: '#0077b5'
     },
     {
         name: 'GitHub',
-        handle: '@alexdev',
+        handle: '@krishnag',
         url: 'https://github.com',
         icon: 'GH',
         color: '#6e5494'
     },
     {
         name: 'Email',
-        handle: 'alex@dev.com',
-        url: 'mailto:alex@dev.com',
+        handle: 'krishnag@dev.com',
+        url: 'mailto:krishnag@dev.com',
         icon: 'ML',
         color: '#ea4335'
     },
     {
         name: 'Twitter',
-        handle: '@alexdev',
+        handle: '@krishnag',
         url: 'https://twitter.com',
         icon: 'X',
         color: '#1da1f2'
@@ -117,7 +117,7 @@ export default function ContactPortal() {
 
                 {/* CTA button */}
                 <motion.a
-                    href="mailto:alex@dev.com"
+                    href="mailto:krishnag@dev.com"
                     className="contact-cta"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
@@ -164,7 +164,7 @@ export default function ContactPortal() {
                         ANIMATIONS: {prefersReducedMotion ? 'OFF' : 'ON'}
                     </button>
                     <span className="mono dim">DESIGNED & BUILT BY</span>
-                    <span className="gradient-text">ALEX.DEV</span>
+                    <span className="gradient-text">KrishnaG.DEV</span>
                 </div>
                 <div className="footer-right">
                     <span className="mono">© 2026</span>

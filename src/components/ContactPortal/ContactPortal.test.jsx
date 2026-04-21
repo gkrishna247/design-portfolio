@@ -34,7 +34,7 @@ describe('ContactPortal', () => {
     expect(twitterLink.getAttribute('href')).toBe('https://twitter.com');
 
     const emailLink = screen.getByText('Email').closest('a');
-    expect(emailLink.getAttribute('href')).toBe('mailto:alex@dev.com');
+    expect(emailLink.getAttribute('href')).toBe('mailto:krishnag@dev.com');
   });
 
   it('does not have active class on links (since we removed it)', () => {

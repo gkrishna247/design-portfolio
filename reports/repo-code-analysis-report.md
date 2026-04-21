@@ -578,7 +578,7 @@ scrollYProgress.on("change", (value) => {
 
 | Feature | Status | Details |
 |---------|:------:|---------|
-| `<title>` tag | ✅ | "ALEX.DEV \| AI Engineer Portfolio - Neural Flux" |
+| `<title>` tag | ✅ | "KrishnaG.DEV | AI Engineer Portfolio - Neural Flux" |
 | Meta description | ✅ | 156 characters, keyword-rich |
 | Open Graph tags | ✅ | og:title, og:description, og:image with GitHub Pages URL |
 | Twitter Card | ✅ | summary_large_image with same image |

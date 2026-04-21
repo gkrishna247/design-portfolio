@@ -1,4 +1,4 @@
-# ALEX.DEV Portfolio - Neural Flux v2.0
+# Krishna.DEV Portfolio - Neural Flux v2.0
 
 A cutting-edge AI Engineer portfolio built with React, Three.js, and Framer Motion. This project showcases a "Neural Flux" design aesthetic with immersive 3D backgrounds, interactive elements, and a focus on performance and accessibility.
 
@@ -113,4 +113,4 @@ src/
 
 ---
 
-Built by [Alex Dev](https://github.com/gkrishna247)
+Built by [Krishna](https://github.com/gkrishna247)

@@ -74,7 +74,7 @@ export default function FloatingIdentity() {
                         >
                             <div className="profile-image">
                                 <div className="profile-image-placeholder">
-                                    <span className="mono">A</span>
+                                    <span className="mono">K</span>
                                 </div>
                                 <div className="profile-image-ring" />
                                 <div className="profile-image-ring profile-image-ring--2" />
@@ -85,7 +85,7 @@ export default function FloatingIdentity() {
                         </motion.div>
 
                         <div className="profile-info">
-                            <h3 className="profile-name">ALEX DEV</h3>
+                            <h3 className="profile-name">KrishnaG</h3>
                             <p className="profile-role mono">
                                 <span className="text-accent">@</span>AI_ENGINEER
                             </p>

@@ -125,7 +125,7 @@ export default function HeroPortal({ isLoaded }) {
                     {/* Name with glitch effect */}
                     <ScrambleText
                         as={motion.h1}
-                        text="ALEX.DEV"
+                        text="KrishnaG.DEV"
                         isActive={isLoaded}
                         className="hero-name glitch"
                         style={{ y: titleYSpring }}
