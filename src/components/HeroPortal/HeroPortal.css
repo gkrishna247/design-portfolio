@@ -134,9 +134,11 @@
 .hero-content {
     position: relative;
     z-index: 10;
-    text-align: center;
+    text-align: left;
     padding: var(--space-8);
-    max-width: 900px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* Status indicator */
@@ -208,6 +210,8 @@
     /* Prevent text clipping */
     overflow: visible;
     white-space: nowrap;
+    text-align: left;
+    width: 100%;
 }
 
 .hero-name-text {
@@ -218,7 +222,7 @@
 .hero-title-container {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--space-6);
     margin-bottom: var(--space-8);
 }
@@ -227,6 +231,10 @@
     width: 60px;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--neon-violet));
+}
+
+.hero-title-line:first-child {
+    display: none;
 }
 
 .hero-title-line:last-child {
@@ -247,8 +255,8 @@
     line-height: 1.8;
     margin-bottom: var(--space-12);
     max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .text-highlight {
@@ -260,7 +268,7 @@
 .hero-actions {
     display: flex;
     gap: var(--space-4);
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
 }
 
