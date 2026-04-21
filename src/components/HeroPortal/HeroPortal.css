@@ -212,8 +212,6 @@
 
 .hero-name-text {
     display: inline-block;
-    /* Ensure last character is fully visible */
-    padding-right: 0.1em;
 }
 
 /* Title with lines */
