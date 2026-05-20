@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import './FloatingIdentity.css'
 
@@ -28,6 +28,39 @@ export default function FloatingIdentity() {
     const cardRotateX = useTransform(scrollYProgress, [0, 0.5, 1], [10, 0, -10])
     const cardRotateY = useTransform(scrollYProgress, [0, 0.5, 1], [-5, 0, 5])
     const cardScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 0.95])
+
+    const statsCards = useMemo(() => stats.map((stat, index) => (
+        <motion.div
+            key={stat.label}
+            className="stat-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+            whileHover={{ scale: 1.05, y: -5 }}
+        >
+            <span className="stat-value">
+                {stat.value}
+                <span className="stat-suffix">{stat.suffix}</span>
+            </span>
+            <span className="stat-label mono">{stat.label}</span>
+        </motion.div>
+    )), [isInView])
+
+    const socialLinkItems = useMemo(() => socialLinks.map((link, index) => (
+        <motion.a
+            key={link.name}
+            href={link.url}
+            className="social-link"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
+            whileHover={{ scale: 1.2, y: -3 }}
+            data-cursor
+            data-cursor-text={link.name}
+        >
+            <span className="mono">{link.icon}</span>
+        </motion.a>
+    )), [isInView])
 
     return (
         <div className="floating-identity" ref={containerRef}>
@@ -113,41 +146,12 @@ export default function FloatingIdentity() {
 
                     {/* Stats grid */}
                     <div className="identity-stats">
-                        {stats.map((stat, index) => (
-                            <motion.div
-                                key={stat.label}
-                                className="stat-card"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                                whileHover={{ scale: 1.05, y: -5 }}
-                            >
-                                <span className="stat-value">
-                                    {stat.value}
-                                    <span className="stat-suffix">{stat.suffix}</span>
-                                </span>
-                                <span className="stat-label mono">{stat.label}</span>
-                            </motion.div>
-                        ))}
+                        {statsCards}
                     </div>
 
                     {/* Social links */}
                     <div className="identity-social">
-                        {socialLinks.map((link, index) => (
-                            <motion.a
-                                key={link.name}
-                                href={link.url}
-                                className="social-link"
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                                transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
-                                whileHover={{ scale: 1.2, y: -3 }}
-                                data-cursor
-                                data-cursor-text={link.name}
-                            >
-                                <span className="mono">{link.icon}</span>
-                            </motion.a>
-                        ))}
+                        {socialLinkItems}
                     </div>
 
                     {/* Corner tags */}
