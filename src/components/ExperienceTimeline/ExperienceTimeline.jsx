@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import './ExperienceTimeline.css'
 
@@ -145,6 +145,16 @@ export default function ExperienceTimeline() {
 
     const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
 
+    const timelineCards = useMemo(() => {
+        return experiences.map((exp, index) => (
+            <TimelineCard
+                key={exp.id}
+                experience={exp}
+                index={index}
+            />
+        ));
+    }, []);
+
     return (
         <div className="experience-timeline" ref={containerRef}>
             {/* Section header */}
@@ -175,13 +185,7 @@ export default function ExperienceTimeline() {
 
                 {/* Timeline cards */}
                 <div className="timeline-cards">
-                    {experiences.map((exp, index) => (
-                        <TimelineCard
-                            key={exp.id}
-                            experience={exp}
-                            index={index}
-                        />
-                    ))}
+                    {timelineCards}
                 </div>
             </div>
 
