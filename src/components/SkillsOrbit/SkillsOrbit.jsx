@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState, memo } from 'react'
+import { createContext, useContext, useRef, useState, memo, useMemo } from 'react'
 import { motion, useInView } from 'framer-motion'
 import './SkillsOrbit.css'
 
@@ -199,25 +199,29 @@ export const SkillsOrbit = Object.assign(SkillsOrbitRoot, {
 })
 
 export default function SkillsOrbitSection() {
+    const mappedCategories = useMemo(() => {
+        return skillCategories.map((category, index) => (
+            <SkillsOrbit.Category
+                key={category.name}
+                name={category.name}
+                color={category.color}
+                index={index}
+                total={skillCategories.length}
+            >
+                {category.skills.map((skill, skillIndex) => (
+                    <SkillsOrbit.Item key={skill} index={skillIndex}>
+                        {skill}
+                    </SkillsOrbit.Item>
+                ))}
+            </SkillsOrbit.Category>
+        ));
+    }, []);
+
     return (
         <SkillsOrbit>
             <SkillsOrbit.Header />
             <SkillsOrbit.Matrix>
-                {skillCategories.map((category, index) => (
-                    <SkillsOrbit.Category
-                        key={category.name}
-                        name={category.name}
-                        color={category.color}
-                        index={index}
-                        total={skillCategories.length}
-                    >
-                        {category.skills.map((skill, skillIndex) => (
-                            <SkillsOrbit.Item key={skill} index={skillIndex}>
-                                {skill}
-                            </SkillsOrbit.Item>
-                        ))}
-                    </SkillsOrbit.Category>
-                ))}
+                {mappedCategories}
             </SkillsOrbit.Matrix>
         </SkillsOrbit>
     )
