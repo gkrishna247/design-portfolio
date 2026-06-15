@@ -289,7 +289,8 @@ button:focus-visible,
   background-clip: text;
   /* Fix text clipping - ensure full text is visible */
   display: inline-block;
-  padding-right: 0.1em;
+  padding-right: 0.2em;
+  line-height: 1.2;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -303,7 +304,8 @@ button:focus-visible,
   animation: aurora-flow 8s ease infinite;
   /* Fix text clipping - ensure full text is visible */
   display: inline-block;
-  padding-right: 0.1em;
+  padding-right: 0.2em;
+  line-height: 1.2;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -315,7 +317,8 @@ button:focus-visible,
   background-clip: text;
   /* Fix text clipping - ensure full text is visible */
   display: inline-block;
-  padding-right: 0.1em;
+  padding-right: 0.2em;
+  line-height: 1.2;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
